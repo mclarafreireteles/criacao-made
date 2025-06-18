@@ -1,8 +1,9 @@
-import { View, Text, TextInput, Pressable, Alert } from 'react-native';
+import { View, Text, TextInput, Pressable, Alert, Image, StyleSheet } from 'react-native';
 import { Link } from 'expo-router';
 import { useState } from 'react';
 import { supabase } from '@/src/lib/supabase';
 import { router } from 'expo-router';
+import Colors from '@/constants/Colors';
 
 export default function Signup() {
 
@@ -37,44 +38,41 @@ export default function Signup() {
     }
 
     return (
-        <View>
-            <Text>Página de Registro</Text>
-            <View>
-                <View>
-                    <Text>Nome completo</Text>
-                    <TextInput
-                        placeholder='Digite seu nome'
-                        value={name}
-                        onChangeText={setName}
-                    />
-                </View>
-                <View>
-                    <Text>Aluno/professor</Text>
-                    <TextInput
-                        placeholder='Digite seu nome'
-                        value={role}
-                        onChangeText={setRole}
-                    />
-                </View>
-                <View>
-                    <Text>Email</Text>
-                    <TextInput
-                        placeholder='Digite seu e-mail'
-                        value={email}
-                        onChangeText={setEmail}
-                    />
-                </View>
-                <View>
-                    <Text>Senha</Text>
-                    <TextInput
-                        placeholder='Digite sua senha'
-                        value={password}
-                        onChangeText={setPassword}
-                    />
-                </View>
-
-                <Pressable onPress={handleSignup}>
-                    <Text>{loading ? 'Carregando' : 'Cadastrar'}</Text>
+        <View style={styles.container}>
+            <View style={styles.header}>
+                <Image source={require('../../../../assets/images/tecnodocencia.png')} style={styles.logoTecno}/>
+                <Image source={require('../../../../assets/images/logo-made.png')} style={styles.logoMade}/>
+            </View>
+            <Text style={styles.title}>Criar nova conta</Text>
+            <View style={styles.containerInput}>
+                <TextInput
+                    placeholder='Nome'
+                    value={name}
+                    onChangeText={setName}
+                    style={styles.inputRegister}
+                />
+                <TextInput
+                    placeholder='E-mail'
+                    value={email}
+                    onChangeText={setEmail}
+                    style={styles.inputRegister}
+                />
+                <TextInput
+                    placeholder='Senha'
+                    value={password}
+                    onChangeText={setPassword}
+                    style={styles.inputRegister}
+                />
+                <TextInput
+                    placeholder='Confirmar senha'
+                    value={password}
+                    onChangeText={setPassword}
+                    style={styles.inputRegister}
+                /> 
+            </View>
+            <View style={styles.containerInput}>
+                <Pressable onPress={handleSignup} style={styles.registerButton}>
+                    <Text style={styles.registerButtonText}>{loading ? 'Carregando' : 'Cadastrar'}</Text>
                 </Pressable>
 
                 <Link href='/(auth)/signin/page'>
@@ -84,4 +82,64 @@ export default function Signup() {
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+    display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flex: 1,
+        backgroundColor: Colors.light.white,
+        paddingVertical: 50,
+        paddingBottom: 120
+    },
+    header: {
+        display: 'flex',
+        alignItems: 'center',
+    },
+    logoMade: {
+            width: 200,  // Defina a largura
+            resizeMode: 'contain', // Garante que a imagem se ajuste dentro das dimensões,
+    },
+    logoTecno: {
+        width: 100,  // Defina a largura
+        resizeMode: 'contain', // Garante que a imagem se ajuste dentro das dimensões
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 700,
+    },
+    containerInput:{
+        display: 'flex',
+        gap: 10,
+        width: '70%',
+        alignItems: 'center',   
+    },
+    inputRegister: {
+        borderColor: Colors.light.grey,
+        borderWidth: 1,
+        borderRadius: 20,
+        color: Colors.light.darkGrey,
+        paddingHorizontal: 10,
+        paddingVertical: 8,
+        fontSize: 14,
+        fontWeight: 500,
+        width: '100%'
+    },
+    registerButton: {
+        borderRadius: 20,
+        backgroundColor: Colors.light.blue,
+        color: Colors.light.white,
+        paddingHorizontal: 10,
+        paddingVertical: 8,
+        fontSize: 14,
+        fontWeight: 500,
+        width: '100%'
+    },
+    registerButtonText:{
+        color: Colors.light.white,
+        textAlign: 'center',
+        fontSize: 20
+    },
+})
 
