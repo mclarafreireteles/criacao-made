@@ -1,3 +1,0 @@
-export const supaUrl = 'https://lfahvmscfupomibgqryx.supabase.co';
-
-export const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxmYWh2bXNjZnVwb21pYmdxcnl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxNzg3MDYsImV4cCI6MjA2NTc1NDcwNn0.Vevr7HQ2vvHRsqKajNfcYYIEp1PhsyLmuW-ukwqYbmY'
