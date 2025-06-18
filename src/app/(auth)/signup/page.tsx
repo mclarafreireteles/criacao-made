@@ -11,20 +11,31 @@ export default function Signup() {
     const [role, setRole] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
 
     async function handleSignup() {
+
         setLoading(true);
 
+        if (password !== confirmPassword) {
+            Alert.alert('As senhas devem ser iguais');
+            console.log('senhas diferentes')
+            setLoading(false);
+            return
+        }
+
         const { data, error } = await supabase.auth.signUp({
-            email: email,
-            password: password,
-            options: {
-                data: {
-                    name: name
+        email: email,
+        password: password,
+        options: {
+            data: {
+                name: name
                 }
             }
         })
+
+        
 
         if (error) {
             Alert.alert('Erro ao cadastrar', error.message)
@@ -34,7 +45,7 @@ export default function Signup() {
         }
 
         setLoading(false);
-        router.replace('/')
+        router.replace('/(auth)/signin/page')
     }
 
     return (
@@ -65,8 +76,8 @@ export default function Signup() {
                 />
                 <TextInput
                     placeholder='Confirmar senha'
-                    value={password}
-                    onChangeText={setPassword}
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword}
                     style={styles.inputRegister}
                 /> 
             </View>
