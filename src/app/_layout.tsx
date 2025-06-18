@@ -28,7 +28,7 @@ function MainLayout(){
             }
 
             setAuth(null)
-            router.replace('/(auth)/signin/page')
+            router.replace('/')
         })
     }, [])
 
