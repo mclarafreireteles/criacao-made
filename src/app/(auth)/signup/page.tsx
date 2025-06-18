@@ -1,6 +1,6 @@
 import { View, Text, TextInput, Pressable, Alert, Image, StyleSheet } from 'react-native';
 import { Link } from 'expo-router';
-import { useState } from 'react';
+import { SetStateAction, useState } from 'react';
 import { supabase } from '@/src/lib/supabase';
 import { router } from 'expo-router';
 import Colors from '@/constants/Colors';
@@ -8,11 +8,17 @@ import Colors from '@/constants/Colors';
 export default function Signup() {
 
     const [name, setName] = useState('');
-    const [role, setRole] = useState('');
     const [email, setEmail] = useState('');
+    const [role, setRole] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
+
+    const handleRoleSelection = (role: SetStateAction<string>) => {
+            setRole(role); // Atualiza o estado com a role clicada
+            console.log(role)
+        };
+
 
     async function handleSignup() {
 
@@ -30,11 +36,11 @@ export default function Signup() {
         password: password,
         options: {
             data: {
-                name: name
+                name: name,
+                role: role
                 }
             }
         })
-
         
 
         if (error) {
@@ -80,6 +86,35 @@ export default function Signup() {
                     onChangeText={setConfirmPassword}
                     style={styles.inputRegister}
                 /> 
+                
+
+                <View style={styles.roles}>
+                    <Text>Com qual perfil você se encaixa?</Text>
+                    <View style={styles.containerRoles}>
+                        <View>
+                        <Pressable style={[
+                            styles.roleOption,
+                            role === 'estudante' && styles.selectedRoleOption, // Aplica estilo de seleção se for estudante
+                            ]} 
+                            onPress={() => handleRoleSelection('estudante')}
+                        >
+                            <Image/>
+                            <Text>Estudante</Text>
+                        </Pressable>
+                    </View>
+                    <View>
+                        <Pressable 
+                            style={[styles.roleOption,
+                            role === 'professor' && styles.selectedRoleOption, // Aplica estilo de seleção se for estudante
+                            ]} 
+                            onPress={() => handleRoleSelection('professor')}
+                        >
+                            <Image/>
+                            <Text>Professor</Text>
+                        </Pressable>
+                    </View>
+                    </View>
+                </View>
             </View>
             <View style={styles.containerInput}>
                 <Pressable onPress={handleSignup} style={styles.registerButton}>
@@ -96,7 +131,7 @@ export default function Signup() {
 
 const styles = StyleSheet.create({
     container: {
-    display: 'flex',
+        display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         flex: 1,
@@ -152,5 +187,28 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 20
     },
+    roles: {
+        display: 'flex',
+        width:'100%',
+        gap: 10,
+        marginTop: 10
+    },
+    containerRoles: {
+        display: 'flex',
+        flexDirection: 'row',
+        width: '100%',
+        justifyContent: 'space-between'
+    },
+    roleOption: {
+        paddingVertical: 10,
+        paddingHorizontal: 30,
+        borderWidth: 1,
+        borderColor: Colors.light.grey,
+        borderRadius: 20
+    },
+    selectedRoleOption:{
+        borderColor: Colors.light.blue,
+        borderWidth: 1
+    }
 })
 
