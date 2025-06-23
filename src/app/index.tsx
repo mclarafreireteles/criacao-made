@@ -42,7 +42,7 @@ export default function Index() {
             <View style={styles.options}>
                 <Pressable style={styles.loginButton}>
                     <Link href={'/(auth)/signin/page'} style={styles.link}>
-                        <Text style={styles.loginButtonText}>Login</Text>
+                        <Text style={styles.loginButtonText}>Entrar</Text>
                     </Link>
                 </Pressable>
                 <Pressable style={styles.createButton}>
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     createButtonText: {
         color: Colors.light.blue,
         textAlign: 'center',
-        fontSize: 20,
+        fontSize: 18,
         fontFamily: 'Manrope',
         fontWeight: 600
     },

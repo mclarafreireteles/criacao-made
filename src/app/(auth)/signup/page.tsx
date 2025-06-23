@@ -172,8 +172,8 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 20,
         color: Colors.light.darkGrey,
-        paddingHorizontal: 10,
-        paddingVertical: 8,
+        paddingHorizontal: 20,
+        paddingVertical: 10,
         fontSize: 14,
         fontWeight: 500,
         width: '100%'
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     },
     roleOption: {
         paddingVertical: 10,
-        paddingHorizontal: 30,
+        paddingHorizontal: 20,
         borderWidth: 1,
         borderColor: Colors.light.grey,
         borderRadius: 20,
@@ -218,6 +218,8 @@ const styles = StyleSheet.create({
         borderWidth: 2,
     },
     roleOptionText: {
+        color: Colors.light.darkGrey,
+        fontWeight: 500
     },
     selectedRoleOptionText: {
         color: Colors.light.blue,

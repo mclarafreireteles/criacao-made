@@ -64,8 +64,8 @@ export default function Login() {
                     <Text style={styles.loginButtonText}>{loading ? 'Carregando...' : 'Entrar'}</Text>
                 </Pressable>
 
-                <Link href='/(auth)/signup/page'>
-                    <Text style={styles.signUpText}>Ainda não tem uma conta? Se inscreva</Text>
+                <Link style={styles.signUpText} href='/(auth)/signup/page'>
+                    <Text>Ainda não tem uma conta?<br />Se inscreva</Text>
                 </Link>
             </View>
         </View>
@@ -109,8 +109,8 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 20,
         color: Colors.light.darkGrey,
-        paddingHorizontal: 10,
-        paddingVertical: 8,
+        paddingHorizontal: 20,
+        paddingVertical: 10,
         fontSize: 14,
         fontWeight: 500
     },
