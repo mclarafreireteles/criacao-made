@@ -65,7 +65,7 @@ export default function Login() {
                 </Pressable>
 
                 <Link style={styles.signUpText} href='/(auth)/signup/page'>
-                    <Text>Ainda não tem uma conta?<br />Se inscreva</Text>
+                    <Text>Ainda não tem uma conta?{'\n'}Se inscreva</Text>
                 </Link>
             </View>
         </View>
