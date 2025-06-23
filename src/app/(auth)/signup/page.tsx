@@ -51,7 +51,7 @@ export default function Signup() {
         }
 
         setLoading(false);
-        router.replace('/(auth)/signin/page')
+        router.replace('/(panel)/home/page')
     }
 
     return (
@@ -75,7 +75,7 @@ export default function Signup() {
                     style={styles.inputRegister}
                 />
                 <TextInput
-                    placeholder='Senha'
+                    placeholder='Senha (mínimo 6 caracteres)'
                     value={password}
                     onChangeText={setPassword}
                     style={styles.inputRegister}
@@ -99,7 +99,10 @@ export default function Signup() {
                             onPress={() => handleRoleSelection('estudante')}
                         >
                             <Image/>
-                            <Text>Estudante</Text>
+                            <Text style={[
+                            styles.roleOptionText,
+                            role === 'estudante' && styles.selectedRoleOptionText, // Aplica estilo de seleção se for estudante
+                            ]}>Estudante</Text>
                         </Pressable>
                     </View>
                     <View>
@@ -110,7 +113,10 @@ export default function Signup() {
                             onPress={() => handleRoleSelection('professor')}
                         >
                             <Image/>
-                            <Text>Professor</Text>
+                            <Text style={[
+                            styles.roleOptionText,
+                            role === 'professor' && styles.selectedRoleOptionText, // Aplica estilo de seleção se for estudante
+                            ]}>Professor</Text>
                         </Pressable>
                     </View>
                     </View>
@@ -204,11 +210,18 @@ const styles = StyleSheet.create({
         paddingHorizontal: 30,
         borderWidth: 1,
         borderColor: Colors.light.grey,
-        borderRadius: 20
+        borderRadius: 20,
+
     },
     selectedRoleOption:{
         borderColor: Colors.light.blue,
-        borderWidth: 1
+        borderWidth: 2,
+    },
+    roleOptionText: {
+    },
+    selectedRoleOptionText: {
+        color: Colors.light.blue,
+        fontWeight: 500
     }
 })
 
