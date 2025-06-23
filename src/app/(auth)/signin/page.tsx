@@ -65,7 +65,7 @@ export default function Login() {
                 </Pressable>
 
                 <Link href='/(auth)/signup/page'>
-                    <Text>Ainda não tem uma conta? Se inscreva</Text>
+                    <Text style={styles.signUpText}>Ainda não tem uma conta? Se inscreva</Text>
                 </Link>
             </View>
         </View>
@@ -134,6 +134,9 @@ const styles = StyleSheet.create({
         gap: 10,
         width: '70%',
         alignItems: 'center'
+    },
+    signUpText: {
+        textAlign: 'center'
     }
 })
 

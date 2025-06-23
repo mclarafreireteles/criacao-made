@@ -12,10 +12,14 @@ import * as SplashScreen from 'expo-splash-screen';
 SplashScreen.preventAutoHideAsync();
 
 export default function Index() {
-
     const [fontsLoaded] = useFonts({
         'Manrope': require('../../assets/fonts/Manrope-VariableFont_wght.ttf')
     })
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    
 
     React.useEffect(() => {
         if (fontsLoaded) {
@@ -28,10 +32,7 @@ export default function Index() {
         return null;
     }
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [loading, setLoading] = useState(false);
-
+    
     return (
         <View style={styles.container}>
             <View style={styles.header}>
