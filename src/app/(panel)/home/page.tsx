@@ -4,7 +4,7 @@ import { useAuth } from '@/src/contexts/AuthContext';
 
 export default function Home() {
 
-    const { setAuth } = useAuth()
+    const { setAuth, user } = useAuth()
 
     async function handleSignout() {
         const {error} = await supabase.auth.signOut();
@@ -20,6 +20,8 @@ export default function Home() {
     return(
         <View>
             <Text>Página Home</Text>
+            <Text>{user?.email}</Text>
+            <Text>{user?.user_metadata.name}</Text>
 
             <Button
                 title='Deslogar'
