@@ -1,16 +1,18 @@
 import React from 'react';
-import { View, Text, TextInput, Pressable, Alert, StyleSheet, Image } from 'react-native';
+import { View, Text, TextInput, Pressable, Alert, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Link } from 'expo-router'
 import { useState } from 'react';
 import { supabase } from '../../../lib/supabase';
 import { router } from 'expo-router';
 import Colors from '@/constants/Colors';
+import Icon from 'react-native-vector-icons/Feather';
 
 
 export default function Login() {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [loading, setLoading] = useState(false);
 
     async function handleSignin() {
@@ -50,13 +52,23 @@ export default function Login() {
                         style={styles.inputLogin}
                     />
                 </View>
-                <View>
+                <View style={styles.inputLoginPassword}>
                     <TextInput
                         placeholder='Digite sua senha'
                         value={password}
-                        onChangeText    ={setPassword}
-                        style={styles.inputLogin}
+                        onChangeText={setPassword}
+                        style={styles.inputPassword}
+                        secureTextEntry={!isPasswordVisible}
+                        autoCorrect={false}
+                        autoCapitalize="none"
+                        textContentType="password" 
                     />
+                    <TouchableOpacity
+                        style={styles.icon}
+                        onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+                    >
+                        <Icon name={isPasswordVisible ? 'eye-off' : 'eye'} size={20} color="gray" />
+                    </TouchableOpacity>
                 </View>
             </View>
             <View style={styles.buttons}>
@@ -112,7 +124,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 10,
         fontSize: 14,
-        fontWeight: 500
+        fontWeight: 500,
+        minHeight: 45
     },
     loginButton: {
         borderRadius: 20,
@@ -137,6 +150,26 @@ const styles = StyleSheet.create({
     },
     signUpText: {
         textAlign: 'center'
+    },
+    inputLoginPassword: {
+        borderColor: Colors.light.grey,
+        borderWidth: 1,
+        borderRadius: 20,
+        paddingHorizontal: 20,
+        // paddingVertical: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+        minHeight: 45
+        // borderBottomWidth: 1,
+    },
+    inputPassword: {
+        flex: 1,
+        color: Colors.light.darkGrey,
+        fontSize: 14,
+        fontWeight: 500,
+    },
+    icon: {
+
     }
 })
 
