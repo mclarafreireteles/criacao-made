@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TextInput, Pressable, Alert, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Link } from 'expo-router'
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { supabase } from '../../../lib/supabase';
 import { router } from 'expo-router';
 import Colors from '@/constants/Colors';
@@ -14,6 +14,8 @@ export default function Login() {
     const [password, setPassword] = useState('');
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const passwordInputRef = useRef<TextInput>(null);
 
     async function handleSignin() {
         setLoading(true);
@@ -52,24 +54,27 @@ export default function Login() {
                         style={styles.inputLogin}
                     />
                 </View>
-                <View style={styles.inputLoginPassword}>
-                    <TextInput
-                        placeholder='Digite sua senha'
-                        value={password}
-                        onChangeText={setPassword}
-                        style={styles.inputPassword}
-                        secureTextEntry={!isPasswordVisible}
-                        autoCorrect={false}
-                        autoCapitalize="none"
-                        textContentType="password" 
-                    />
-                    <TouchableOpacity
-                        style={styles.icon}
-                        onPress={() => setIsPasswordVisible(!isPasswordVisible)}
-                    >
-                        <Icon name={isPasswordVisible ? 'eye-off' : 'eye'} size={20} color="gray" />
-                    </TouchableOpacity>
-                </View>
+                <Pressable onPress={() => passwordInputRef.current?.focus()}>
+                    <View style={styles.inputLoginPassword}>
+                        <TextInput
+                            ref={passwordInputRef}
+                            placeholder='Digite sua senha'
+                            value={password}
+                            onChangeText={setPassword}
+                            style={styles.inputPassword}
+                            secureTextEntry={!isPasswordVisible}
+                            autoCorrect={false}
+                            autoCapitalize="none"
+                            textContentType="password" 
+                        />
+                        <TouchableOpacity
+                            style={styles.icon}
+                            onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+                        >
+                            <Icon name={isPasswordVisible ? 'eye-off' : 'eye'} size={20} color="gray" />
+                        </TouchableOpacity>
+                    </View>
+                </Pressable>
             </View>
             <View style={styles.buttons}>
                  <Pressable onPress={handleSignin} style={styles.loginButton}>
@@ -100,12 +105,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     logoMade: {
-        width: 200,  // Defina a largura
-        resizeMode: 'contain', // Garante que a imagem se ajuste dentro das dimensões,
+        width: 200,  
+        resizeMode: 'contain',
     },
     logoTecno: {
-        width: 100,  // Defina a largura
-        resizeMode: 'contain', // Garante que a imagem se ajuste dentro das dimensões
+        width: 100,  
+        resizeMode: 'contain',
     },
     title: {
         fontSize: 24,
