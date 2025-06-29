@@ -1,4 +1,5 @@
-import { View, Text, Button, Alert } from 'react-native'
+import { View, Text, Button, Alert, Image, StyleSheet } from 'react-native'
+import Colors from '@/constants/Colors';
 import { supabase } from '@/src/lib/supabase';
 import { useAuth } from '@/src/contexts/AuthContext';
 
@@ -18,15 +19,40 @@ export default function Home() {
 
 
     return(
-        <View>
-            <Text>Página Home</Text>
-            <Text>{user?.email}</Text>
-            <Text>{user?.user_metadata.name}</Text>
+        <View style={styles.container}>
+            <View>
+                <Image source={require('../../../../assets/images/logo-made-simples.png')}/>
+                <View>
+                    <Text>{user?.user_metadata.name}</Text>
+                    <Text>{user?.user_metadata.role}</Text>
+                    <Button
+                        title='Deslogar'
+                        onPress={handleSignout}
+                    />
+                </View>
+            </View>
+            <Text>Bem vindo(a)!</Text>
+            <View> 
+                <View>
+                    <Text>Jogar</Text>
+                </View>
+                <View>
+                    <Text>Criar novo jogo</Text>
+                </View>
+            </View>
 
-            <Button
-                title='Deslogar'
-                onPress={handleSignout}
-            />
+            
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        display: 'flex',
+        flex: 1,
+        justifyContent: 'space-between',
+        paddingVertical: 50,
+        alignItems: 'center',
+        backgroundColor: Colors.light.white
+    }
+})

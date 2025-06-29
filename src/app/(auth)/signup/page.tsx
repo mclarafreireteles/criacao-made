@@ -143,7 +143,8 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Colors.light.white,
         paddingVertical: 50,
-        paddingBottom: 120
+        paddingBottom: 120,
+        gap: 12
     },
     header: {
         display: 'flex',
@@ -165,7 +166,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         gap: 10,
         width: '70%',
-        alignItems: 'center',   
+        alignItems: 'center'
     },
     inputRegister: {
         borderColor: Colors.light.grey,
