@@ -25,7 +25,7 @@ export default function Home() {
                     <Image source={require('../../../../assets/images/logo-made-simples.png')}/>
                     <View>
                         <Text>{user?.user_metadata.name}</Text>
-                        <Text>{user?.user_metadata.role}</Text>
+                        <Text style={styles.roleText}>{user?.user_metadata.role}</Text>
                         <Button
                             title='Sair'
                             onPress={handleSignout}
@@ -53,7 +53,6 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingVertical: 50,
         alignItems: 'center',
-        paddingHorizontal: 30,
         backgroundColor: Colors.light.white,
         maxWidth: '100%'
     },
@@ -61,13 +60,17 @@ const styles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'space-between',
         width: '100%',
-        marginBottom: 250
+        marginBottom: 250,
+        paddingHorizontal: 30
     },
     header: {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
         width: '100%',
+    },
+    roleText: {
+        textTransform: 'capitalize'
     },
     containerBtn: {
         display: 'flex',
