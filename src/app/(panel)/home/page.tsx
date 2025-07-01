@@ -27,7 +27,7 @@ export default function Home() {
                         <Text>{user?.user_metadata.name}</Text>
                         <Text>{user?.user_metadata.role}</Text>
                         <Button
-                            title='Deslogar'
+                            title='Sair'
                             onPress={handleSignout}
                         />
                     </View>
@@ -37,7 +37,7 @@ export default function Home() {
             
             <View style={styles.containerBtn}> 
                 <View style={styles.btnJogar}>
-                    <Text>Jogar</Text>
+                    <Text style={styles.btnJogarText}>Jogar</Text>
                 </View>
                 <View style={styles.btnCriarJogo}>
                     <Text>Criar novo jogo</Text>
@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: 30,
         backgroundColor: Colors.light.white,
+        maxWidth: '100%'
     },
     containerHeader: {
         display: 'flex',
@@ -82,6 +83,9 @@ const styles = StyleSheet.create({
         minHeight: 120,
         justifyContent: 'center',
         borderRadius: 20
+    },
+    btnJogarText: {
+        color: Colors.light.white
     },
     btnCriarJogo: {
         minWidth: 120,

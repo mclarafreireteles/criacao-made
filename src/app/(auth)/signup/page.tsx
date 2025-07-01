@@ -14,6 +14,7 @@ export default function Signup() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
 
+
     const handleRoleSelection = (role: SetStateAction<string>) => {
             setRole(role); // Atualiza o estado com a role clicada
             console.log(role)
@@ -79,12 +80,14 @@ export default function Signup() {
                     value={password}
                     onChangeText={setPassword}
                     style={styles.inputRegister}
+                    secureTextEntry={true}
                 />
                 <TextInput
                     placeholder='Confirmar senha'
                     value={confirmPassword}
                     onChangeText={setConfirmPassword}
                     style={styles.inputRegister}
+                    secureTextEntry={true}
                 /> 
                 
 
