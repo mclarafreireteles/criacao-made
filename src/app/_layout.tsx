@@ -3,11 +3,12 @@ import { AuthProvider, useAuth } from '../contexts/AuthContext';
 import { useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { SQLiteProvider } from 'expo-sqlite';
+import { initializeDatabase } from '../database/initializeDatabase';
 
 export default function RootLayout(){
     return(
         <AuthProvider>
-            <SQLiteProvider databaseName='sqlite.db'>
+            <SQLiteProvider databaseName='sqlite.db' onInit={initializeDatabase}>
                 <MainLayout/>
             </SQLiteProvider>
         </AuthProvider>
