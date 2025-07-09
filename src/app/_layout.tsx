@@ -2,11 +2,14 @@ import { Stack, router } from 'expo-router';
 import { AuthProvider, useAuth } from '../contexts/AuthContext';
 import { useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { SQLiteProvider } from 'expo-sqlite';
 
 export default function RootLayout(){
     return(
         <AuthProvider>
-            <MainLayout/>
+            <SQLiteProvider databaseName='sqlite.db'>
+                <MainLayout/>
+            </SQLiteProvider>
         </AuthProvider>
     )  
 }
