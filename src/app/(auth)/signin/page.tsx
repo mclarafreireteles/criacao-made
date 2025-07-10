@@ -5,7 +5,7 @@ import { useState, useRef } from 'react';
 import { supabase } from '../../../lib/supabase';
 import { router } from 'expo-router';
 import Colors from '@/constants/Colors';
-import Icon from 'react-native-vector-icons/Feather';
+// import Icon from 'react-native-vector-icons/Feather';
 
 
 export default function Login() {
@@ -71,7 +71,7 @@ export default function Login() {
                             style={styles.icon}
                             onPress={() => setIsPasswordVisible(!isPasswordVisible)}
                         >
-                            <Icon name={isPasswordVisible ? 'eye-off' : 'eye'} size={20} color="gray" />
+                            {/* <Icon name={isPasswordVisible ? 'eye-off' : 'eye'} size={20} color="gray" /> */}
                         </TouchableOpacity>
                     </View>
                 </Pressable>

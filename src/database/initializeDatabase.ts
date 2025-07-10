@@ -4,17 +4,17 @@ export async function initializeDatabase(database: SQLiteDatabase) {
     await database.execAsync(`
         CREATE TABLE IF NOT EXISTS games (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id TEXT NOT NULL, 
+            user_id TEXT, 
             title TEXT NOT NULL,
-            subject TEXT NOT NULL,
+            subject TEXT,
             content TEXT,
             grade TEXT,
             id_owner INTEGER, 
             authors TEXT,
             rules TEXT,
-            goal TEXT NOT NULL,
+            goal TEXT,
             background_image_url TEXT,
-            prompt TEXT NOT NULL,
+            prompt TEXT,
             explanation TEXT
         );
         
@@ -31,3 +31,17 @@ export async function initializeDatabase(database: SQLiteDatabase) {
         );
     `)
 }
+
+// id INTEGER PRIMARY KEY AUTOINCREMENT,
+//             user_id TEXT NOT NULL, 
+//             title TEXT NOT NULL,
+//             subject TEXT NOT NULL,
+//             content TEXT,
+//             grade TEXT,
+//             id_owner INTEGER, 
+//             authors TEXT,
+//             rules TEXT,
+//             goal TEXT NOT NULL,
+//             background_image_url TEXT,
+//             prompt TEXT NOT NULL,
+//             explanation TEXT

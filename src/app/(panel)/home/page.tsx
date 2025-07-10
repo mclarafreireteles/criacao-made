@@ -4,10 +4,11 @@ import { supabase } from '@/src/lib/supabase';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { MaterialIcons } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useRouter } from 'expo-router';
 
 
 export default function Home() {
-
+    const router = useRouter();
     const { setAuth, user } = useAuth()
 
     async function handleSignout() {
@@ -45,10 +46,10 @@ export default function Home() {
                     <Ionicons name="game-controller" size={50} color={Colors.light.white} />
                     <Text style={styles.btnJogarText}>Jogar</Text>
                 </View>
-                <View style={styles.btnCriarJogo}>
+                <Pressable style={styles.btnCriarJogo} onPress={() => router.push('/(panel)/add_game/page')} >
                     <Ionicons name="add-circle" size={50} color={Colors.light.blue} />
                     <Text style={styles.btnCriarJogoText}>Criar novo jogo</Text>
-                </View>
+                </Pressable>
             </View>
         </View>
     )

@@ -54,6 +54,10 @@ function MainLayout(){
                 name='(panel)/home/page'
                 options={{ headerShown: false }}
             />
+            <Stack.Screen
+                name='(panel)/add_game/page'
+                options={{ headerShown: false }}
+            />
         </Stack>
     )
 }
