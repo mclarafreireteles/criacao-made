@@ -9,7 +9,6 @@ export async function initializeDatabase(database: SQLiteDatabase) {
             subject TEXT,
             content TEXT,
             grade TEXT,
-            id_owner INTEGER, 
             authors TEXT,
             rules TEXT,
             goal TEXT,

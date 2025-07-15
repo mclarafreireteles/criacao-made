@@ -15,6 +15,7 @@ export default function Index() {
     const [fontsLoaded] = useFonts({
         'Manrope': require('../../assets/fonts/Manrope-VariableFont_wght.ttf')
     })
+    
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
