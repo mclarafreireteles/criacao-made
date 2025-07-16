@@ -2,20 +2,21 @@ import { type SQLiteDatabase } from 'expo-sqlite'
 
 export async function initializeDatabase(database: SQLiteDatabase) {
     await database.execAsync(`
+
         CREATE TABLE IF NOT EXISTS games (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id TEXT, 
+            user_id TEXT NOT NULL, 
             title TEXT NOT NULL,
-            subject TEXT,
-            content TEXT,
+            subject TEXT NOT NULL,
+            content TEXT NOT NULL,
             grade TEXT,
             authors TEXT,
             rules TEXT,
-            goal TEXT,
-            background_image_url TEXT,
-            prompt TEXT,
+            goal TEXT NOT NULL,
+            background_image_url TEXT NOT NULL,
+            prompt TEXT NOT NULL,
             explanation TEXT,
-            model TEXT
+            model TEXT NOT NULL
         );
         
         CREATE INDEX IF NOT EXISTS idx_games_user_id ON games(user_id);

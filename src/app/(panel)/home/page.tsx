@@ -46,7 +46,7 @@ export default function Home() {
                     <Ionicons name="game-controller" size={50} color={Colors.light.white} />
                     <Text style={styles.btnJogarText}>Escolher jogo</Text>
                 </Pressable>
-                <Pressable style={styles.btnCriarJogo} onPress={() => router.push('/(panel)/add_game/page')} >
+                <Pressable style={styles.btnCriarJogo} onPress={() => router.push('/(panel)/add_game/step1')} >
                     <Ionicons name="add-circle" size={50} color={Colors.light.blue} />
                     <Text style={styles.btnCriarJogoText}>Criar novo jogo</Text>
                 </Pressable>
