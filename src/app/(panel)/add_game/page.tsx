@@ -21,6 +21,7 @@ export default function AddGame(){
     const [rules, setRules] = useState('')
     const [background_image_url, setBackgroundImageUrl] = useState('')
     const [explanation, setExplanation] = useState('')
+    const [model, setModel] = useState('')
 
     const gameDatabase = useGameDatabase()
 
@@ -30,7 +31,7 @@ export default function AddGame(){
             return; // Interrompe a execução da função
         }
 
-        const response = await gameDatabase.create({ title, subject, user_id: user?.id, goal, prompt, content, grade, authors, rules, background_image_url, explanation})
+        const response = await gameDatabase.create({ title, subject, user_id: user?.id, goal, prompt, content, grade, authors, rules, background_image_url, explanation, model })
 
         console.log('jogo criado')
         Alert.alert("Jogo cadastrado")
@@ -39,6 +40,7 @@ export default function AddGame(){
 
     return(
         <View>
+            <Input placeholder="Modelo" onChangeText={setModel} value={model}/>
             <Input placeholder="Nome do jogo" onChangeText={setTitle} value={title}/>
             <Input placeholder="Disciplina" onChangeText={setSubject} value={subject}/>
             <Input placeholder="Usuário" onChangeText={setUserId} value={user_id}/>

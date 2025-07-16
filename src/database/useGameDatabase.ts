@@ -13,7 +13,8 @@ export type GameDatabase = {
     goal: string, // 
     background_image_url: string,
     prompt: string, // 
-    explanation: string
+    explanation: string,
+    model: string
 }
 
 export function useGameDatabase(){
@@ -22,7 +23,7 @@ export function useGameDatabase(){
 
     async function create(data: Omit<GameDatabase, "id">){
         const statement = await database.prepareAsync(
-            "INSERT INTO games (title, subject, user_id, goal, prompt, content, grade, authors, rules, background_image_url, explanation) VALUES ($title, $subject, $user_id, $goal, $prompt, $content, $grade, $authors, $rules, $background_image_url, $explanation)"
+            "INSERT INTO games (title, subject, user_id, goal, prompt, content, grade, authors, rules, background_image_url, explanation, model) VALUES ($title, $subject, $user_id, $goal, $prompt, $content, $grade, $authors, $rules, $background_image_url, $explanation, $model)"
         )
         try {
             const result = await statement.executeAsync({
@@ -36,7 +37,8 @@ export function useGameDatabase(){
                 $authors: data.authors,
                 $rules: data.rules,
                 $background_image_url: data.background_image_url,
-                $explanation: data.explanation
+                $explanation: data.explanation,
+                $model: data.model
             })
 
             const insertedRowId = result.lastInsertRowId.toLocaleString()
