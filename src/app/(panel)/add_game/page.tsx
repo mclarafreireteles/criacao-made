@@ -44,12 +44,12 @@ export default function AddGame(){
             <Input placeholder="Usuário" onChangeText={setUserId} value={user_id}/>
             <Input placeholder="Objetivo" onChangeText={setGoal} value={goal}/>
             <Input placeholder="Enunciado" onChangeText={setPrompt} value={prompt}/>
-            <Input placeholder="Enunciado" onChangeText={setContent} value={content}/>
-            <Input placeholder="Enunciado" onChangeText={setGrade} value={grade}/>
-            <Input placeholder="Enunciado" onChangeText={setAuthors} value={authors}/>
-            <Input placeholder="Enunciado" onChangeText={setRules} value={rules}/>
-            <Input placeholder="Enunciado" onChangeText={setBackgroundImageUrl} value={background_image_url}/>
-            <Input placeholder="Enunciado" onChangeText={setExplanation} value={explanation}/>
+            <Input placeholder="Conteúdo" onChangeText={setContent} value={content}/>
+            <Input placeholder="Série" onChangeText={setGrade} value={grade}/>
+            <Input placeholder="Autores" onChangeText={setAuthors} value={authors}/>
+            <Input placeholder="Regras" onChangeText={setRules} value={rules}/>
+            <Input placeholder="Plano de fundo do jogo" onChangeText={setBackgroundImageUrl} value={background_image_url}/>
+            <Input placeholder="Explicação" onChangeText={setExplanation} value={explanation}/>
             <Button title="Salvar" onPress={create} />
         </View>
     )

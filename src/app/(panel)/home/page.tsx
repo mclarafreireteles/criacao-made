@@ -42,10 +42,10 @@ export default function Home() {
             </View>
             
             <View style={styles.containerBtn}> 
-                <View style={styles.btnJogar}>
+                <Pressable style={styles.btnJogar} onPress={() => router.push('/(panel)/choose_game/page')}>
                     <Ionicons name="game-controller" size={50} color={Colors.light.white} />
-                    <Text style={styles.btnJogarText}>Jogar</Text>
-                </View>
+                    <Text style={styles.btnJogarText}>Escolher jogo</Text>
+                </Pressable>
                 <Pressable style={styles.btnCriarJogo} onPress={() => router.push('/(panel)/add_game/page')} >
                     <Ionicons name="add-circle" size={50} color={Colors.light.blue} />
                     <Text style={styles.btnCriarJogoText}>Criar novo jogo</Text>

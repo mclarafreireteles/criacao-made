@@ -22,7 +22,7 @@ export function useGameDatabase(){
 
     async function create(data: Omit<GameDatabase, "id">){
         const statement = await database.prepareAsync(
-            "INSERT INTO games (title, subject, goal, prompt, content, grade, id_owner, authors, rules, background_image_url, explanation) VALUES ($title, $subject, $user_id, $goal, $prompt, $content, $grade, $authors, $rules, $background_image_url, $explanation)"
+            "INSERT INTO games (title, subject, user_id, goal, prompt, content, grade, authors, rules, background_image_url, explanation) VALUES ($title, $subject, $user_id, $goal, $prompt, $content, $grade, $authors, $rules, $background_image_url, $explanation)"
         )
         try {
             const result = await statement.executeAsync({
@@ -51,7 +51,7 @@ export function useGameDatabase(){
 
     async function searchByTitle(title: string) {
         try {
-            const query = "SELECT * FROM products WHERE title LIKE ?"
+            const query = "SELECT * FROM games WHERE title LIKE ?"
 
             const response = await database.getAllAsync<GameDatabase>(query, `%${title}%`)
 
@@ -61,5 +61,17 @@ export function useGameDatabase(){
         }
     }
 
-    return { create }
+    async function searchByUser(userId: string) {
+        try {
+            const query = "SELECT * FROM games WHERE user_id == ?"
+
+            const response = await database.getAllAsync<GameDatabase>(query, userId)
+
+            return response;
+        } catch (error) {
+            throw error
+        }
+    }
+
+    return { create, searchByTitle, searchByUser }
 }
