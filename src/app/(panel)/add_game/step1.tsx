@@ -1,12 +1,26 @@
-import { View, Button, Text, StyleSheet } from "react-native";
+import { View, Button, Text, StyleSheet, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 import { Input } from "@/src/components/input";
 import { useGameForm } from "@/src/contexts/GameFormContext";
 import Colors from "@/constants/Colors";
+import { OptionSelector } from "@/src/components/OptionSelector";
 
 export default function Step1(){
     const router = useRouter();
     const { formData, updateFormData } = useGameForm();
+
+    const gameModels = [
+        {id: 'senha', label: 'Senha'},
+    ]
+
+    const disciplines = [
+        { id: 'matematica', label: 'Matemática' },
+        { id: 'portugues', label: 'Português' },
+        { id: 'historia', label: 'História' },
+        { id: 'ciencias', label: 'Ciências' },
+        { id: 'geografia', label: 'Geografia' },
+        { id: 'artes', label: 'Artes' },
+    ];
 
     return(
         <View style={styles.container}>
@@ -14,11 +28,28 @@ export default function Step1(){
             <View style={styles.containerInput}>
                 <View>
                     <Text>Escolha o modelo de jogo</Text>
-                    <Input
-                    placeholder="Modelo de jogo"
-                    onChangeText={(text: string) => updateFormData({ model: text })}
-                    value={formData.model}
-                    />
+                    <View style={styles.optionsContainer}>
+                        {gameModels.map((model) => (
+                        <Pressable
+                            key={model.id}
+                            onPress={() => updateFormData({ model: model.id })}
+                            // Aplica um estilo diferente se este for o modelo selecionado
+                            style={[
+                            styles.option,
+                            formData.model === model.id && styles.optionSelected,
+                            ]}
+                        >
+                            <Text
+                            style={[
+                                styles.optionText,
+                                formData.model === model.id && styles.optionTextSelected,
+                            ]}
+                            >
+                            {model.label}
+                            </Text>
+                        </Pressable>
+                        ))}
+                    </View>
                 </View>
                 <View>
                     <Text>Disciplina</Text>
@@ -26,6 +57,12 @@ export default function Step1(){
                         placeholder="Disciplina"
                         onChangeText={(text: string) => updateFormData({ subject: text })}
                         value={formData.subject}
+                    />
+                    <OptionSelector
+                        label="Disciplina"
+                        options={disciplines}
+                        selectedValue={formData.subject}
+                        onSelect={(id) => updateFormData({ subject: id })}
                     />
                 </View>
                 <View>
@@ -82,5 +119,30 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
         borderRadius: 20,
         borderColor: Colors.light.grey
+    },
+    optionsContainer: {
+        flexDirection: 'row', 
+        flexWrap: 'wrap', 
+        gap: 10, 
+        marginBottom: 20, 
+    },
+    option: {
+        borderWidth: 1,
+        borderColor: Colors.light.grey,
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        borderRadius: 20,
+        backgroundColor: '#FFF',
+    },
+    optionSelected: {
+        backgroundColor: Colors.light.tint, // Cor de destaque para o item selecionado
+        borderColor: Colors.light.tint,
+    },
+    optionText: {
+        color: Colors.light.darkGrey,
+    },
+    optionTextSelected: {
+        color: '#FFF', // Cor do texto do item selecionado
+        fontWeight: 'bold',
     }
 })
