@@ -1,4 +1,3 @@
-// app/add-game/step3.tsx
 import { View, Button, Alert } from "react-native";
 import { useRouter } from "expo-router";
 import { Input } from "@/src/components/input";
@@ -25,12 +24,10 @@ export default function Step3() {
             prompt: 'Enunciado',
         };
 
-        // 2. Percorra cada campo obrigatório para verificar se está preenchido.
         for (const [field, label] of Object.entries(requiredFields)) {
-            // A verificação `!.trim()` remove espaços em branco antes e depois e verifica se o resultado é vazio.
             if (!formData[field as keyof typeof formData]?.trim()) {
                 Alert.alert('Campo Obrigatório', `O campo "${label}" não pode estar vazio.`);
-                return; // Interrompe a função se um campo estiver vazio.
+                return;
             }
         }
 
