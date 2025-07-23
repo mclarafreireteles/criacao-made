@@ -10,7 +10,7 @@ export default function Step1(){
     const { formData, updateFormData } = useGameForm();
 
     const gameModels = [
-        {id: 'senha', label: 'Senha'},
+        {id: 'secret_code', label: 'Código secreto'},
     ]
 
     const disciplines = [
@@ -21,6 +21,19 @@ export default function Step1(){
         { id: 'geografia', label: 'Geografia' },
         { id: 'artes', label: 'Artes' },
     ];
+    const grade = [
+        { id: '1ef', label: '1º Ano - Ens. Fundamental' },
+        { id: '2ef', label: '2º Ano - Ens. Fundamental' },
+        { id: '3ef', label: '3º Ano - Ens. Fundamental' },
+        { id: '4ef', label: '4º Ano - Ens. Fundamental' },
+        { id: '5ef', label: '5º Ano - Ens. Fundamental' },
+        { id: '6ef', label: '6º Ano - Ens. Fundamental' },
+        { id: '7ef', label: '7º Ano - Ens. Fundamental' },
+        { id: '8ef', label: '8º Ano - Ens. Fundamental' },
+        { id: '9ef', label: '9º Ano - Ens. Fundamental' },
+        { id: 'em', label: 'Ensino Médio' },
+        { id: 'outro', label: 'Outro' },
+    ];
 
     return(
         <View style={styles.container}>
@@ -30,34 +43,33 @@ export default function Step1(){
                     <Text>Escolha o modelo de jogo</Text>
                     <View style={styles.optionsContainer}>
                         {gameModels.map((model) => (
-                        <Pressable
-                            key={model.id}
-                            onPress={() => updateFormData({ model: model.id })}
-                            // Aplica um estilo diferente se este for o modelo selecionado
-                            style={[
-                            styles.option,
-                            formData.model === model.id && styles.optionSelected,
-                            ]}
-                        >
-                            <Text
-                            style={[
-                                styles.optionText,
-                                formData.model === model.id && styles.optionTextSelected,
-                            ]}
+                            <Pressable
+                                key={model.id}
+                                onPress={() => updateFormData({ model: model.id })}
+                                // Aplica um estilo diferente se este for o modelo selecionado
+                                style={[
+                                styles.option,
+                                formData.model === model.id && styles.optionSelected,
+                                ]}
                             >
-                            {model.label}
-                            </Text>
-                        </Pressable>
+                                <Text
+                                style={[
+                                    styles.optionText,
+                                    formData.model === model.id && styles.optionTextSelected,
+                                ]}
+                                >
+                                {model.label}
+                                </Text>
+                            </Pressable>
                         ))}
                     </View>
                 </View>
                 <View>
-                    <Text>Disciplina</Text>
-                    <Input
+                    {/* <Input
                         placeholder="Disciplina"
                         onChangeText={(text: string) => updateFormData({ subject: text })}
                         value={formData.subject}
-                    />
+                    /> */}
                     <OptionSelector
                         label="Disciplina"
                         options={disciplines}
@@ -75,11 +87,17 @@ export default function Step1(){
                     />
                 </View>
                 <View>
-                    <Text>Série</Text>
+                    {/* <Text>Série</Text>
                     <Input
                         placeholder="Série"
                         onChangeText={(text: string) => updateFormData({ grade: text })}
                         value={formData.grade}
+                    /> */}
+                    <OptionSelector
+                        label="Série"
+                        options={grade}
+                        selectedValue={formData.grade}
+                        onSelect={(id) => updateFormData({ grade: id })}
                     />
                 </View>
                 <View>
@@ -91,8 +109,10 @@ export default function Step1(){
                         style={styles.inputText}
                     />
                 </View>
-                <Button title="Continuar" onPress={() => router.push('/(panel)/add_game/step2')}/>
             </View>
+            <Pressable style={styles.continuarBtn} onPress={() => router.push('/(panel)/add_game/step2')}>
+                <Text>Continuar</Text>
+            </Pressable>
         </View>
     )
 }
@@ -101,7 +121,7 @@ const styles = StyleSheet.create({
     container: {
         display: 'flex',
         flex: 1,
-        paddingVertical: 50,
+        paddingVertical: 60,
         alignItems: 'center',
         backgroundColor: Colors.light.white,
         maxWidth: '100%',
@@ -115,8 +135,8 @@ const styles = StyleSheet.create({
     }, 
     inputText: {
         borderWidth: 1,
-        paddingHorizontal: 10,
-        paddingVertical: 8,
+        paddingHorizontal: 15,
+        paddingVertical: 12,
         borderRadius: 20,
         borderColor: Colors.light.grey
     },
@@ -144,5 +164,13 @@ const styles = StyleSheet.create({
     optionTextSelected: {
         color: '#FFF', // Cor do texto do item selecionado
         fontWeight: 'bold',
+    },
+    continuarBtn: {
+        borderWidth: 1,
+        borderColor: Colors.light.blue,
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        borderRadius: 20,
+        backgroundColor: '#FFF',
     }
 })

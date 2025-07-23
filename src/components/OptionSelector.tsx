@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: Colors.light.grey,
-    borderRadius: 8,
+    borderRadius: 20,
     paddingVertical: 12,
     paddingHorizontal: 15,
     backgroundColor: '#FFF',
