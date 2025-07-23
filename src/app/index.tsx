@@ -102,14 +102,14 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 20,
         fontFamily: 'Manrope',
-        fontWeight: 600
+        fontWeight: 700
     },
     createButtonText: {
         color: Colors.light.blue,
         textAlign: 'center',
         fontSize: 18,
         fontFamily: 'Manrope',
-        fontWeight: 600
+        fontWeight: 700
     },
     link: {
         textAlign: 'center'

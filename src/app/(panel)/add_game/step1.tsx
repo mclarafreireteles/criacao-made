@@ -111,7 +111,7 @@ export default function Step1(){
                 </View>
             </View>
             <Pressable style={styles.continuarBtn} onPress={() => router.push('/(panel)/add_game/step2')}>
-                <Text>Continuar</Text>
+                <Text style={styles.continuarBtnTxt}>Continuar</Text>
             </Pressable>
         </View>
     )
@@ -155,14 +155,14 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF',
     },
     optionSelected: {
-        backgroundColor: Colors.light.tint, // Cor de destaque para o item selecionado
-        borderColor: Colors.light.tint,
+        backgroundColor: Colors.light.blue, 
+        borderColor: Colors.light.blue,
     },
     optionText: {
         color: Colors.light.darkGrey,
     },
     optionTextSelected: {
-        color: '#FFF', // Cor do texto do item selecionado
+        color: '#FFF', 
         fontWeight: 'bold',
     },
     continuarBtn: {
@@ -172,5 +172,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         borderRadius: 20,
         backgroundColor: '#FFF',
+        width: '80%'
+    },
+    continuarBtnTxt: {
+        textAlign: 'center',
+        fontSize: 16,
+        fontWeight: 600,
+        color: Colors.light.blue
     }
 })
