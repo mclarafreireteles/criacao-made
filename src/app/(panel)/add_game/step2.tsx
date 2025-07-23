@@ -13,8 +13,8 @@
         return(
             <View style={styles.container}>
                 <BackButtonIcon
-                style={styles.backButton}
-                onPress={() => router.back()}
+                    style={styles.backButton}
+                    onPress={() => router.back()}
                 />
                 <Text style={styles.createGameTitle}>Criar jogo</Text>
                 <View style={styles.containerInput}>
@@ -36,14 +36,9 @@
                         value={formData.background_image_url}
                     />
                 </View>
-                <View style={styles.containerBtn}>
-                    <Pressable style={styles.voltarBtn} onPress={() => router.back()}>
-                        <Text style={styles.voltarBtnTxt}>Voltar</Text>
-                    </Pressable>
-                    <Pressable style={styles.continuarBtn} onPress={() => router.push('/(panel)/add_game/step3')}>
-                        <Text style={styles.continuarBtnTxt}>Continuar</Text>
-                    </Pressable>
-                </View>
+                <Pressable style={styles.continuarBtn} onPress={() => router.push('/(panel)/add_game/step3')}>
+                    <Text style={styles.continuarBtnTxt}>Continuar</Text>
+                </Pressable>
             </View>
         )
     }
@@ -102,7 +97,7 @@
         backButton: {
             position: 'absolute',
             top: 60,
-            left: 20,
+            left: 40,
             zIndex: 1, // Garante que ele fique sobre outros elementos
         },
     })

@@ -5,6 +5,7 @@ import { useGameForm } from "@/src/contexts/GameFormContext";
 import Colors from "@/constants/Colors";
 import { OptionSelector } from "@/src/components/OptionSelector";
 import { StyledInput } from "@/src/components/StyledInput";
+import { BackButtonIcon } from "@/src/components/icons/BackButtonIcon";
 
 export default function Step1(){
     const router = useRouter();
@@ -38,9 +39,14 @@ export default function Step1(){
 
     return(
         <View style={styles.container}>
+            <BackButtonIcon
+                        style={styles.backButton}
+                        onPress={() => router.back()}
+                    />
             <Text style={styles.createGameTitle}>Criar jogo</Text>
             <View style={styles.containerInput}>
                 <View>
+                    
                     <Text>Escolha o modelo de jogo</Text>
                     <View style={styles.optionsContainer}>
                         {gameModels.map((model) => (
@@ -192,5 +198,11 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 600,
         color: Colors.light.blue
-    }
+    },
+    backButton: {
+        position: 'absolute',
+        top: 60,
+        left: 40,
+        zIndex: 1, // Garante que ele fique sobre outros elementos
+    },
 })

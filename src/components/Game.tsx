@@ -8,7 +8,8 @@ type Props = PressableProps & {
         authors: string,
         grade: string,
         model: string,
-        content: string
+        content: string,
+        explanation: string
     }
 }
 
@@ -16,7 +17,7 @@ export function Game({data, ...rest}: Props){
     return (
         <Pressable {...rest}>
             <Text>
-                {data.model} - {data.content}  - {data.title} - {data.subject} - {data.prompt} - {data.authors} - {data.grade}
+                {data.model} - {data.content}  - {data.title} - {data.subject} - {data.prompt} - {data.authors} - {data.grade} - {data.explanation}
             </Text>
         </Pressable>
     )

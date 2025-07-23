@@ -6,6 +6,7 @@ import { useAuth } from '@/src/contexts/AuthContext';
 import { useGameDatabase } from "@/src/database/useGameDatabase";
 import Colors from "@/constants/Colors";
 import { StyledInput } from "@/src/components/StyledInput";
+import { BackButtonIcon } from "@/src/components/icons/BackButtonIcon";
 
 export default function Step3() {
     const router = useRouter();
@@ -50,6 +51,10 @@ export default function Step3() {
     return (
         <View style={styles.container}>
             <Text style={styles.createGameTitle}>Criar jogo</Text>
+            <BackButtonIcon
+                style={styles.backButton}
+                onPress={() => router.back()}
+            />
             <View style={styles.containerInput}>
                 <StyledInput
                     label="Título do jogo"
@@ -57,7 +62,19 @@ export default function Step3() {
                     value={formData.title}
                     onChangeText={(text: string) => updateFormData({ title: text })}
                 />
-                <Input 
+                <StyledInput
+                    label="Enunciado"
+                    placeholder=""
+                    value={formData.prompt}
+                    onChangeText={(text: string) => updateFormData({ prompt: text })}
+                />
+                <StyledInput
+                    label="Explicação"
+                    placeholder=""
+                    value={formData.explanation}
+                    onChangeText={(text: string) => updateFormData({ explanation: text })}
+                />
+                {/* <Input 
                     placeholder="Enunciado" 
                     onChangeText={(text: string) => updateFormData({ prompt: text })} 
                     value={formData.prompt}
@@ -66,17 +83,11 @@ export default function Step3() {
                     placeholder="Explicação" 
                     onChangeText={(text: string) => updateFormData({ explanation: text })} 
                     value={formData.explanation}
-                />
+                /> */}
             </View>
-            <View style={styles.containerBtn}>
-                <Pressable style={styles.voltarBtn} onPress={() => router.back()}>
-                    <Text style={styles.voltarBtnTxt}>Voltar</Text>
-                </Pressable>
-                <Pressable style={styles.continuarBtn} onPress={handleCreateGame}>
-                    <Text style={styles.continuarBtnTxt}>Criar jogo</Text>
-                </Pressable>
-            </View>
-            
+            <Pressable style={styles.continuarBtn} onPress={handleCreateGame}>
+                <Text style={styles.continuarBtnTxt}>Criar jogo</Text>
+            </Pressable>
         </View>
     );
 }
@@ -132,5 +143,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap: 12
         // backgroundColor: Colors.light.blue
-    }
+    },
+    backButton: {
+        position: 'absolute',
+        top: 60,
+        left: 40,
+        zIndex: 1, // Garante que ele fique sobre outros elementos
+    },
 })
