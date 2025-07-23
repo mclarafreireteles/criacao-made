@@ -4,6 +4,7 @@ import { Input } from "@/src/components/input";
 import { useGameForm } from "@/src/contexts/GameFormContext";
 import Colors from "@/constants/Colors";
 import { OptionSelector } from "@/src/components/OptionSelector";
+import { StyledInput } from "@/src/components/StyledInput";
 
 export default function Step1(){
     const router = useRouter();
@@ -78,12 +79,18 @@ export default function Step1(){
                     />
                 </View>
                 <View>
-                    <Text>Conteúdo</Text>
+                    {/* <Text>Conteúdo</Text>
                     <Input
                         placeholder="Conteúdo"
                         onChangeText={(text: string) => updateFormData({ content: text })}
                         value={formData.content}
                         style={styles.inputText}
+                    /> */}
+                    <StyledInput
+                        label="Conteúdo"
+                        placeholder=""
+                        value={formData.content}
+                        onChangeText={(text: string) => updateFormData({ content: text })}
                     />
                 </View>
                 <View>
@@ -101,12 +108,18 @@ export default function Step1(){
                     />
                 </View>
                 <View>
-                    <Text>Autores</Text>
+                    {/* <Text>Autores</Text>
                     <Input
                         placeholder="Autores"
                         onChangeText={(text: string) => updateFormData({ authors: text })}
                         value={formData.authors}
                         style={styles.inputText}
+                    /> */}
+                    <StyledInput
+                        label="Autores"
+                        placeholder=""
+                        value={formData.authors}
+                        onChangeText={(text: string) => updateFormData({ authors: text })}
                     />
                 </View>
             </View>

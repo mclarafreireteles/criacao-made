@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     container: {
         display: 'flex',
         flex: 1,
-        paddingVertical: 50,
+        paddingVertical: 60,
         alignItems: 'center',
         backgroundColor: Colors.light.white,
         maxWidth: '100%'
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end',
     },
     bemvindoText: {
-        fontSize: 32,
+        fontSize: 24,
         fontWeight: 600
     },
     roleText: {
@@ -108,10 +108,10 @@ const styles = StyleSheet.create({
         gap: 50
     },
     btnJogar: {
-        minWidth: 120,
+        minWidth: 150,
         backgroundColor: Colors.light.blue,
         alignItems: 'center',
-        minHeight: 120,
+        minHeight: 150,
         justifyContent: 'center',
         borderRadius: 20
     },
@@ -120,10 +120,10 @@ const styles = StyleSheet.create({
         fontWeight: 500
     },
     btnCriarJogo: {
-        minWidth: 120,
+        minWidth: 150,
         backgroundColor: Colors.light.white,
         alignItems: 'center',
-        minHeight: 120,
+        minHeight: 150,
         justifyContent: 'center',
         borderRadius: 20,
         borderWidth: 1,
