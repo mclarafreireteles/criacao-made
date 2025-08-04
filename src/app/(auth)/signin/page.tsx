@@ -5,7 +5,7 @@ import { useState, useRef } from 'react';
 import { supabase } from '../../../lib/supabase';
 import { router } from 'expo-router';
 import Colors from '@/constants/Colors';
-// import Icon from 'react-native-vector-icons/Feather';
+import { Feather } from '@expo/vector-icons';
 
 
 export default function Login() {
@@ -13,11 +13,14 @@ export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    const [focusedInput, setFocusedInput] = useState<string | null>(null)
     const [loading, setLoading] = useState(false);
 
     const passwordInputRef = useRef<TextInput>(null);
 
     async function handleSignin() {
+        if (loading) return;
+
         setLoading(true);
 
         console.log('entrar')
@@ -28,7 +31,7 @@ export default function Login() {
         })
 
         if (error) {
-            Alert.alert('Erro ao criar conta', error.message);
+            Alert.alert('Falha no login', 'E-mail ou senha inválidos. Por favor, verifique seus dados.');
             setLoading(false);
             return
         }
@@ -46,35 +49,49 @@ export default function Login() {
             </View>
             <Text style={styles.title}>Entre na sua conta</Text>
             <View style={styles.inputContainer}>
-                <View>
+
+                <View style={[styles.inputWrapper, focusedInput === 'email' && styles.inputFocused]}>
                     <TextInput
                         placeholder='Digite seu e-mail'
                         value={email}
                         onChangeText={setEmail}
-                        style={styles.inputLogin}
+                        style={styles.inputField}
+                        keyboardType="email-address"
+                        autoCapitalize='none'
+                        autoComplete='email'
+                        returnKeyType='next'
+                        onSubmitEditing={() => passwordInputRef.current?.focus()}
+                        onFocus={() => setFocusedInput('email')}
+                        onBlur={() => setFocusedInput(null)}
                     />
                 </View>
-                <Pressable onPress={() => passwordInputRef.current?.focus()}>
-                    <View style={styles.inputLoginPassword}>
-                        <TextInput
-                            ref={passwordInputRef}
-                            placeholder='Digite sua senha'
-                            value={password}
-                            onChangeText={setPassword}
-                            style={styles.inputPassword}
-                            secureTextEntry={!isPasswordVisible}
-                            autoCorrect={false}
-                            autoCapitalize="none"
-                            textContentType="password" 
-                        />
-                        <TouchableOpacity
-                            style={styles.icon}
-                            onPress={() => setIsPasswordVisible(!isPasswordVisible)}
-                        >
-                            {/* <Icon name={isPasswordVisible ? 'eye-off' : 'eye'} size={20} color="gray" /> */}
-                        </TouchableOpacity>
-                    </View>
-                </Pressable>
+                
+                
+                <View style={[styles.inputWrapper, focusedInput === 'password' && styles.inputFocused]}>
+                    <TextInput
+                        ref={passwordInputRef}
+                        placeholder='Digite sua senha'
+                        value={password}
+                        onChangeText={setPassword}
+                        style={styles.inputField}
+                        secureTextEntry={!isPasswordVisible}
+                        autoCorrect={false}
+                        autoCapitalize="none"
+                        textContentType="password"
+                        autoComplete='password' 
+                        returnKeyType='done'
+                        onSubmitEditing={handleSignin}
+                        onFocus={() => setFocusedInput('password')}
+                        onBlur={() => setFocusedInput(null)}
+                    />
+                    <TouchableOpacity
+                        style={styles.icon}
+                        onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+                    >
+                        <Feather name={isPasswordVisible ? 'eye-off' : 'eye'} size={20} color="gray" />
+                    </TouchableOpacity>
+                </View>
+
             </View>
             <View style={styles.buttons}>
                  <Pressable onPress={handleSignin} style={styles.loginButton}>
@@ -82,7 +99,7 @@ export default function Login() {
                 </Pressable>
 
                 <Link style={styles.signUpText} href='/(auth)/signup/page'>
-                    <Text>Ainda não tem uma conta?{'\n'}Se inscreva</Text>
+                    <Text>Ainda não tem uma conta? Se inscreva!</Text>
                 </Link>
             </View>
         </View>
@@ -114,12 +131,12 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 24,
-        fontWeight: 700,
+        fontWeight: '700',
     },
     inputContainer: {
         display: 'flex',
-        gap: 10,
-        width: '70%'
+        gap: 15,
+        width: '80%'
     },
     inputLogin: {
         borderColor: Colors.light.grey,
@@ -145,7 +162,8 @@ const styles = StyleSheet.create({
     loginButtonText:{
         color: Colors.light.white,
         textAlign: 'center',
-        fontSize: 20
+        fontSize: 18,
+        fontWeight: '600'
     },
     buttons: {
         display: 'flex',
@@ -161,20 +179,45 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 20,
         paddingHorizontal: 20,
-        // paddingVertical: 10,
         flexDirection: 'row',
         alignItems: 'center',
         minHeight: 45
-        // borderBottomWidth: 1,
     },
     inputPassword: {
         flex: 1,
         color: Colors.light.darkGrey,
         fontSize: 14,
-        fontWeight: 500,
+        fontWeight: '500',
     },
     icon: {
-
+        paddingLeft: 10
+    },
+    inputFocused: {
+        borderColor: Colors.light.blue, 
+        borderWidth: 2,
+        shadowColor: Colors.light.blue,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 4
+    },
+    inputField: {
+        flex: 1,
+        color: Colors.light.darkGrey,
+        fontSize: 14,
+        fontWeight: '500',
+        paddingVertical: 10,
+        borderWidth: 0,
+        outline: 'none'
+    },
+    inputWrapper: {
+        borderColor: Colors.light.grey,
+        borderWidth: 1,
+        borderRadius: 20,
+        minHeight: 45,
+        paddingHorizontal: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
     }
 })
 
