@@ -208,7 +208,6 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         paddingVertical: 10,
         borderWidth: 0,
-        outline: 'none'
     },
     inputWrapper: {
         borderColor: Colors.light.grey,

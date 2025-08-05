@@ -6,6 +6,7 @@ import Colors from "@/constants/Colors";
 import { OptionSelector } from "@/src/components/OptionSelector";
 import { StyledInput } from "@/src/components/StyledInput";
 import { BackButtonIcon } from "@/src/components/icons/BackButtonIcon";
+import { disciplines, grade } from "@/src/constants/formOptions";
 
 export default function Step1(){
     const router = useRouter();
@@ -14,37 +15,6 @@ export default function Step1(){
     const gameModels = [
         {id: 'secret_code', label: 'Código secreto'},
     ]
-
-    const disciplines = [
-        { id: 'matematica', label: 'Matemática' },
-        { id: 'portugues', label: 'Português' },
-        { id: 'historia', label: 'História' },
-        { id: 'ciencias', label: 'Ciências' },
-        { id: 'geografia', label: 'Geografia' },
-        { id: 'artes', label: 'Artes' },
-        { id: 'biologia', label: 'Biologia' },
-        { id: 'fisica', label: 'Física' },
-        { id: 'quimica', label: 'Química' },
-        { id: 'sociologia', label: 'Sociologia' },
-        { id: 'filosofia', label: 'Filosofia' },
-        { id: 'ingles', label: 'Inglês' },
-        { id: 'espanhol', label: 'Espanhol' },
-        { id: 'outro', label: 'Outro' },
-    ];
-    const grade = [
-        { id: '1ef', label: '1º Ano - Ens. Fundamental' },
-        { id: '2ef', label: '2º Ano - Ens. Fundamental' },
-        { id: '3ef', label: '3º Ano - Ens. Fundamental' },
-        { id: '4ef', label: '4º Ano - Ens. Fundamental' },
-        { id: '5ef', label: '5º Ano - Ens. Fundamental' },
-        { id: '6ef', label: '6º Ano - Ens. Fundamental' },
-        { id: '7ef', label: '7º Ano - Ens. Fundamental' },
-        { id: '8ef', label: '8º Ano - Ens. Fundamental' },
-        { id: '9ef', label: '9º Ano - Ens. Fundamental' },
-        { id: 'em', label: 'Ensino Médio' },
-        { id: 'es', label: 'Ensino Superior' },
-        { id: 'outro', label: 'Outro' },
-    ];
 
     return(
         <View style={styles.container}>
@@ -55,7 +25,6 @@ export default function Step1(){
             <Text style={styles.createGameTitle}>Criar jogo</Text>
             <View style={styles.containerInput}>
                 <View>
-                    
                     <Text>Escolha o modelo de jogo</Text>
                     <View style={styles.optionsContainer}>
                         {gameModels.map((model) => (
@@ -85,8 +54,24 @@ export default function Step1(){
                         label="Disciplina"
                         options={disciplines}
                         selectedValue={formData.subject}
-                        onSelect={(id) => updateFormData({ subject: id })}
+                        // onSelect={(id) => updateFormData({ subject: id })}
+                        onSelect={(id) => {
+                            updateFormData({ subject: id });
+                            if (id !== 'outro') {
+                                updateFormData({ subject_other: '' })
+                            }
+                        }}
                     />
+                </View>
+                <View>
+                    {formData.subject === 'outro' && (
+                        <StyledInput
+                            label="Qual a disciplina?"
+                            placeholder="Digite o nome da disciplina"
+                            value={formData.subject_other}
+                            onChangeText={(text) => updateFormData({ subject_other: text })}
+                        />
+                    )}
                 </View>
                 <View>
                     <StyledInput
@@ -101,8 +86,23 @@ export default function Step1(){
                         label="Série"
                         options={grade}
                         selectedValue={formData.grade}
-                        onSelect={(id) => updateFormData({ grade: id })}
+                        onSelect={(id) => {
+                            updateFormData({ grade: id });
+                            if (id !== 'outro'){
+                                updateFormData({ grade_other: '' })
+                            }
+                        }}
                     />
+                </View>
+                <View>
+                    {formData.grade === 'outro' && (
+                        <StyledInput
+                            label="Qual a série?"
+                            placeholder="Digite a série"
+                            value={formData.grade_other}
+                            onChangeText={(text) => updateFormData({ grade_other: text })}
+                        />
+                    )}
                 </View>
                 <View>
                     <StyledInput

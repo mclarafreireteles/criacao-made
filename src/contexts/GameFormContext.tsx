@@ -4,8 +4,10 @@ import { Game } from "../components/Game";
 interface GameFormData {
     model: string,
     subject: string,
+    subject_other: string,
     content: string,
     grade: string,
+    grade_other: string,
     authors: string,
     rules: string,
     goal: string, 
@@ -26,8 +28,10 @@ const GameFormContext = createContext<GameFormContextType | undefined>(undefined
 const initialState: GameFormData = {
     model: '',
     subject: '',
+    subject_other: '',
     content: '',
     grade: '',
+    grade_other: '',
     authors: '',
     rules: '',
     goal: '',

@@ -7,6 +7,7 @@ import { useGameDatabase } from "@/src/database/useGameDatabase";
 import Colors from "@/constants/Colors";
 import { StyledInput } from "@/src/components/StyledInput";
 import { BackButtonIcon } from "@/src/components/icons/BackButtonIcon";
+import { disciplines, grade } from "@/src/constants/formOptions";
 
 export default function Step3() {
     const router = useRouter();
@@ -35,7 +36,19 @@ export default function Step3() {
         }
 
         try {
-            const finalData = { ...formData, user_id: user.id };
+
+            let finalSubject = formData.subject === 'outro'
+                ? formData.subject_other
+                : disciplines.find(d => d.id === formData.subject)?.label || formData.subject
+
+            let finalGrade = formData.grade === 'outro'
+                ? formData.grade_other
+                : grade.find(g => g.id === formData.grade)?.label || formData.grade;
+
+            const finalData = { ...formData, user_id: user.id, subject: finalSubject, grade: finalGrade };
+
+            delete (finalData as Partial<typeof finalData>).subject_other;
+            delete (finalData as Partial<typeof finalData>).grade_other;
 
             await gameDatabase.create(finalData);
 
