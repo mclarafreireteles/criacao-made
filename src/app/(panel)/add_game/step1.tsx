@@ -22,6 +22,14 @@ export default function Step1(){
         { id: 'ciencias', label: 'Ciências' },
         { id: 'geografia', label: 'Geografia' },
         { id: 'artes', label: 'Artes' },
+        { id: 'biologia', label: 'Biologia' },
+        { id: 'fisica', label: 'Física' },
+        { id: 'quimica', label: 'Química' },
+        { id: 'sociologia', label: 'Sociologia' },
+        { id: 'filosofia', label: 'Filosofia' },
+        { id: 'ingles', label: 'Inglês' },
+        { id: 'espanhol', label: 'Espanhol' },
+        { id: 'outro', label: 'Outro' },
     ];
     const grade = [
         { id: '1ef', label: '1º Ano - Ens. Fundamental' },
@@ -34,6 +42,7 @@ export default function Step1(){
         { id: '8ef', label: '8º Ano - Ens. Fundamental' },
         { id: '9ef', label: '9º Ano - Ens. Fundamental' },
         { id: 'em', label: 'Ensino Médio' },
+        { id: 'es', label: 'Ensino Superior' },
         { id: 'outro', label: 'Outro' },
     ];
 
@@ -72,11 +81,6 @@ export default function Step1(){
                     </View>
                 </View>
                 <View>
-                    {/* <Input
-                        placeholder="Disciplina"
-                        onChangeText={(text: string) => updateFormData({ subject: text })}
-                        value={formData.subject}
-                    /> */}
                     <OptionSelector
                         label="Disciplina"
                         options={disciplines}
@@ -85,13 +89,6 @@ export default function Step1(){
                     />
                 </View>
                 <View>
-                    {/* <Text>Conteúdo</Text>
-                    <Input
-                        placeholder="Conteúdo"
-                        onChangeText={(text: string) => updateFormData({ content: text })}
-                        value={formData.content}
-                        style={styles.inputText}
-                    /> */}
                     <StyledInput
                         label="Conteúdo"
                         placeholder=""
@@ -100,12 +97,6 @@ export default function Step1(){
                     />
                 </View>
                 <View>
-                    {/* <Text>Série</Text>
-                    <Input
-                        placeholder="Série"
-                        onChangeText={(text: string) => updateFormData({ grade: text })}
-                        value={formData.grade}
-                    /> */}
                     <OptionSelector
                         label="Série"
                         options={grade}
@@ -114,13 +105,6 @@ export default function Step1(){
                     />
                 </View>
                 <View>
-                    {/* <Text>Autores</Text>
-                    <Input
-                        placeholder="Autores"
-                        onChangeText={(text: string) => updateFormData({ authors: text })}
-                        value={formData.authors}
-                        style={styles.inputText}
-                    /> */}
                     <StyledInput
                         label="Autores"
                         placeholder=""
@@ -203,6 +187,6 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 60,
         left: 40,
-        zIndex: 1, // Garante que ele fique sobre outros elementos
+        zIndex: 1, 
     },
 })
