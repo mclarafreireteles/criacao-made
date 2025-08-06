@@ -1,9 +1,24 @@
-import { View, Text, StyleSheet } from "react-native"
-import { Link } from "expo-router"
+import { View, Text, StyleSheet, Pressable } from "react-native"
+import { useRouter, useLocalSearchParams } from "expo-router"
 import Colors from "@/constants/Colors"
 import { Ionicons } from "@expo/vector-icons"
 
 export default function CreatedGame(){
+    const router = useRouter();
+
+    const { game_id } = useLocalSearchParams();
+
+    const handleCreateCards = () => {
+        router.push({
+            pathname: '/(panel)/manage_cards/page',
+            params: { game_id }
+        });
+    };
+
+    const handleBackToMenu = () => {
+        router.replace('/(panel)/home/page')
+    }
+
     return(
         <View style={styles.container}>
             <Text style={styles.title}>Jogo criado</Text>
@@ -11,13 +26,13 @@ export default function CreatedGame(){
             <Ionicons name="checkmark-circle-outline" size={60} color="white" style={styles.icon} />
 
             <View style={styles.containerBtn}>
-                <Link href='/(panel)/add_game/created_game' style={styles.primaryButton}>
+                <Pressable onPress={handleCreateCards} style={styles.primaryButton}>
                     <Text style={styles.primaryButtonText}>Criar cartas</Text>
-                </Link>
+                </Pressable>
 
-                <Link href='/(panel)/home/page' style={styles.secondaryLink}>
+                <Pressable onPress={handleBackToMenu} style={styles.secondaryLink}>
                     <Text style={styles.secondaryLinkText}>Voltar para o menu</Text>
-                </Link>
+                </Pressable>
             </View>
            
         </View>

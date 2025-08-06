@@ -50,11 +50,21 @@ export default function Step3() {
             delete (finalData as Partial<typeof finalData>).subject_other;
             delete (finalData as Partial<typeof finalData>).grade_other;
 
-            await gameDatabase.create(finalData);
+            const { insertedRowId } = await gameDatabase.create(finalData);
 
-            Alert.alert("Sucesso", "Jogo cadastrado!");
-            resetForm(); 
-            router.replace('/(panel)/add_game/created_game');
+            if (insertedRowId) {
+                Alert.alert("Sucesso", "Jogo cadastrado!");
+                resetForm()
+
+                router.replace({
+                    pathname: '/(panel)/add_game/created_game',
+                    params: { game_id: insertedRowId }
+                })
+            }
+
+            // Alert.alert("Sucesso", "Jogo cadastrado!");
+            // resetForm(); 
+            // router.replace('/(panel)/add_game/created_game');
         } catch (error) {
             console.error("Erro ao criar jogo:", error);
             Alert.alert("Erro", "Não foi possível cadastrar o jogo.");
