@@ -6,6 +6,7 @@ import { supabase } from '../../../lib/supabase';
 import { router } from 'expo-router';
 import Colors from '@/constants/Colors';
 import { Feather } from '@expo/vector-icons';
+import { LoginInput } from '@/src/components/LoginInput';
 
 
 export default function Login() {
@@ -61,10 +62,11 @@ export default function Login() {
                         autoComplete='email'
                         returnKeyType='next'
                         onSubmitEditing={() => passwordInputRef.current?.focus()}
-                        onFocus={() => setFocusedInput('email')}
-                        onBlur={() => setFocusedInput(null)}
+                        // onFocus={() => setFocusedInput('email')}
+                        // onBlur={() => setFocusedInput(null)}
                     />
                 </View>
+
                 
                 
                 <View style={[styles.inputWrapper, focusedInput === 'password' && styles.inputFocused]}>
@@ -81,8 +83,8 @@ export default function Login() {
                         autoComplete='password' 
                         returnKeyType='done'
                         onSubmitEditing={handleSignin}
-                        onFocus={() => setFocusedInput('password')}
-                        onBlur={() => setFocusedInput(null)}
+                        // onFocus={() => setFocusedInput('password')}
+                        // onBlur={() => setFocusedInput(null)}
                     />
                     <TouchableOpacity
                         style={styles.icon}
@@ -91,6 +93,7 @@ export default function Login() {
                         <Feather name={isPasswordVisible ? 'eye-off' : 'eye'} size={20} color="gray" />
                     </TouchableOpacity>
                 </View>
+
 
             </View>
             <View style={styles.buttons}>
