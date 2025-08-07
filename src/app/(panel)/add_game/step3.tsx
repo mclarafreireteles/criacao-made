@@ -7,7 +7,7 @@ import { useGameDatabase } from "@/src/database/useGameDatabase";
 import Colors from "@/constants/Colors";
 import { StyledInput } from "@/src/components/StyledInput";
 import { BackButtonIcon } from "@/src/components/icons/BackButtonIcon";
-import { disciplines, grade } from "@/src/constants/formOptions";
+import { disciplines, grade } from "@/constants/formOptions";
 
 export default function Step3() {
     const router = useRouter();

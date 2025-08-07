@@ -6,7 +6,7 @@ import Colors from "@/constants/Colors";
 import { OptionSelector } from "@/src/components/OptionSelector";
 import { StyledInput } from "@/src/components/StyledInput";
 import { BackButtonIcon } from "@/src/components/icons/BackButtonIcon";
-import { disciplines, grade } from "@/src/constants/formOptions";
+import { disciplines, grade } from "@/constants/formOptions";
 
 export default function Step1(){
     const router = useRouter();
