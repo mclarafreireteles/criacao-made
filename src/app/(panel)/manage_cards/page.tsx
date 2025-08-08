@@ -1,5 +1,7 @@
 import { View, Text, Pressable } from "react-native";
 
+const CODE_LENGTH_OPTIONS = [3, 4, 5, 6];
+
 export default function ManageCards (){
     return (
         <View>

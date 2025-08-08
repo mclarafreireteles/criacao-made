@@ -16,7 +16,8 @@ export async function initializeDatabase(database: SQLiteDatabase) {
             background_image_url TEXT NOT NULL,
             prompt TEXT NOT NULL,
             explanation TEXT,
-            model TEXT NOT NULL
+            model TEXT NOT NULL,
+            secret_code_length INTEGER,
         );
         
         CREATE INDEX IF NOT EXISTS idx_games_user_id ON games(user_id);

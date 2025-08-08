@@ -75,5 +75,12 @@ export function useGameDatabase(){
         }
     }
 
-    return { create, searchByTitle, searchByUser }
+    async function updateGameSetting(gameId: number, length: number) {
+        await database.runAsync(
+            'UPDATE games SET secret_code_length = ? WHERE id = ?',
+            [length, gameId]
+        );
+    }
+
+    return { create, searchByTitle, searchByUser , updateGameSetting}
 }
