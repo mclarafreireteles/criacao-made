@@ -17,6 +17,11 @@ export type GameDatabase = {
     model: string
 }
 
+export type CardDatabase = {
+    game_id: number;
+    card_text: string;
+}
+
 export function useGameDatabase(){
 
     const database = useSQLiteContext()
@@ -82,5 +87,39 @@ export function useGameDatabase(){
         );
     }
 
-    return { create, searchByTitle, searchByUser , updateGameSetting}
+    async function getCardsByGameId(gameId: number){
+        const statement = await database.prepareAsync(
+            "SELECT * FROM cards WHERE game_id = ?  ORDER BY id DESC"
+        );
+        try {
+            const result = await statement.executeAsync<CardDatabase>([gameId]);
+            return await result.getAllAsync();
+        } finally {
+            await statement.finalizeAsync();
+        }
+    }
+
+    async function createCard(data: Omit<CardDatabase, 'id'>) {
+        const statement = await database.prepareAsync(
+            "INSERT INTO cards (game_id, card_text) VALUES ($game_id, $card_text)"
+        );
+        try {
+            const result = await statement.executeAsync({
+                $game_id: data.game_id,
+                $card_text: data.card_text
+            });
+            const insertedRowId = result.lastInsertRowId;
+            return { insertedRowId }
+        } finally {
+            await statement.finalizeAsync()
+        }
+    }
+
+    async function deleteCard(cardId: number){
+        await database.runAsync("DELETE FROM cards WHERE id = ?", [cardId])
+    }
+
+
+
+    return { create, searchByTitle, searchByUser , updateGameSetting, createCard, deleteCard, getCardsByGameId   }
 }
