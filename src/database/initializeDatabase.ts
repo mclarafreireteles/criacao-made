@@ -3,6 +3,9 @@ import { type SQLiteDatabase } from 'expo-sqlite'
 export async function initializeDatabase(database: SQLiteDatabase) {
     await database.execAsync(`
 
+        DROP TABLE IF EXISTS games;
+        DROP TABLE IF EXISTS cards;
+
         CREATE TABLE IF NOT EXISTS games (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id TEXT NOT NULL, 
@@ -17,7 +20,7 @@ export async function initializeDatabase(database: SQLiteDatabase) {
             prompt TEXT NOT NULL,
             explanation TEXT,
             model TEXT NOT NULL,
-            secret_code_length INTEGER,
+            secret_code_length INTEGER
         );
         
         CREATE INDEX IF NOT EXISTS idx_games_user_id ON games(user_id);
@@ -34,16 +37,3 @@ export async function initializeDatabase(database: SQLiteDatabase) {
     `)
 }
 
-// id INTEGER PRIMARY KEY AUTOINCREMENT,
-//             user_id TEXT NOT NULL, 
-//             title TEXT NOT NULL,
-//             subject TEXT NOT NULL,
-//             content TEXT,
-//             grade TEXT,
-//             id_owner INTEGER, 
-//             authors TEXT,
-//             rules TEXT,
-//             goal TEXT NOT NULL,
-//             background_image_url TEXT,
-//             prompt TEXT NOT NULL,
-//             explanation TEXT
