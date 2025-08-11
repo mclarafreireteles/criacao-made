@@ -43,18 +43,17 @@ export default function ManageCards (){
         await updateGameSetting(gameIdNumber, length);
     };
 
-    const handleAddCard = async () => {
-        if (newCardText.trim() === '') {
-            return Alert.alert("Erro", "O texto da carta não pode ser vazio.");
-        }
-        try {
-            await createCard({ game_id: gameIdNumber, card_text: newCardText });
-            setNewCardText('');
-            fetchCards(); 
-        } catch (error) {
-            console.error("Erro ao criar carta:", error);
-        }
-    };
+    const handleNavigateToAddCard = () => {
+        console.log("--- DEBUG ---");
+        console.log("Botão clicado. Tentando navegar...");
+        console.log("Pathname:", '/manage_cards/add_card');
+        console.log("game_id:", gameIdNumber);
+        console.log("--- FIM DEBUG ---");
+        router.push({
+            pathname:'/manage_cards/add_card',
+            params: {game_id: gameIdNumber}
+        })
+    }
 
 
     return (
@@ -78,17 +77,32 @@ export default function ManageCards (){
                                 </Text>
                             </Pressable>
                         ))}
+                        <Pressable>
+                            <Ionicons name='dice-outline' size={24}/>
+                        </Pressable>
                     </View>
                 </View>
 
                 <View>
-                    <Pressable>
+                    <Pressable onPress={handleNavigateToAddCard}>
                         <Text>+ Adicionar carta</Text>
                     </Pressable>
 
-                    <View>
-                        View das cartas
-                    </View>
+                    <FlatList
+                        data={cards}
+                        keyExtractor={item => item.game_id.toString()}
+                        numColumns={4}
+                        renderItem={({ item }) => (
+                            <View>
+                                <Text>{item.card_text}</Text>
+                            </View>
+                        )}
+                        ListEmptyComponent={
+                            <View>
+                                <Text>Adicione a sua primeira carta</Text>
+                            </View>
+                        }
+                    />
 
                     <Pressable>
                         <Text>Como funcionam os níveis?</Text>
