@@ -58,48 +58,59 @@ export default function ManageCards (){
 
 
     return (
-        <View>
-            <Text>Criar cartas</Text>
+        <SafeAreaView style={styles.safeArea}>
+            <View style={styles.container}>
+                <Text style={styles.title}>Criar cartas</Text>
 
-            <View>
-                <Text>Tamanho do código secreto</Text>
-                <View>
-                    <Pressable>
-                        <Text>3</Text>
-                    </Pressable>
-                    <Pressable>
-                        <Text>4</Text>
-                    </Pressable>
-                    <Pressable>
-                        <Text>5</Text>
-                    </Pressable>
-                    <Pressable>
-                        <Text>6</Text>
-                    </Pressable>
-                    <Pressable>
-                        <Text>Aleatório</Text>
-                    </Pressable>
-                </View>
-            </View>
-
-            <View>
-                <Pressable>
-                    <Text>+ Adicionar carta</Text>
-                </Pressable>
-
-                <View>
-                    View das cartas
+                <View style={styles.settingSection}>
+                    <Text>Tamanho do código secreto</Text>
+                    <View>
+                        {CODE_LENGTH_OPTIONS.map(len => (
+                            <Pressable 
+                                key={len} 
+                                style={[styles.lengthButton, codeLength === len && styles.lengthButtonActive]} 
+                                onPress={() => handleSetCodeLength(len)}    
+                            >
+                                <Text
+                                    style={[styles.lengthButtonText, codeLength === len && styles.lengthButtonTextActive]}
+                                >
+                                    {len}
+                                </Text>
+                            </Pressable>
+                        ))}
+                    </View>
                 </View>
 
-                <Pressable>
-                    <Text>Como funcionam os níveis?</Text>
-                </Pressable>
-            </View>
+                <View>
+                    <Pressable>
+                        <Text>+ Adicionar carta</Text>
+                    </Pressable>
 
-            <View>
-                <Pressable><Text>Finalizar</Text></Pressable>
-                <Pressable><Text>Testar jogo</Text></Pressable>
+                    <View>
+                        View das cartas
+                    </View>
+
+                    <Pressable>
+                        <Text>Como funcionam os níveis?</Text>
+                    </Pressable>
+                </View>
+
+                <View>
+                    <Pressable><Text>Finalizar</Text></Pressable>
+                    <Pressable><Text>Testar jogo</Text></Pressable>
+                </View>
             </View>
-        </View>
+        </SafeAreaView>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {},
+    title: {},
+    safeArea: {},
+    settingSection:{},
+    lengthButton: {},
+    lengthButtonActive: {},
+    lengthButtonText: {},
+    lengthButtonTextActive: {}
+})

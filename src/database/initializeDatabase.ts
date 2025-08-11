@@ -3,9 +3,6 @@ import { type SQLiteDatabase } from 'expo-sqlite'
 export async function initializeDatabase(database: SQLiteDatabase) {
     await database.execAsync(`
 
-        DROP TABLE IF EXISTS games;
-        DROP TABLE IF EXISTS cards;
-
         CREATE TABLE IF NOT EXISTS games (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id TEXT NOT NULL, 

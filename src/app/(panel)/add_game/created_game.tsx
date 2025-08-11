@@ -10,7 +10,7 @@ export default function CreatedGame(){
 
     const handleCreateCards = () => {
         router.push({
-            pathname: '/(panel)/add_game/created_game',
+            pathname: '/(panel)/manage_cards/page',
             params: { game_id }
         });
     };
