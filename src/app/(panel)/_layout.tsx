@@ -6,7 +6,8 @@ export default function PanelLayout() {
       <Stack.Screen name="home/page" options={{ headerShown: false }} />
       <Stack.Screen name="choose_game/page" options={{ headerShown: false }} />
       <Stack.Screen name="add_game" options={{ headerShown: false }} />
-      <Stack.Screen name="manage_cards" options={{ headerShown: false }} />
+      <Stack.Screen name="manage_cards/page" options={{ headerShown: false }} />
+      <Stack.Screen name="manage_cards/add_card" options={{ headerShown: false }} />
     </Stack>
   );
 }
