@@ -119,9 +119,22 @@ export default function ManageCards (){
 }
 
 const styles = StyleSheet.create({
-    container: {},
-    title: {},
-    safeArea: {},
+    container: {
+        flex: 1,
+        // backgroundColor: Colors.light.white,
+        paddingTop: 60, 
+        alignItems: 'center',
+        gap: 30,
+        justifyContent: 'space-between',
+        width: '100%',
+    },
+    title: {
+        fontSize: 24
+    },
+    safeArea: {
+        flex: 1,
+        backgroundColor: Colors.light.white,
+    },
     settingSection:{},
     lengthButton: {},
     lengthButtonActive: {},
