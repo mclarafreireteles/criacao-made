@@ -52,10 +52,11 @@ export default function ChooseGame(){
                 keyExtractor={(item) => String(item.id)} 
                 renderItem={({ item }) => <Game data={item}/>}
                 ListEmptyComponent={() => (
-                    <Text>
+                    <Text style={styles.emptyText}>
                         Nenhum jogo ainda criado
                     </Text>
                 )}
+                contentContainerStyle={games.length === 0 ? styles.emptyListStyle : {}}
             />
         </View>
     )
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
     container: {
         paddingVertical: 60,
         backgroundColor: Colors.light.white,
-
+        flex: 1
     },
     chooseGameTitle: {
         fontSize: 24,
@@ -78,4 +79,14 @@ const styles = StyleSheet.create({
         left: 40,
         zIndex: 1, 
     },
+    emptyText: {
+        fontSize: 16,
+        color: Colors.light.darkGrey,
+        textAlign: 'center',
+    },
+    emptyListStyle: {
+        flexGrow: 1,            
+        justifyContent: 'center', 
+        alignItems: 'center',    
+    }
 })
