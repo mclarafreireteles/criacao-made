@@ -26,6 +26,7 @@ function MainLayout(){
 
 
             if (session) {
+                console.log('AUTH STATE CHANGED - User ID:', session?.user?.id);
                 setAuth(session.user)
                 router.replace('/(panel)/home/page')
                 return;

@@ -28,7 +28,7 @@ export default function ChooseGame(){
         }
 
         try {
-            console.log(`Listing games for user ${user.id}...`)
+            console.log('CHOOSE GAME SCREEN - Buscando jogos para o User ID:', user.id);
             const response = await gameDatabase.searchByUser(user.id);
             setGames(response);
         } catch (error) {

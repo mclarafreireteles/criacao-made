@@ -19,8 +19,6 @@ export default function ManageCards (){
 
     const [cards, setCards] = useState<CardDatabase[]>([]);
     const [codeLength, setCodeLength] = useState<number | null>(null);
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [newCardText, setNewCardText] = useState('');
 
     const fetchCards = useCallback(async () => {
         if (!gameIdNumber) return;
@@ -59,10 +57,13 @@ export default function ManageCards (){
     return (
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.container}>
-                <Text style={styles.title}>Criar cartas</Text>
+
+                <View style={styles.header}>
+                    <Text style={styles.title}>Criar cartas</Text>
+                </View>
 
                 <View style={styles.settingSection}>
-                    <Text>Tamanho do código secreto</Text>
+                    <Text style={styles.settingLabel}>Tamanho do código secreto</Text>
                     <View>
                         {CODE_LENGTH_OPTIONS.map(len => (
                             <Pressable 
@@ -109,9 +110,13 @@ export default function ManageCards (){
                     </Pressable>
                 </View>
 
-                <View>
-                    <Pressable><Text>Finalizar</Text></Pressable>
-                    <Pressable><Text>Testar jogo</Text></Pressable>
+                <View style={styles.containerBtn}>
+                    <Pressable style={styles.finalizarBtn}>
+                        <Text style={styles.finalizarBtnTxt}>Finalizar</Text>
+                    </Pressable>
+                    <Pressable style={styles.testarBtn}>
+                        <Text style={styles.testarBtnTxt}>Testar jogo</Text>
+                    </Pressable>
                 </View>
             </View>
         </SafeAreaView>
@@ -122,11 +127,19 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         // backgroundColor: Colors.light.white,
-        paddingTop: 60, 
+        paddingHorizontal: 60, 
+        paddingVertical: 40, 
         alignItems: 'center',
         gap: 30,
         justifyContent: 'space-between',
         width: '100%',
+    },
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingTop: 20,
+        marginBottom: 24,
     },
     title: {
         fontSize: 24
@@ -135,9 +148,48 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Colors.light.white,
     },
-    settingSection:{},
+    settingSection: {
+        marginBottom: 24,
+    },
+    settingLabel:{
+        fontSize: 16,
+        color: Colors.light.darkGrey,
+        marginBottom: 12,
+    },
     lengthButton: {},
     lengthButtonActive: {},
     lengthButtonText: {},
-    lengthButtonTextActive: {}
+    lengthButtonTextActive: {},
+    containerBtn: {
+        width: '100%',
+        gap: 10
+    },
+    finalizarBtn: {
+        borderWidth: 1,
+        borderColor: Colors.light.blue,
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        borderRadius: 20,
+        backgroundColor: '#FFF',
+    },
+    finalizarBtnTxt: {
+        textAlign: 'center',
+        fontSize: 16,
+        fontWeight: 600,
+        color: Colors.light.blue
+    },
+    testarBtn: {
+        borderWidth: 1,
+        borderColor: Colors.light.blue,
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        borderRadius: 20,
+        backgroundColor: '#FFF',
+    },
+    testarBtnTxt: {
+        textAlign: 'center',
+        fontSize: 16,
+        fontWeight: 600,
+        color: Colors.light.blue
+    }
 })
