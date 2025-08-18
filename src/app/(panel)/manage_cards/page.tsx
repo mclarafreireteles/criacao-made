@@ -113,7 +113,7 @@ export default function ManageCards (){
                 </View>
 
                 <View style={styles.containerBtn}>
-                    <Pressable style={styles.finalizarBtn}>
+                    <Pressable style={styles.finalizarBtn} onPress={() => router.replace('/(panel)/home/page')}>
                         <Text style={styles.finalizarBtnTxt}>Finalizar</Text>
                     </Pressable>
                     <Pressable style={styles.testarBtn}>
