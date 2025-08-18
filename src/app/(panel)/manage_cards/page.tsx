@@ -64,7 +64,7 @@ export default function ManageCards (){
 
                 <View style={styles.settingSection}>
                     <Text style={styles.settingLabel}>Tamanho do código secreto</Text>
-                    <View>
+                    <View style={styles.optionsContainer}>
                         {CODE_LENGTH_OPTIONS.map(len => (
                             <Pressable 
                                 key={len} 
@@ -78,35 +78,37 @@ export default function ManageCards (){
                                 </Text>
                             </Pressable>
                         ))}
-                        <Pressable>
+                        <Pressable style={styles.lengthButton}>
                             <Ionicons name='dice-outline' size={24}/>
                         </Pressable>
                     </View>
                 </View>
 
                 <View>
-                    <Pressable onPress={handleNavigateToAddCard}>
-                        <Text>+ Adicionar carta</Text>
+                    <Pressable style={styles.addCardButton} onPress={handleNavigateToAddCard}>
+                        <Ionicons name="add" size={20} color="white" />
+                        <Text style={styles.addCardButtonText}>Adicionar carta</Text>
                     </Pressable>
 
                     <FlatList
                         data={cards}
                         keyExtractor={item => item.game_id.toString()}
-                        numColumns={4}
+                        numColumns={3}
                         renderItem={({ item }) => (
-                            <View>
-                                <Text>{item.card_text}</Text>
+                            <View style={styles.card}>
+                                <Text style={styles.cardText}>{item.card_text}</Text>
                             </View>
                         )}
                         ListEmptyComponent={
-                            <View>
-                                <Text>Adicione a sua primeira carta</Text>
+                            <View style={styles.emptyGrid}>
+                                <Text style={styles.emptyGridText}>Adicione a sua primeira carta</Text>
                             </View>
                         }
+                        style={styles.grid}
                     />
 
-                    <Pressable>
-                        <Text>Como funcionam os níveis?</Text>
+                    <Pressable style={styles.infoLink}>
+                        <Text style={styles.infoLinkTxt}>Como funcionam os níveis?</Text>
                     </Pressable>
                 </View>
 
@@ -156,10 +158,27 @@ const styles = StyleSheet.create({
         color: Colors.light.darkGrey,
         marginBottom: 12,
     },
-    lengthButton: {},
-    lengthButtonActive: {},
-    lengthButtonText: {},
-    lengthButtonTextActive: {},
+    optionsContainer: {
+        flexDirection: 'row',
+        gap: 12,
+    },
+    lengthButton: {
+        width: 48,
+        height: 48,
+        borderRadius: 24,
+        backgroundColor: '#E2E8F0',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    lengthButtonActive: {
+
+    },
+    lengthButtonText: {
+
+    },
+    lengthButtonTextActive: {
+
+    },
     containerBtn: {
         width: '100%',
         gap: 10
@@ -191,5 +210,62 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 600,
         color: Colors.light.blue
+    },
+    addCardButton: {
+        backgroundColor: Colors.light.blue,
+        paddingVertical: 15,
+        borderRadius: 12,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 8,
+    },
+    addCardButtonText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    emptyGrid: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 50,
+    },
+    emptyGridText: {
+        fontSize: 16,
+        color: Colors.light.darkGrey,
+    },
+    grid: {
+        flex: 1,
+        marginTop: 20,
+    },
+    card: {
+        flex: 1,
+        aspectRatio: 0.80,
+        margin: 6,
+        backgroundColor: '#F8FAFC',
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: '#E2E8F0',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 5,
+    },
+    cardText: {
+        fontSize: 12,
+        fontWeight: '500',
+        textAlign: 'center',
+    },
+    infoLink: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 6,
+        marginVertical: 24,
+    },
+    infoLinkTxt: {
+        color: Colors.light.blue,
+        fontSize: 16,
+        fontWeight: '500',
     }
 })
