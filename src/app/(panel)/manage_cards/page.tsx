@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useGameDatabase, CardDatabase } from '@/src/database/useGameDatabase';
 import { StyledInput } from '@/src/components/StyledInput';
 import Colors from '@/constants/Colors';
+import { ScreenHeader } from '@/src/components/ScreenHeader';
 
 
 const CODE_LENGTH_OPTIONS = [3, 4, 5, 6];
@@ -56,10 +57,7 @@ export default function ManageCards (){
 
     const renderHeader = () => (
         <>
-            <View style={styles.header}>
-                <Text style={styles.title}>Criar cartas</Text>
-                {/* <Image source={require('../../../assets/images/logo-made.png')} style={styles.logo} /> */}
-            </View>
+            <ScreenHeader title="Criar cartas" />
 
             <View style={styles.settingSection}>
                 <Text style={styles.settingLabel}>Tamanho do código secreto</Text>
@@ -117,6 +115,7 @@ export default function ManageCards (){
                     </View>
                 )}
                 // Usamos as props especiais aqui
+                // ListHeaderComponent={renderHeader}
                 ListHeaderComponent={renderHeader}
                 ListFooterComponent={renderFooter}
                 // Adicionamos o estilo ao container do conteúdo

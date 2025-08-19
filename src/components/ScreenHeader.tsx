@@ -35,8 +35,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 20,
-    paddingTop: 40,
+    // paddingVertical: 20,
   },
   sideContainer: {
     width: 50,
