@@ -64,23 +64,22 @@ export function Game({data, ...rest}: Props){
 // 4. StyleSheet completo com todos os estilos necessários
 const styles = StyleSheet.create({
   container: {
-        backgroundColor: '#FFFFFF',
-        borderRadius: 16,
-        borderWidth: 1,
-        marginHorizontal: 50,
-        marginVertical: 10,
-        // Sombra (efeito de elevação)
-        ...Platform.select({
-            ios: {
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.1,
-                shadowRadius: 5,
-            },
-            android: {
-                elevation: 5,
-            },
-        }),
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    borderWidth: 1,
+    marginVertical: 10,
+    // Sombra (efeito de elevação)
+    ...Platform.select({
+        ios: {
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.1,
+            shadowRadius: 5,
+        },
+        android: {
+            elevation: 5,
+        },
+    }),
   },
   header: {
     flexDirection: 'row', // Alinha os itens lado a lado

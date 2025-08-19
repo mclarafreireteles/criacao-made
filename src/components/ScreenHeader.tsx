@@ -41,6 +41,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 20,
+    width: '100%',
+    marginBottom: 20
     // marginBottom: 40
     // paddingVertical: 20,
   },

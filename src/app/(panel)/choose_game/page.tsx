@@ -9,6 +9,9 @@ import { GameDatabase } from "@/src/database/useGameDatabase";
 
 import { useAuth } from '@/src/contexts/AuthContext';
 import Colors from "@/constants/Colors";
+
+import { ScreenHeader } from "@/src/components/ScreenHeader";
+
 import { BackButtonIcon } from "@/src/components/icons/BackButtonIcon";
 
 export default function ChooseGame(){
@@ -42,11 +45,12 @@ export default function ChooseGame(){
     
     return (
         <View style={styles.container}>
-            <BackButtonIcon
+            {/* <BackButtonIcon
                 style={styles.backButton}
                 onPress={() => router.back()}
             />
-            <Text style={styles.chooseGameTitle}>Escolher jogo</Text>
+            <Text style={styles.chooseGameTitle}>Escolher jogo</Text> */}
+            <ScreenHeader title="Escolher jogos" />
             <FlatList 
                 data={games} 
                 keyExtractor={(item) => String(item.id)} 
@@ -64,6 +68,7 @@ export default function ChooseGame(){
 
 const styles = StyleSheet.create({
     container: {
+        paddingHorizontal: 30, 
         paddingVertical: 60,
         backgroundColor: Colors.light.white,
         flex: 1

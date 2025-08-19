@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         // backgroundColor: Colors.light.white,
-        paddingHorizontal: 60, 
+        paddingHorizontal: 30, 
         paddingVertical: 60, 
         alignItems: 'center',
         gap: 30,
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
     },
     addCardButton: {
         backgroundColor: Colors.light.blue,
-        paddingVertical: 15,
+        paddingVertical: 10,
         borderRadius: 12,
         flexDirection: 'row',
         justifyContent: 'center',
