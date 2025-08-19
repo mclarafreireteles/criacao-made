@@ -114,13 +114,9 @@ export default function ManageCards (){
                         <Text style={styles.cardText}>{item.card_text}</Text>
                     </View>
                 )}
-                // Usamos as props especiais aqui
-                // ListHeaderComponent={renderHeader}
                 ListHeaderComponent={renderHeader}
                 ListFooterComponent={renderFooter}
-                // Adicionamos o estilo ao container do conteúdo
                 contentContainerStyle={styles.container}
-                // Estilo para o grid em si
                 style={styles.grid}
                 ListEmptyComponent={
                     <View style={styles.emptyGrid}>

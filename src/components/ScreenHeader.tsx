@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import Colors from '@/constants/Colors';
+import { BackButtonIcon } from './icons/BackButtonIcon';
 
 type Props = {
   title: string;
@@ -14,36 +15,46 @@ export function ScreenHeader({ title, rightAccessory }: Props) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.sideContainer}>
         {router.canGoBack() && (
-          <Pressable onPress={() => router.back()} hitSlop={20}>
-            <Ionicons name="arrow-back" size={24} color={Colors.light.text} />
-          </Pressable>
-        )}
-      </View>
+        <BackButtonIcon
+            style={styles.leftAction}
+            onPress={() => router.back()}
+        />
+      )}
       
       <Text style={styles.title}>{title}</Text>
       
       {/* Acessório da Direita (logo, etc.) */}
-      <View style={styles.sideContainer}>{rightAccessory}</View>
+      {rightAccessory && (
+        <View style={styles.rightAction}>
+          {rightAccessory}
+        </View>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    height: 60,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    // marginBottom: 40
     // paddingVertical: 20,
-  },
-  sideContainer: {
-    width: 50,
-    alignItems: 'flex-start',
   },
   title: {
     fontSize: 22,
-    fontWeight: 'bold',
     textAlign: 'center',
+    color: Colors.light.text,
+  },
+  leftAction: {
+    position: 'absolute',
+    left: 20, // Alinha com o paddingHorizontal do container
+  },
+  rightAction: {
+    position: 'absolute',
+    right: 20, // Alinha com o paddingHorizontal do container
   },
 });
