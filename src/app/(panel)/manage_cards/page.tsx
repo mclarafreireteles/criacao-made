@@ -38,6 +38,7 @@ export default function ManageCards (){
 
     const handleSetCodeLength = async (length: number) => {
         setCodeLength(length);
+        console.log(length)
         await updateGameSetting(gameIdNumber, length);
     };
 
@@ -53,74 +54,81 @@ export default function ManageCards (){
         })
     }
 
+    const renderHeader = () => (
+        <>
+            <View style={styles.header}>
+                <Text style={styles.title}>Criar cartas</Text>
+                {/* <Image source={require('../../../assets/images/logo-made.png')} style={styles.logo} /> */}
+            </View>
 
-    return (
-        <SafeAreaView style={styles.safeArea}>
-            <View style={styles.container}>
-
-                <View style={styles.header}>
-                    <Text style={styles.title}>Criar cartas</Text>
-                </View>
-
-                <View style={styles.settingSection}>
-                    <Text style={styles.settingLabel}>Tamanho do código secreto</Text>
-                    <View style={styles.optionsContainer}>
-                        {CODE_LENGTH_OPTIONS.map(len => (
-                            <Pressable 
-                                key={len} 
-                                style={[styles.lengthButton, codeLength === len && styles.lengthButtonActive]} 
-                                onPress={() => handleSetCodeLength(len)}    
-                            >
-                                <Text
-                                    style={[styles.lengthButtonText, codeLength === len && styles.lengthButtonTextActive]}
-                                >
-                                    {len}
-                                </Text>
-                            </Pressable>
-                        ))}
-                        <Pressable style={styles.lengthButton}>
-                            <Ionicons name='dice-outline' size={24}/>
+            <View style={styles.settingSection}>
+                <Text style={styles.settingLabel}>Tamanho do código secreto</Text>
+                <View style={styles.optionsContainer}>
+                    {CODE_LENGTH_OPTIONS.map(len => (
+                        <Pressable
+                            key={len}
+                            style={[styles.lengthButton, codeLength === len && styles.lengthButtonActive]}
+                            onPress={() => handleSetCodeLength(len)}
+                        >
+                            <Text style={[styles.lengthButtonText, codeLength === len && styles.lengthButtonTextActive]}>{len}</Text>
                         </Pressable>
-                    </View>
-                </View>
-
-                <View>
-                    <Pressable style={styles.addCardButton} onPress={handleNavigateToAddCard}>
-                        <Ionicons name="add" size={20} color="white" />
-                        <Text style={styles.addCardButtonText}>Adicionar carta</Text>
-                    </Pressable>
-
-                    <FlatList
-                        data={cards}
-                        keyExtractor={item => item.game_id.toString()}
-                        numColumns={3}
-                        renderItem={({ item }) => (
-                            <View style={styles.card}>
-                                <Text style={styles.cardText}>{item.card_text}</Text>
-                            </View>
-                        )}
-                        ListEmptyComponent={
-                            <View style={styles.emptyGrid}>
-                                <Text style={styles.emptyGridText}>Adicione a sua primeira carta</Text>
-                            </View>
-                        }
-                        style={styles.grid}
-                    />
-
-                    <Pressable style={styles.infoLink}>
-                        <Text style={styles.infoLinkTxt}>Como funcionam os níveis?</Text>
-                    </Pressable>
-                </View>
-
-                <View style={styles.containerBtn}>
-                    <Pressable style={styles.finalizarBtn} onPress={() => router.replace('/(panel)/home/page')}>
-                        <Text style={styles.finalizarBtnTxt}>Finalizar</Text>
-                    </Pressable>
-                    <Pressable style={styles.testarBtn}>
-                        <Text style={styles.testarBtnTxt}>Testar jogo</Text>
+                    ))}
+                    <Pressable style={styles.lengthButton}>
+                        <Ionicons name="dice-outline" size={24} color={Colors.light.blue} />
                     </Pressable>
                 </View>
             </View>
+
+            <Pressable style={styles.addCardButton} onPress={handleNavigateToAddCard}>
+                <Ionicons name="add" size={20} color="white" />
+                <Text style={styles.addCardButtonText}>Adicionar carta</Text>
+            </Pressable>
+        </>
+    );
+
+    const renderFooter = () => (
+        <>
+            <Pressable style={styles.infoLink}>
+                <Ionicons name="information-circle-outline" size={20} color={Colors.light.blue} />
+                <Text style={styles.infoLinkTxt}>Como funcionam os níveis?</Text>
+            </Pressable>
+
+            <View style={styles.containerBtn}>
+                <Pressable style={styles.finalizarBtn} onPress={() => router.replace('/(panel)/home/page')}>
+                    <Text style={styles.finalizarBtnTxt}>Finalizar</Text>
+                </Pressable>
+                <Pressable style={styles.testarBtn}>
+                    <Text style={styles.testarBtnTxt}>Testar jogo</Text>
+                </Pressable>
+            </View>
+        </>
+    );
+
+
+    return (
+        <SafeAreaView style={styles.safeArea}>
+            <FlatList
+                data={cards}
+                keyExtractor={item => item.game_id.toString()}
+                numColumns={3}
+                renderItem={({ item }) => (
+                    <View style={styles.card}>
+                        <Text style={styles.cardText}>{item.card_text}</Text>
+                    </View>
+                )}
+                // Usamos as props especiais aqui
+                ListHeaderComponent={renderHeader}
+                ListFooterComponent={renderFooter}
+                // Adicionamos o estilo ao container do conteúdo
+                contentContainerStyle={styles.container}
+                // Estilo para o grid em si
+                style={styles.grid}
+                ListEmptyComponent={
+                    <View style={styles.emptyGrid}>
+                        <Text style={styles.emptyGridText}>Adicione sua primeira carta</Text>
+                    </View>
+                }
+            />
         </SafeAreaView>
     )
 }
@@ -130,7 +138,7 @@ const styles = StyleSheet.create({
         flex: 1,
         // backgroundColor: Colors.light.white,
         paddingHorizontal: 60, 
-        paddingVertical: 40, 
+        paddingVertical: 60, 
         alignItems: 'center',
         gap: 30,
         justifyContent: 'space-between',
@@ -138,13 +146,13 @@ const styles = StyleSheet.create({
     },
     header: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         alignItems: 'center',
         paddingTop: 20,
         marginBottom: 24,
     },
     title: {
-        fontSize: 24
+        fontSize: 24,
     },
     safeArea: {
         flex: 1,
@@ -237,7 +245,6 @@ const styles = StyleSheet.create({
     },
     grid: {
         flex: 1,
-        marginTop: 20,
     },
     card: {
         flex: 1,
