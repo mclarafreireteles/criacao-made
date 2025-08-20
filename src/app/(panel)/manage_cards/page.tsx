@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, Pressable, StyleSheet, FlatList, Modal, SafeAreaView, Alert } from "react-native";
+import { View, Text, Pressable, StyleSheet, FlatList, SafeAreaView, useWindowDimensions, Dimensions } from "react-native";
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -13,6 +13,7 @@ const CODE_LENGTH_OPTIONS = [3, 4, 5, 6];
 
 export default function ManageCards (){
     const router = useRouter();
+    const { width } = useWindowDimensions();
     const { game_id } = useLocalSearchParams();
     const gameIdNumber = Number(game_id)
 
@@ -42,6 +43,7 @@ export default function ManageCards (){
         console.log(length)
         await updateGameSetting(gameIdNumber, length);
     };
+
 
     const handleNavigateToAddCard = () => {
         console.log("--- DEBUG ---");
@@ -102,6 +104,11 @@ export default function ManageCards (){
         </>
     );
 
+    const numColumns = 4;
+    const screenPadding = 20 * 2;
+    const cardMargin = 6 * 2 * numColumns;
+    const availableWidth = width - screenPadding - cardMargin;
+    const cardWidth = availableWidth / numColumns;
 
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -110,7 +117,7 @@ export default function ManageCards (){
                 keyExtractor={item => item.game_id.toString()}
                 numColumns={3}
                 renderItem={({ item }) => (
-                    <View style={styles.card}>
+                    <View style={[styles.card, { width: cardWidth }]}>
                         <Text style={styles.cardText}>{item.card_text}</Text>
                     </View>
                 )}
@@ -133,7 +140,6 @@ const styles = StyleSheet.create({
         flex: 1,
         // backgroundColor: Colors.light.white,
         paddingHorizontal: 30, 
-        paddingVertical: 60, 
         alignItems: 'center',
         gap: 30,
         justifyContent: 'space-between',
@@ -184,7 +190,7 @@ const styles = StyleSheet.create({
     },
     containerBtn: {
         width: '100%',
-        gap: 10
+        gap: 10,
     },
     finalizarBtn: {
         borderWidth: 1,
@@ -240,9 +246,10 @@ const styles = StyleSheet.create({
     },
     grid: {
         flex: 1,
+        marginVertical: 40
     },
     card: {
-        flex: 1,
+        // flex: 1,
         aspectRatio: 0.80,
         margin: 6,
         backgroundColor: '#F8FAFC',
