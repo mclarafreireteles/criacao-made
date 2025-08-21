@@ -29,8 +29,8 @@ export function OptionSelector({
   const selectedOptionLabel = options.find(option => option.id === selectedValue)?.label;
 
   const handleSelect = (id: string) => {
-    onSelect(id); // Atualiza o estado no formulário
-    setModalVisible(false); // Fecha o modal
+    onSelect(id); 
+    setModalVisible(false); 
   };
 
   return (

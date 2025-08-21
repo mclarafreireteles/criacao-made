@@ -1,7 +1,7 @@
 import React from 'react';
 import { Pressable, Text, PressableProps, View, StyleSheet, Platform  } from "react-native"
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { GameDatabase } from '../database/useGameDatabase';
 import Colors from '@/constants/Colors';
 
@@ -42,7 +42,7 @@ export function Game({data, ...rest}: Props){
                             <Text style={styles.titleText}>{data.title}</Text>
                         </View>
                         <Pressable onPress={handleEdit} style={styles.editButton}>
-                            <Ionicons name="pencil" size={20} color={Colors.light.blue} />
+                             <MaterialIcons name="edit" size={18} color={Colors.light.blue} />
                         </Pressable>
                     </View>
                     <Text style={styles.subtitleText}>{data.content}</Text>

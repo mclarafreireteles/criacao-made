@@ -18,6 +18,7 @@ export type GameDatabase = {
 }
 
 export type CardDatabase = {
+    id: number,
     game_id: number;
     card_text: string;
 }
@@ -119,7 +120,13 @@ export function useGameDatabase(){
         await database.runAsync("DELETE FROM cards WHERE id = ?", [cardId])
     }
 
+    async function updateCard(cardId: number, newText: string) {
+        await database.runAsync(
+            'UPDATE cards SET card_text = ? WHERE id = ?',
+            [newText, cardId]
+        )
+    }
 
 
-    return { create, searchByTitle, searchByUser , updateGameSetting, createCard, deleteCard, getCardsByGameId   }
+    return { create, searchByTitle, searchByUser , updateGameSetting, createCard, deleteCard, updateCard, getCardsByGameId  }
 }

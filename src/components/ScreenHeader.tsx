@@ -40,11 +40,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 20,
     width: '100%',
     marginBottom: 20
-    // marginBottom: 40
-    // paddingVertical: 20,
   },
   title: {
     fontSize: 22,
@@ -53,10 +50,10 @@ const styles = StyleSheet.create({
   },
   leftAction: {
     position: 'absolute',
-    left: 20, // Alinha com o paddingHorizontal do container
+    left: 20, 
   },
   rightAction: {
     position: 'absolute',
-    right: 20, // Alinha com o paddingHorizontal do container
+    right: 20, 
   },
 });

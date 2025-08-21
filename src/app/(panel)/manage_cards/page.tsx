@@ -1,8 +1,9 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, Pressable, StyleSheet, FlatList, SafeAreaView, useWindowDimensions, Dimensions } from "react-native";
+import { View, Text, Pressable, StyleSheet, FlatList, SafeAreaView, useWindowDimensions, Dimensions, Alert } from "react-native";
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useGameDatabase, CardDatabase } from '@/src/database/useGameDatabase';
 import { StyledInput } from '@/src/components/StyledInput';
 import Colors from '@/constants/Colors';
@@ -17,7 +18,7 @@ export default function ManageCards (){
     const { game_id } = useLocalSearchParams();
     const gameIdNumber = Number(game_id)
 
-    const { getCardsByGameId, createCard, updateGameSetting } = useGameDatabase();
+    const { getCardsByGameId, createCard, updateGameSetting, deleteCard } = useGameDatabase();
 
     const [cards, setCards] = useState<CardDatabase[]>([]);
     const [codeLength, setCodeLength] = useState<number | null>(null);
@@ -54,6 +55,13 @@ export default function ManageCards (){
         router.push({
             pathname:'/manage_cards/add_card',
             params: {game_id: gameIdNumber}
+        })
+    }
+
+    const handleNavigateToEditCard = (card: CardDatabase) => {
+        router.push({
+            pathname: '/manage_cards/edit_card',
+            params: { card_id: card.id, card_text: card.card_text }
         })
     }
 
@@ -114,12 +122,16 @@ export default function ManageCards (){
         <SafeAreaView style={styles.safeArea}>
             <FlatList
                 data={cards}
-                keyExtractor={item => item.game_id.toString()}
+                keyExtractor={item => item.id.toString()}
                 numColumns={3}
                 renderItem={({ item }) => (
                     <View style={[styles.card, { width: cardWidth }]}>
                         <Text style={styles.cardText}>{item.card_text}</Text>
+                        <Pressable onPress={() => handleNavigateToEditCard(item)} style={styles.editBtn}>
+                             <MaterialIcons name="edit" size={18} color={Colors.light.blue} />
+                        </Pressable>
                     </View>
+                    
                 )}
                 ListHeaderComponent={renderHeader}
                 ListFooterComponent={renderFooter}
@@ -128,6 +140,7 @@ export default function ManageCards (){
                 ListEmptyComponent={
                     <View style={styles.emptyGrid}>
                         <Text style={styles.emptyGridText}>Adicione sua primeira carta</Text>
+                         
                     </View>
                 }
             />
@@ -138,8 +151,6 @@ export default function ManageCards (){
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // backgroundColor: Colors.light.white,
-        paddingHorizontal: 30, 
         alignItems: 'center',
         gap: 30,
         justifyContent: 'space-between',
@@ -276,5 +287,13 @@ const styles = StyleSheet.create({
         color: Colors.light.blue,
         fontSize: 16,
         fontWeight: '500',
-    }
+    },
+    editBtn: {
+        position: 'absolute',
+        top: 4,
+        right: 4,
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        borderRadius: 10,
+        padding: 2,
+    },
 })

@@ -4,6 +4,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useGameDatabase } from '@/src/database/useGameDatabase';
 import { StyledInput } from '@/src/components/StyledInput';
 import Colors from '@/constants/Colors';
+import { ScreenHeader } from '@/src/components/ScreenHeader';
 
 export default function AddCardScreen() {
     const router = useRouter();
@@ -33,7 +34,7 @@ export default function AddCardScreen() {
     return (
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.container}>
-                <Text style={styles.title}>Adicionar Nova Carta</Text>
+                <ScreenHeader title="Adicionar carta" />
                 
                 <StyledInput
                     label="Texto da Carta"
