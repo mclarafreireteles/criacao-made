@@ -19,8 +19,9 @@ export type GameDatabase = {
 
 export type CardDatabase = {
     id: number,
-    game_id: number;
-    card_text: string;
+    game_id: number,
+    card_text: string,
+    type_answer: string
 }
 
 export function useGameDatabase(){

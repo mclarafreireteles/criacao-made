@@ -92,14 +92,14 @@ export default function EditCardScreen() {
 
     return (
         <SafeAreaView style={styles.safeArea}>
-            <View style={styles.containerScreen}>\
+            <View style={styles.containerScreen}>
                 <ScreenHeader title="Editar Carta" />
                 <View style={styles.container}>
                     <StyledInput
-                        label="Texto da Carta"
+                        label="Resposta da Carta"
                         value={cardText}
                         onChangeText={setCardText}
-                        multiline
+                        multiline={true}
                         numberOfLines={4}
                         style={{ minHeight: 120, textAlignVertical: 'top' }}
                     />
@@ -124,10 +124,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     containerScreen: {
-        marginVertical: 40
+        marginVertical: 80,
+        flex: 1
+
     },
     container: {
-        flex: 1,
         padding: 20,
     },
     buttonContainer: {

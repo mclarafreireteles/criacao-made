@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
     },
     grid: {
         flex: 1,
-        marginVertical: 40
+        marginVertical: 80,
     },
     card: {
         // flex: 1,

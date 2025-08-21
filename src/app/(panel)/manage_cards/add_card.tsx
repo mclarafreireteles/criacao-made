@@ -21,7 +21,7 @@ export default function AddCardScreen() {
         }
         setLoading(true);
         try {
-            await createCard({ game_id: gameIdNumber, card_text: cardText });
+            await createCard({ game_id: gameIdNumber, card_text: cardText, type_answer: 'aguardando desenvolvimentop' });
             router.back();
         } catch (error) {
             console.error("Erro ao salvar carta:", error);
@@ -37,7 +37,7 @@ export default function AddCardScreen() {
                 <ScreenHeader title="Adicionar carta" />
                 
                 <StyledInput
-                    label="Texto da Carta"
+                    label="Resposta da Carta"
                     placeholder="Digite o código secreto ou pergunta..."
                     value={cardText}
                     onChangeText={setCardText}
@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
+        marginVertical: 60
     },
     title: {
         fontSize: 24,
