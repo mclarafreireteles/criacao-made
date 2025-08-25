@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable, Alert, SafeAreaView, Switch } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Alert, SafeAreaView } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useGameDatabase } from '@/src/database/useGameDatabase';
 import { StyledInput } from '@/src/components/StyledInput';
@@ -13,13 +13,20 @@ export default function AddCardScreen() {
 
     const { createCard } = useGameDatabase();
     const [cardText, setCardText] = useState('');
-    const [isCorrect, setIsCorrect] = useState(false);
+    const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
     const [loading, setLoading] = useState(false);
 
+    const handleSetCorrect = () => {
+        setIsCorrect(true);
+    }
+
+    const handleSetIncorrect = () => {
+        setIsCorrect(false);
+    }
+
     const handleSaveCard = async () => {
-        if (cardText.trim() === '') {
-            return Alert.alert("Erro", "O texto da carta não pode ser vazio.");
-        }
+        if (cardText.trim() === '') return Alert.alert("Erro", "O texto da carta não pode ser vazio.");
+        if (isCorrect === null) return Alert.alert("Atenção", "Por favor, classifique a resposta como correta ou incorreta.");
         setLoading(true);
         try {
             await createCard({ game_id: gameIdNumber, card_text: cardText, card_type: isCorrect });
@@ -46,15 +53,22 @@ export default function AddCardScreen() {
                     numberOfLines={4}
                 />
 
-                <View style={styles.switchContainer}>
-                  <Text style={styles.switchLabel}>Esta é a resposta correta?</Text>
-                  <Switch
-                    trackColor={{ false: "#767577", true: Colors.light.blue }}
-                    thumbColor={isCorrect ? "#f4f3f4" : "#f4f3f4"}
-                    onValueChange={setIsCorrect}
-                    value={isCorrect}
-                  />
+                <Text style={styles.classifyLabel}>Classificar resposta</Text>
+                <View style={styles.classifyContainer}>
+                    <Pressable
+                        style={[styles.classifyButton, !isCorrect && isCorrect !== null && styles.incorrectButtonActive]}
+                        onPress={handleSetIncorrect}
+                    >
+                        <Text style={[styles.classifyButtonText, !isCorrect && isCorrect !== null && styles.incorrectTextActive]}>Incorreta</Text>
+                    </Pressable>
+                    <Pressable
+                        style={[styles.classifyButton, isCorrect && styles.correctButtonActive]}
+                        onPress={handleSetCorrect}
+                    >
+                        <Text style={[styles.classifyButtonText, isCorrect && styles.correctTextActive]}>Correta</Text>
+                    </Pressable>
                 </View>
+        
 
                 <Pressable style={styles.button} onPress={handleSaveCard} disabled={loading}>
                     <Text style={styles.buttonText}>{loading ? 'Salvando...' : 'Salvar Carta'}</Text>
@@ -99,5 +113,44 @@ const styles = StyleSheet.create({
     switchLabel: {
         fontSize: 16,
         color: '#333',
-    }
+    },
+    classifyLabel: {
+        fontSize: 16,
+        color: '#333',
+        marginBottom: 10,
+    },
+    classifyContainer: {
+        flexDirection: 'row',
+        gap: 15,
+        marginBottom: 20,
+    },
+    classifyButton: {
+        flex: 1,
+        paddingVertical: 10,
+        borderRadius: 15,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 1,
+        borderColor: '#ccc',
+        backgroundColor: '#f9f9f9',
+    },
+    classifyButtonText: {
+        fontSize: 16,
+        fontWeight: '500',
+        color: '#555',
+    },
+    incorrectButtonActive: {
+        backgroundColor: '#ffe0e0',
+        borderColor: '#ff8a80',
+    },
+    incorrectTextActive: {
+        color: '#e53935',
+    },
+    correctButtonActive: {
+        backgroundColor: '#e6ffe9',
+        borderColor: '#a5d6a7',
+    },
+    correctTextActive: {
+        color: '#43a047',
+    },
 });

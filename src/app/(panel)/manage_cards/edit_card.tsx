@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     primaryButton: {
         backgroundColor: Colors.light.blue,
         padding: 15,
-        borderRadius: 12,
+        borderRadius: 20,
         alignItems: 'center',
         marginBottom: 10,
     },
