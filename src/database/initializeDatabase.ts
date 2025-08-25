@@ -1,5 +1,6 @@
 import { type SQLiteDatabase } from 'expo-sqlite'
 
+
 export async function initializeDatabase(database: SQLiteDatabase) {
     await database.execAsync(`
 
@@ -26,7 +27,7 @@ export async function initializeDatabase(database: SQLiteDatabase) {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             game_id INTEGER NOT NULL,
             card_text TEXT NOT NULL,
-            card_type TEXT DEFAULT 'default',
+            card_type TEXT DEFAULT 0,
             image_url TEXT,
             display_order INTEGER DEFAULT 0,
             FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE
