@@ -10,9 +10,12 @@ import { ScreenHeader } from '@/src/components/ScreenHeader';
 export default function EditCardScreen() {
     const router = useRouter();
     const params = useLocalSearchParams();
+
+    console.log("Parâmetros de navegação recebidos:", params);
+
     const cardId = Number(params.card_id);
     const initialText = String(params.card_text || '');
-    const initialIsCorrect = params.card_type === 'true';
+    const initialIsCorrect = params.card_type === '1';
 
     const { updateCard, deleteCard } = useGameDatabase();
     

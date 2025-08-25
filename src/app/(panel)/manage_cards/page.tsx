@@ -59,10 +59,13 @@ export default function ManageCards (){
     }
 
     const handleNavigateToEditCard = (card: CardDatabase) => {
-        router.push({
-            pathname: '/manage_cards/edit_card',
-            params: { card_id: card.id, card_text: card.card_text }
-        })
+        const params = {
+            card_id: card.id,
+            card_text: card.card_text,
+            card_type: String(card.card_type)
+        }
+        console.log("Parâmetros de navegação sendo enviados:", params);
+        router.push({ pathname: '/manage_cards/edit_card', params })
     }
 
     const renderHeader = () => (
