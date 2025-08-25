@@ -1,6 +1,6 @@
 // app/(panel)/manage_cards/edit_card.tsx
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable, Alert, SafeAreaView, Platform } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Alert, SafeAreaView, Platform, Switch } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useGameDatabase } from '@/src/database/useGameDatabase';
 import { StyledInput } from '@/src/components/StyledInput';
@@ -12,17 +12,19 @@ export default function EditCardScreen() {
     const params = useLocalSearchParams();
     const cardId = Number(params.card_id);
     const initialText = String(params.card_text || '');
+    const initialIsCorrect = params.is_correct === 'true';
 
     const { updateCard, deleteCard } = useGameDatabase();
     
     const [cardText, setCardText] = useState(initialText);
+    const [isCorrect, setIsCorrect] = useState(initialIsCorrect);
     const [loading, setLoading] = useState(false);
 
     const handleUpdateCard = async () => {
         if (cardText.trim() === '') return Alert.alert("Erro", "O texto não pode ser vazio.");
         setLoading(true);
         try {
-            await updateCard(cardId, cardText);
+            await updateCard(cardId, cardText, isCorrect);
             router.back(); 
         } catch (error) {
             console.error("Erro ao atualizar carta:", error);
@@ -103,6 +105,16 @@ export default function EditCardScreen() {
                         numberOfLines={4}
                         style={{ minHeight: 120, textAlignVertical: 'top' }}
                     />
+                
+                    <View style={styles.switchContainer}>
+                        <Text style={styles.switchLabel}>Esta é a resposta correta?</Text>
+                        <Switch
+                            trackColor={{ false: "#767577", true: Colors.light.blue }}
+                            thumbColor={isCorrect ? "#f4f3f4" : "#f4f3f4"}
+                            onValueChange={setIsCorrect}
+                            value={isCorrect}
+                        />
+                    </View>
                     
                     <View style={styles.buttonContainer}>
                         <Pressable style={styles.primaryButton} onPress={handleUpdateCard} disabled={loading}>
@@ -157,4 +169,15 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '500',
     },
+    switchContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 10,
+        marginBottom: 20,
+    },
+    switchLabel: {
+        fontSize: 16,
+        color: '#333',
+    }
 });
