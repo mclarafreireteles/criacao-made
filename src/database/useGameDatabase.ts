@@ -21,7 +21,13 @@ export type CardDatabase = {
     id: number,
     game_id: number,
     card_text: string,
-    type_answer: string
+    card_type?: boolean
+}
+
+export type NewCardDatabase = {
+    game_id: number;
+    card_text: string;
+    card_type?: boolean
 }
 
 export function useGameDatabase(){
@@ -103,12 +109,13 @@ export function useGameDatabase(){
 
     async function createCard(data: Omit<CardDatabase, 'id'>) {
         const statement = await database.prepareAsync(
-            "INSERT INTO cards (game_id, card_text) VALUES ($game_id, $card_text)"
+            "INSERT INTO cards (game_id, card_text, card_type) VALUES ($game_id, $card_text, $card_type)"
         );
         try {
             const result = await statement.executeAsync({
                 $game_id: data.game_id,
-                $card_text: data.card_text
+                $card_text: data.card_text,
+                $card_type: data.card_type ? 1 : 0
             });
             const insertedRowId = result.lastInsertRowId;
             return { insertedRowId }
@@ -121,10 +128,10 @@ export function useGameDatabase(){
         await database.runAsync("DELETE FROM cards WHERE id = ?", [cardId])
     }
 
-    async function updateCard(cardId: number, newText: string) {
+    async function updateCard(cardId: number, newText: string, isCorrect: boolean) {
         await database.runAsync(
-            'UPDATE cards SET card_text = ? WHERE id = ?',
-            [newText, cardId]
+            'UPDATE cards SET card_text = ?, card_type = ? WHERE id = ?',
+            [newText, isCorrect ? 1 : 0, cardId]
         )
     }
 

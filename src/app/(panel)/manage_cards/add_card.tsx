@@ -21,7 +21,7 @@ export default function AddCardScreen() {
         }
         setLoading(true);
         try {
-            await createCard({ game_id: gameIdNumber, card_text: cardText, type_answer: 'aguardando desenvolvimentop' });
+            await createCard({ game_id: gameIdNumber, card_text: cardText });
             router.back();
         } catch (error) {
             console.error("Erro ao salvar carta:", error);
