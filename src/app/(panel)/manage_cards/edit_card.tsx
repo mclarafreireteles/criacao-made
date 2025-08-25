@@ -1,6 +1,6 @@
 // app/(panel)/manage_cards/edit_card.tsx
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable, Alert, SafeAreaView, Platform, Switch } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Alert, SafeAreaView, Platform} from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useGameDatabase } from '@/src/database/useGameDatabase';
 import { StyledInput } from '@/src/components/StyledInput';
@@ -12,16 +12,25 @@ export default function EditCardScreen() {
     const params = useLocalSearchParams();
     const cardId = Number(params.card_id);
     const initialText = String(params.card_text || '');
-    const initialIsCorrect = params.is_correct === 'true';
+    const initialIsCorrect = params.card_type === 'true';
 
     const { updateCard, deleteCard } = useGameDatabase();
     
     const [cardText, setCardText] = useState(initialText);
-    const [isCorrect, setIsCorrect] = useState(initialIsCorrect);
+    const [isCorrect, setIsCorrect] = useState<boolean | null>(initialIsCorrect);
     const [loading, setLoading] = useState(false);
+
+    const handleSetCorrect = () => {
+        setIsCorrect(true);
+    }
+
+    const handleSetIncorrect = () => {
+        setIsCorrect(false);
+    }
 
     const handleUpdateCard = async () => {
         if (cardText.trim() === '') return Alert.alert("Erro", "O texto não pode ser vazio.");
+        if (isCorrect === null) return Alert.alert("Atenção", "Por favor, classifique a resposta como correta ou incorreta.");
         setLoading(true);
         try {
             await updateCard(cardId, cardText, isCorrect);
@@ -33,28 +42,6 @@ export default function EditCardScreen() {
         }
     };
 
-    // Função para excluir a carta
-    // const handleDeleteCard = () => {
-    //     Alert.alert(
-    //         "Excluir Carta",
-    //         "Você tem certeza que deseja excluir esta carta? Esta ação não pode ser desfeita.",
-    //         [
-    //             { text: "Cancelar", style: "cancel" },
-    //             { 
-    //                 text: "Sim, Excluir", 
-    //                 style: "destructive",
-    //                 onPress: async () => {
-    //                     try {
-    //                         await deleteCard(cardId);
-    //                         router.back(); 
-    //                     } catch (error) {
-    //                         console.error("Erro ao deletar carta:", error);
-    //                     }
-    //                 }
-    //             }
-    //         ]
-    //     );
-    // };
 
     const handleDeleteCard = () => {
         // 2. EXTRAÍMOS A LÓGICA DE EXCLUSÃO PARA UMA FUNÇÃO SEPARADA PARA REUTILIZAR
@@ -106,14 +93,20 @@ export default function EditCardScreen() {
                         style={{ minHeight: 120, textAlignVertical: 'top' }}
                     />
                 
-                    <View style={styles.switchContainer}>
-                        <Text style={styles.switchLabel}>Esta é a resposta correta?</Text>
-                        <Switch
-                            trackColor={{ false: "#767577", true: Colors.light.blue }}
-                            thumbColor={isCorrect ? "#f4f3f4" : "#f4f3f4"}
-                            onValueChange={setIsCorrect}
-                            value={isCorrect}
-                        />
+                    <Text style={styles.classifyLabel}>Classificar resposta</Text>
+                    <View style={styles.classifyContainer}>
+                        <Pressable
+                            style={[styles.classifyButton, !isCorrect && isCorrect !== null && styles.incorrectButtonActive]}
+                            onPress={handleSetIncorrect}
+                        >
+                            <Text style={[styles.classifyButtonText, !isCorrect && isCorrect !== null && styles.incorrectTextActive]}>Incorreta</Text>
+                        </Pressable>
+                        <Pressable
+                            style={[styles.classifyButton, isCorrect && styles.correctButtonActive]}
+                            onPress={handleSetCorrect}
+                        >
+                            <Text style={[styles.classifyButtonText, isCorrect && styles.correctTextActive]}>Correta</Text>
+                        </Pressable>
                     </View>
                     
                     <View style={styles.buttonContainer}>
@@ -169,15 +162,43 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '500',
     },
-    switchContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingVertical: 10,
-        marginBottom: 20,
-    },
-    switchLabel: {
+    classifyLabel: {
         fontSize: 16,
         color: '#333',
-    }
+        marginBottom: 10,
+    },
+    classifyContainer: {
+        flexDirection: 'row',
+        gap: 15,
+        marginBottom: 20,
+    },
+    classifyButton: {
+        flex: 1,
+        paddingVertical: 10,
+        borderRadius: 15,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 1,
+        borderColor: '#ccc',
+        backgroundColor: '#f9f9f9',
+    },
+    classifyButtonText: {
+        fontSize: 16,
+        fontWeight: '500',
+        color: '#555',
+    },
+    incorrectButtonActive: {
+        backgroundColor: '#ffe0e0',
+        borderColor: '#ff8a80',
+    },
+    incorrectTextActive: {
+        color: '#e53935',
+    },
+    correctButtonActive: {
+        backgroundColor: '#e6ffe9',
+        borderColor: '#a5d6a7',
+    },
+    correctTextActive: {
+        color: '#43a047',
+    },
 });

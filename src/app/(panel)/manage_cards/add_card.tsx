@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable, Alert, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Alert, SafeAreaView, Switch } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useGameDatabase } from '@/src/database/useGameDatabase';
 import { StyledInput } from '@/src/components/StyledInput';
@@ -13,6 +13,7 @@ export default function AddCardScreen() {
 
     const { createCard } = useGameDatabase();
     const [cardText, setCardText] = useState('');
+    const [isCorrect, setIsCorrect] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const handleSaveCard = async () => {
@@ -21,7 +22,7 @@ export default function AddCardScreen() {
         }
         setLoading(true);
         try {
-            await createCard({ game_id: gameIdNumber, card_text: cardText });
+            await createCard({ game_id: gameIdNumber, card_text: cardText, card_type: isCorrect });
             router.back();
         } catch (error) {
             console.error("Erro ao salvar carta:", error);
@@ -44,6 +45,16 @@ export default function AddCardScreen() {
                     multiline={true}
                     numberOfLines={4}
                 />
+
+                <View style={styles.switchContainer}>
+                  <Text style={styles.switchLabel}>Esta é a resposta correta?</Text>
+                  <Switch
+                    trackColor={{ false: "#767577", true: Colors.light.blue }}
+                    thumbColor={isCorrect ? "#f4f3f4" : "#f4f3f4"}
+                    onValueChange={setIsCorrect}
+                    value={isCorrect}
+                  />
+                </View>
 
                 <Pressable style={styles.button} onPress={handleSaveCard} disabled={loading}>
                     <Text style={styles.buttonText}>{loading ? 'Salvando...' : 'Salvar Carta'}</Text>
@@ -78,4 +89,15 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
+    switchContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 10,
+        marginBottom: 20,
+    },
+    switchLabel: {
+        fontSize: 16,
+        color: '#333',
+    }
 });
