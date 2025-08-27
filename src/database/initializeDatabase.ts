@@ -7,7 +7,7 @@ export async function initializeDatabase(database: SQLiteDatabase) {
 
     try {
         const result = await database.getFirstAsync<{ user_version: number }>('PRAGMA user_version');
-        version = result?.user_version ?? 0;
+        version = result?.user_version ?? 0; 
     } catch(e) {
     }
 
@@ -38,7 +38,7 @@ export async function initializeDatabase(database: SQLiteDatabase) {
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     game_id INTEGER NOT NULL,
                     card_text TEXT NOT NULL,
-                    is_correct INTEGER DEFAULT 0, // Mudei para is_correct para ficar mais claro
+                    is_correct INTEGER DEFAULT 0, 
                     image_url TEXT,
                     display_order INTEGER DEFAULT 0,
                     FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE
