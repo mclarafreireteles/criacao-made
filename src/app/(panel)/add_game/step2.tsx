@@ -1,4 +1,4 @@
-    import { View, Button, StyleSheet, Text, Pressable } from "react-native";
+    import { View, Button, StyleSheet, Text, Pressable, Alert } from "react-native";
     import { useRouter } from "expo-router";
     import { Input } from "@/src/components/input";
     import { useGameForm } from "@/src/contexts/GameFormContext";
@@ -9,6 +9,26 @@
     export default function Step1(){
         const router = useRouter();
         const { formData, updateFormData } = useGameForm();
+
+        const handleNextStep =() => {
+                const requiredFields = {
+                    rules: 'Regras',
+                    goal: 'Objetivo',
+                }
+        
+                // Faz um loop para verificar cada campo
+                for (const field in requiredFields) {
+                    const key = field as keyof typeof requiredFields;
+                    // A verificação `!.trim()` garante que o campo não está vazio ou só com espaços
+                    if (!formData[key]?.trim()) {
+                        Alert.alert('Campo Obrigatório', `Por favor, preencha o campo "${requiredFields[key]}".`);
+                        return; // Para a execução da função se encontrar um campo vazio
+                    }
+                }
+        
+                // Se o loop terminar e nenhum campo estiver vazio, navega para a próxima página
+                router.push('/(panel)/add_game/step3');
+            }
 
         return(
             <View style={styles.container}>
@@ -36,7 +56,7 @@
                         value={formData.background_image_url}
                     />
                 </View>
-                <Pressable style={styles.continuarBtn} onPress={() => router.push('/(panel)/add_game/step3')}>
+                <Pressable style={styles.continuarBtn} onPress={handleNextStep}>
                     <Text style={styles.continuarBtnTxt}>Continuar</Text>
                 </Pressable>
             </View>

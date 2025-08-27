@@ -24,6 +24,7 @@ export default function Step3() {
         const requiredFields = {
             title: 'Título do jogo',
             subject: 'Disciplina',
+            explanation: 'Explicação',
             goal: 'Objetivo',
             prompt: 'Enunciado',
         };
