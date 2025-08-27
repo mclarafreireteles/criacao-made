@@ -1,6 +1,6 @@
 import { type SQLiteDatabase } from 'expo-sqlite'
 
-const SCHEMA_VERSION = 1;
+const SCHEMA_VERSION = 2;
 
 export async function initializeDatabase(database: SQLiteDatabase) {
     let version = 0;
@@ -12,9 +12,10 @@ export async function initializeDatabase(database: SQLiteDatabase) {
     }
 
     await database.withTransactionAsync( async () => {
-        if (version < 1) {
+        if (version < SCHEMA_VERSION) {
             console.log("database: criando schema inicial")
             await database.execAsync(`
+
                 CREATE TABLE IF NOT EXISTS games (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     user_id TEXT NOT NULL, 
@@ -38,7 +39,7 @@ export async function initializeDatabase(database: SQLiteDatabase) {
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     game_id INTEGER NOT NULL,
                     card_text TEXT NOT NULL,
-                    is_correct INTEGER DEFAULT 0, 
+                    card_type INTEGER DEFAULT 0, 
                     image_url TEXT,
                     display_order INTEGER DEFAULT 0,
                     FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE
