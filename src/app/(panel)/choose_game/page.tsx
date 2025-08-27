@@ -11,6 +11,7 @@ import { useAuth } from '@/src/contexts/AuthContext';
 import Colors from "@/constants/Colors";
 
 import { ScreenHeader } from "@/src/components/ScreenHeader";
+import { ScreenContainer } from "@/src/components/ScreenContainer";
 
 import { BackButtonIcon } from "@/src/components/icons/BackButtonIcon";
 
@@ -33,6 +34,12 @@ export default function ChooseGame(){
         try {
             console.log('CHOOSE GAME SCREEN - Buscando jogos para o User ID:', user.id);
             const response = await gameDatabase.searchByUser(user.id);
+
+            console.log("--- DADOS ENCONTRADOS NO SQLITE ---");
+            console.log(`Encontrados ${response.length} jogos.`);
+            console.log(JSON.stringify(response, null, 2)); // Mostra os dados formatados
+            console.log("------------------------------------");
+
             setGames(response);
         } catch (error) {
             console.log("Erro ao listar jogos", error)
@@ -44,12 +51,7 @@ export default function ChooseGame(){
     }, [search, user])
     
     return (
-        <View style={styles.container}>
-            {/* <BackButtonIcon
-                style={styles.backButton}
-                onPress={() => router.back()}
-            />
-            <Text style={styles.chooseGameTitle}>Escolher jogo</Text> */}
+        <ScreenContainer>
             <ScreenHeader title="Escolher jogos" />
             <FlatList 
                 data={games} 
@@ -62,7 +64,7 @@ export default function ChooseGame(){
                 )}
                 contentContainerStyle={games.length === 0 ? styles.emptyListStyle : {}}
             />
-        </View>
+        </ScreenContainer>
     )
 }
 

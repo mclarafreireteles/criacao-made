@@ -8,6 +8,7 @@ import { useGameDatabase, CardDatabase } from '@/src/database/useGameDatabase';
 import { StyledInput } from '@/src/components/StyledInput';
 import Colors from '@/constants/Colors';
 import { ScreenHeader } from '@/src/components/ScreenHeader';
+import { ScreenContainer } from '@/src/components/ScreenContainer';
 
 
 const CODE_LENGTH_OPTIONS = [3, 4, 5, 6];
@@ -123,6 +124,7 @@ export default function ManageCards (){
 
     return (
         <SafeAreaView style={styles.safeArea}>
+        {/* <ScreenContainer> */}
             <FlatList
                 data={cards}
                 keyExtractor={item => item.id.toString()}
@@ -147,7 +149,9 @@ export default function ManageCards (){
                     </View>
                 }
             />
+        {/* </ScreenContainer> */}
         </SafeAreaView>
+        
     )
 }
 
@@ -205,6 +209,7 @@ const styles = StyleSheet.create({
     containerBtn: {
         width: '100%',
         gap: 10,
+        paddingBottom: 60
     },
     finalizarBtn: {
         borderWidth: 1,
@@ -260,7 +265,7 @@ const styles = StyleSheet.create({
     },
     grid: {
         flex: 1,
-        marginVertical: 80,
+        paddingTop: 60,
     },
     card: {
         // flex: 1,
