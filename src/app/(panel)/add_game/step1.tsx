@@ -16,6 +16,16 @@ export default function Step1(){
         {id: 'secret_code', label: 'Código secreto'},
     ]
 
+    const handleNextStep =() => {
+        const requiredFields = {
+            model: 'Modelo de jogo',
+            subject: 'Disciplina',
+            content: 'Conteúdo',
+            grade: 'Série',
+            authors: 'Autores',
+        }
+    }
+
     return(
         <View style={styles.container}>
             <BackButtonIcon
@@ -132,6 +142,7 @@ const styles = StyleSheet.create({
     },
     createGameTitle: {
         fontSize: 24,
+        marginBottom: 20
     },
     containerInput: {
         minWidth: '80%',
