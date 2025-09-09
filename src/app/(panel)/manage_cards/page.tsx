@@ -19,25 +19,52 @@ export default function ManageCards (){
     const { game_id } = useLocalSearchParams();
     const gameIdNumber = Number(game_id)
 
-    const { getCardsByGameId, createCard, updateGameSetting, deleteCard } = useGameDatabase();
+    const { getCardsByGameId, createCard, updateGameSetting, deleteCard, getGameById } = useGameDatabase();
 
     const [cards, setCards] = useState<CardDatabase[]>([]);
     const [codeLength, setCodeLength] = useState<number | null>(null);
 
-    const fetchCards = useCallback(async () => {
-        if (!gameIdNumber) return;
+    // const fetchCards = useCallback(async () => {
+    //     if (!gameIdNumber) return;
+    //     try {
+    //         const response = await getCardsByGameId(gameIdNumber);
+    //         setCards(response);
+    //     } catch (error) {
+    //         console.error("Erro ao buscar cartas:", error);
+    //     }
+    // }, [gameIdNumber]);
+
+
+    // useFocusEffect(
+    //     useCallback(() => {
+    //         fetchCards();
+    //     }, [fetchCards])
+    // );
+
+    const fetchCardsAndSettings = useCallback(async () => {
+    if (!gameIdNumber) return;
         try {
-            const response = await getCardsByGameId(gameIdNumber);
-            setCards(response);
+            // Busca as cartas e as configurações do jogo ao mesmo tempo
+            const [cardsResponse, gameResponse] = await Promise.all([
+                getCardsByGameId(gameIdNumber),
+                getGameById(gameIdNumber)
+            ]);
+            
+            setCards(cardsResponse);
+            if (gameResponse?.secret_code_length) {
+                setCodeLength(gameResponse.secret_code_length);
+            }
+
         } catch (error) {
-            console.error("Erro ao buscar cartas:", error);
+            console.error("Erro ao buscar dados:", error);
         }
     }, [gameIdNumber]);
 
+// Aponte o useFocusEffect para a nova função
     useFocusEffect(
         useCallback(() => {
-            fetchCards();
-        }, [fetchCards])
+            fetchCardsAndSettings();
+        }, [fetchCardsAndSettings])
     );
 
     const handleSetCodeLength = async (length: number) => {
@@ -106,11 +133,11 @@ export default function ManageCards (){
             </Pressable>
 
             <View style={styles.containerBtn}>
-                <Pressable style={styles.finalizarBtn} onPress={() => router.replace('/(panel)/home/page')}>
-                    <Text style={styles.finalizarBtnTxt}>Finalizar</Text>
-                </Pressable>
                 <Pressable style={styles.testarBtn}>
                     <Text style={styles.testarBtnTxt}>Testar jogo</Text>
+                </Pressable>
+                <Pressable style={styles.finalizarBtn} onPress={() => router.replace('/(panel)/home/page')}>
+                    <Text style={styles.finalizarBtnTxt}>Salvar</Text>
                 </Pressable>
             </View>
         </>
@@ -198,13 +225,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     lengthButtonActive: {
-
+        backgroundColor: Colors.light.blue,
     },
     lengthButtonText: {
-
+        fontSize: 18,
+        color: Colors.light.darkGrey,
     },
     lengthButtonTextActive: {
-
+        color: '#FFFFFF',
+        fontWeight: 'bold',
     },
     containerBtn: {
         width: '100%',

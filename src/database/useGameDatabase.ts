@@ -14,7 +14,8 @@ export type GameDatabase = {
     background_image_url: string,
     prompt: string, // 
     explanation: string,
-    model: string
+    model: string,
+    secret_code_length: number
 }
 
 export type CardDatabase = {
@@ -135,6 +136,16 @@ export function useGameDatabase(){
         )
     }
 
+    async function getGameById(gameId: number){
+        const statement = await database.prepareAsync('SELECT * FROM games WHERE id = ?');
+        try {
+            const result = await statement.executeAsync<GameDatabase>([gameId]);
+            return await result.getFirstAsync();
+        } finally {
+            await statement.finalizeAsync();
+        }
+    }
 
-    return { create, searchByTitle, searchByUser , updateGameSetting, createCard, deleteCard, updateCard, getCardsByGameId  }
+
+    return { create, searchByTitle, searchByUser , updateGameSetting, createCard, deleteCard, updateCard, getCardsByGameId, getGameById  }
 }
