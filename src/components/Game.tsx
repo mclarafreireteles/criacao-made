@@ -64,9 +64,13 @@ export function Game({data, ...rest}: Props){
 // 4. StyleSheet completo com todos os estilos necessários
 const styles = StyleSheet.create({
   container: {
+    // backgroundColor: 'red', 
     backgroundColor: '#FFFFFF',
     borderRadius: 16,
     borderWidth: 1,
+    width: '100%',
+    maxWidth: 800,
+    alignSelf: 'center',
     marginVertical: 10,
     // Sombra (efeito de elevação)
     ...Platform.select({

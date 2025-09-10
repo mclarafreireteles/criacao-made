@@ -62,7 +62,7 @@ export default function ChooseGame(){
                         Nenhum jogo ainda criado
                     </Text>
                 )}
-                contentContainerStyle={games.length === 0 ? styles.emptyListStyle : {}}
+                contentContainerStyle={games.length === 0 ? styles.emptyListStyle : styles.listStyle}
             />
         </ScreenContainer>
     )
@@ -95,5 +95,8 @@ const styles = StyleSheet.create({
         flexGrow: 1,            
         justifyContent: 'center', 
         alignItems: 'center',    
+    },
+    listStyle: {
+        justifyContent: 'center', 
     }
 })

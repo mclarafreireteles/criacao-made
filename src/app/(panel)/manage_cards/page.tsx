@@ -91,7 +91,7 @@ export default function ManageCards (){
     }
 
     const renderHeader = () => (
-        <>
+        <View style={styles.headerWrapper}> 
             <ScreenHeader title="Criar cartas" />
 
             <View style={styles.settingSection}>
@@ -126,7 +126,7 @@ export default function ManageCards (){
                 <Ionicons name="add" size={20} color="white" />
                 <Text style={styles.addCardButtonText}>Adicionar carta</Text>
             </Pressable>
-        </>
+        </View>
     );
 
     const renderFooter = () => (
@@ -175,7 +175,6 @@ export default function ManageCards (){
                 ListEmptyComponent={
                     <View style={styles.emptyGrid}>
                         <Text style={styles.emptyGridText}>Adicione sua primeira carta</Text>
-                         
                     </View>
                 }
             />
@@ -188,23 +187,18 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        gap: 30,
-        justifyContent: 'space-between',
+        // gap: 30,
+        // justifyContent: 'space-between',
+        paddingHorizontal: 20,
         width: '100%',
-    },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingTop: 20,
-        marginBottom: 24,
     },
     title: {
         fontSize: 24,
     },
     safeArea: {
         flex: 1,
-        backgroundColor: Colors.light.white,
+        backgroundColor: Colors.light.lightGreen,
+        width: '100%'
     },
     settingSection: {
         marginBottom: 24,
@@ -309,6 +303,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 5,
+        maxWidth: 100,
     },
     cardText: {
         fontSize: 12,
@@ -335,4 +330,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         padding: 2,
     },
+    headerWrapper: {
+        width: '100%',
+        marginBottom: 20, // Espaço entre o header e a grade
+    }
 })
