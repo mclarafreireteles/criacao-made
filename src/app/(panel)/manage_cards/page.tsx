@@ -23,23 +23,7 @@ export default function ManageCards (){
 
     const [cards, setCards] = useState<CardDatabase[]>([]);
     const [codeLength, setCodeLength] = useState<number | null>(null);
-
-    // const fetchCards = useCallback(async () => {
-    //     if (!gameIdNumber) return;
-    //     try {
-    //         const response = await getCardsByGameId(gameIdNumber);
-    //         setCards(response);
-    //     } catch (error) {
-    //         console.error("Erro ao buscar cartas:", error);
-    //     }
-    // }, [gameIdNumber]);
-
-
-    // useFocusEffect(
-    //     useCallback(() => {
-    //         fetchCards();
-    //     }, [fetchCards])
-    // );
+    const [selectionMode, setSelectionMode] = useState<'specific' | 'random' | null>(null);
 
     const fetchCardsAndSettings = useCallback(async () => {
     if (!gameIdNumber) return;
@@ -69,10 +53,20 @@ export default function ManageCards (){
 
     const handleSetCodeLength = async (length: number) => {
         setCodeLength(length);
+        setSelectionMode('specific');
         console.log(length)
         await updateGameSetting(gameIdNumber, length);
     };
 
+    const handleSetRandomCodeLength = async () => {
+        const randomIndex = Math.floor(Math.random() * CODE_LENGTH_OPTIONS.length);
+        const randomLength = CODE_LENGTH_OPTIONS[randomIndex];
+
+        await updateGameSetting(gameIdNumber, randomLength);
+
+        setCodeLength(randomLength);
+        setSelectionMode('random');
+    }
 
     const handleNavigateToAddCard = () => {
         console.log("--- DEBUG ---");
@@ -105,20 +99,30 @@ export default function ManageCards (){
                 <View style={styles.optionsContainer}>
                     {CODE_LENGTH_OPTIONS.map(len => (
                         <Pressable
-                            key={len}
-                            style={[styles.lengthButton, codeLength === len && styles.lengthButtonActive]}
-                            onPress={() => handleSetCodeLength(len)}
+                            key={len} 
+                            style={[styles.lengthButton, selectionMode == 'specific' && codeLength === len && styles.lengthButtonActive]}
+                            onPress={() => handleSetCodeLength(len)} 
                         >
-                            <Text style={[styles.lengthButtonText, codeLength === len && styles.lengthButtonTextActive]}>{len}</Text>
+                            <Text style={[styles.lengthButtonText, selectionMode === 'specific' && codeLength === len && styles.lengthButtonTextActive]}>{len}</Text>
                         </Pressable>
                     ))}
-                    <Pressable style={styles.lengthButton}>
-                        <Ionicons name="dice-outline" size={24} color={Colors.light.blue} />
+                    <Pressable 
+                        style={[
+                            styles.lengthButton, 
+                            selectionMode === 'random' && styles.lengthButtonActive
+                        ]}
+                        onPress={handleSetRandomCodeLength}
+                    >
+                        <Ionicons 
+                            name="dice-outline" 
+                            size={22} 
+                            color={selectionMode === 'random' ? Colors.light.white : Colors.light.blue}
+                        />
                     </Pressable>
                 </View>
             </View>
 
-            <Pressable style={styles.addCardButton} onPress={handleNavigateToAddCard}>
+            <Pressable style={styles.addCardButton} onPress={handleNavigateToAddCard} >
                 <Ionicons name="add" size={20} color="white" />
                 <Text style={styles.addCardButtonText}>Adicionar carta</Text>
             </Pressable>
@@ -151,7 +155,6 @@ export default function ManageCards (){
 
     return (
         <SafeAreaView style={styles.safeArea}>
-        {/* <ScreenContainer> */}
             <FlatList
                 data={cards}
                 keyExtractor={item => item.id.toString()}
@@ -176,7 +179,6 @@ export default function ManageCards (){
                     </View>
                 }
             />
-        {/* </ScreenContainer> */}
         </SafeAreaView>
         
     )
@@ -220,7 +222,7 @@ const styles = StyleSheet.create({
         width: 48,
         height: 48,
         borderRadius: 24,
-        backgroundColor: '#E2E8F0',
+        backgroundColor: '#DFE6FF',
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -228,8 +230,8 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.light.blue,
     },
     lengthButtonText: {
-        fontSize: 18,
-        color: Colors.light.darkGrey,
+        fontSize: 16,
+        color: Colors.light.blue,
     },
     lengthButtonTextActive: {
         color: '#FFFFFF',
