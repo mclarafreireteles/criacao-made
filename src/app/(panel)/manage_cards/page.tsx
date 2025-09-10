@@ -1,14 +1,12 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, Pressable, StyleSheet, FlatList, SafeAreaView, useWindowDimensions, Dimensions, Alert } from "react-native";
+import { View, Text, Pressable, StyleSheet, FlatList, SafeAreaView, useWindowDimensions } from "react-native";
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useGameDatabase, CardDatabase } from '@/src/database/useGameDatabase';
-import { StyledInput } from '@/src/components/StyledInput';
 import Colors from '@/constants/Colors';
 import { ScreenHeader } from '@/src/components/ScreenHeader';
-import { ScreenContainer } from '@/src/components/ScreenContainer';
 
 
 const CODE_LENGTH_OPTIONS = [3, 4, 5, 6];
@@ -137,7 +135,13 @@ export default function ManageCards (){
             </Pressable>
 
             <View style={styles.containerBtn}>
-                <Pressable style={styles.testarBtn}>
+                <Pressable 
+                    style={styles.testarBtn} 
+                    onPress={() => router.push({ 
+                        pathname: '/(panel)/test_game/page', // A URL não precisa do (panel)
+                        params: { game_id: gameIdNumber } 
+                    })}
+                >
                     <Text style={styles.testarBtnTxt}>Testar jogo</Text>
                 </Pressable>
                 <Pressable style={styles.finalizarBtn} onPress={() => router.replace('/(panel)/home/page')}>
@@ -197,7 +201,7 @@ const styles = StyleSheet.create({
     },
     safeArea: {
         flex: 1,
-        backgroundColor: Colors.light.lightGreen,
+        backgroundColor: Colors.light.white,
         width: '100%'
     },
     settingSection: {
@@ -291,6 +295,7 @@ const styles = StyleSheet.create({
     grid: {
         flex: 1,
         paddingTop: 60,
+        // height: 10000,
     },
     card: {
         // flex: 1,
