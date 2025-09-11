@@ -1,18 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Pressable, FlatList } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, StyleSheet, Pressable, FlatList, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import Colors from '@/constants/Colors';
 import { ScreenContainer } from '@/src/components/ScreenContainer';
 import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { AppButton } from '@/src/components/AppButton';
-import { GameDatabase, useGameDatabase } from '@/src/database/useGameDatabase';
+import { GameDatabase, useGameDatabase, CardDatabase } from '@/src/database/useGameDatabase';
 
-// Dados de exemplo para montarmos a UI
-const MOCK_ANSWER_POOL = [
-    { id: 1, card_text: 'resposta' }, { id: 2, card_text: 'B' }, { id: 3, card_text: 'C' }, { id: 4, card_text: 'D' },
-    { id: 5, card_text: 'E' }, { id: 6, card_text: 'F' }, { id: 7, card_text: 'G' }, { id: 8, card_text: 'H' },
-    { id: 9, card_text: 'I' }, { id: 10, card_text: 'J' }, { id: 11, card_text: 'K' }, { id: 12, card_text: 'L' },
-];
 
 export default function TestGameScreen() {
     const router = useRouter();
@@ -21,41 +15,90 @@ export default function TestGameScreen() {
 
     const { getGameById, getCardsByGameId } = useGameDatabase();
     
-    // Estados para controlar a UI
+    // --- ESTADOS DO JOGO ---
     const [gameDetails, setGameDetails] = useState<GameDatabase | null>(null);
-    const [secretCodeLength, setSecretCodeLength] = useState(4); 
-    const [playerGuess, setPlayerGuess] = useState(['A', 'B']); // Exemplo: usuário já escolheu 2
-    const [feedback, setFeedback] = useState({ correctPosition: 3, correctCardWrongPosition: 1 });
+    const [secretCode, setSecretCode] = useState<CardDatabase[]>([]);
+    const [answerPool, setAnswerPool] = useState<CardDatabase[]>([]);
+    const [playerGuess, setPlayerGuess] = useState<CardDatabase[]>([]);
+    const [feedback, setFeedback] = useState<{ correctPosition: number, correctCardWrongPosition: number } | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
 
     // Função para renderizar os espaços da tentativa do usuário
+    // const renderGuessSlots = () => {
+    //     const slots = [];
+    //     for (let i = 0; i < secretCodeLength; i++) {
+    //         slots.push(
+    //             <View key={i} style={styles.guessSlot}>
+    //                 {playerGuess[i] && <Text style={styles.guessSlotText}>{playerGuess[i]}</Text>}
+    //             </View>
+    //         );
+    //     }
+    //     return slots;
+    // };
+
+    useEffect(() => {
+        const setupGame = async () => {
+            if (!gameIdNumber) return;
+            try {
+                setIsLoading(true);
+                // 1. Busca os dados do jogo e das cartas do banco
+                const [gameData, cardsData] = await Promise.all([
+                    getGameById(gameIdNumber),
+                    getCardsByGameId(gameIdNumber)
+                ]);
+                
+                if (gameData && cardsData.length > 0) {
+                    setGameDetails(gameData);
+                    const codeLength = gameData.secret_code_length || 4; // Padrão de 4 se não definido
+
+                    // 2. Filtra as cartas corretas e incorretas
+                    const correctCards = cardsData.filter(card => card.card_type);
+                    const incorrectCards = cardsData.filter(card => !card.card_type);
+
+                    // 3. Embaralha as cartas corretas para sortear o código secreto
+                    const shuffledCorrectCards = [...correctCards].sort(() => Math.random() - 0.5);
+                    const newSecretCode = shuffledCorrectCards.slice(0, codeLength);
+                    setSecretCode(newSecretCode);
+
+                    // 4. Monta o baralho de respostas (o código + distratores)
+                    // Ex: Pega 8 cartas incorretas para preencher o baralho
+                    const distractors = [...incorrectCards].sort(() => Math.random() - 0.5).slice(0, 8);
+                    const newAnswerPool = [...newSecretCode, ...distractors];
+
+                    // 5. Embaralha o baralho final
+                    setAnswerPool(newAnswerPool.sort(() => Math.random() - 0.5));
+                }
+            } catch (err) {
+                console.log('Erro ao preparar o jogo', err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        setupGame();
+    }, [gameIdNumber]);
+
     const renderGuessSlots = () => {
         const slots = [];
-        for (let i = 0; i < secretCodeLength; i++) {
+        const length = gameDetails?.secret_code_length || 0;
+        for (let i = 0; i < length; i++) {
             slots.push(
                 <View key={i} style={styles.guessSlot}>
-                    {playerGuess[i] && <Text style={styles.guessSlotText}>{playerGuess[i]}</Text>}
+                    {playerGuess[i] && <Text style={styles.guessSlotText}>{playerGuess[i].card_text}</Text>}
                 </View>
             );
         }
         return slots;
     };
-
-    useEffect(() => {
-        const loadGameData = async () => {
-            if (!gameIdNumber) return;
-            try {
-                const [gameData, cardsData] = await Promise.all([
-                    getGameById(gameIdNumber), // Esta função busca os detalhes, incluindo o prompt
-                    getCardsByGameId(gameIdNumber)
-                ]);
-                setGameDetails(gameData);
-                // ... resto da lógica ...
-            } catch(err) {
-                console.log('Erro', err);
-            }
-        };
-        loadGameData();
-    }, [gameIdNumber]);
+    
+    if (isLoading) {
+        return (
+            <ScreenContainer style={{ justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" color={Colors.light.blue} />
+                <Text>Preparando o jogo...</Text>
+            </ScreenContainer>
+        )
+    }
 
     return (
         <ScreenContainer style={{ backgroundColor: '#F3F4F6' }}>
@@ -80,7 +123,7 @@ export default function TestGameScreen() {
 
                 {/* Baralho de cartas para escolher */}
                 <FlatList
-                    data={MOCK_ANSWER_POOL}
+                    data={answerPool}
                     keyExtractor={(item) => item.id.toString()}
                     numColumns={4}
                     renderItem={({ item }) => (
@@ -92,7 +135,7 @@ export default function TestGameScreen() {
                 />
 
                 {/* Área de Feedback */}
-                {feedback && (
+                {/* {feedback && (
                     <View style={styles.feedbackContainer}>
                         <View style={[styles.feedbackBox, styles.feedbackIncorrect]}>
                             <Text style={styles.feedbackNumber}>{feedback.correctCardWrongPosition}</Text>
@@ -103,11 +146,11 @@ export default function TestGameScreen() {
                             <Text style={styles.feedbackText}>escolhidas corretas em {'\n'}posição correta</Text>
                         </View>
                     </View>
-                )}
+                )} */}
             </View>
 
             <View style={styles.footer}>
-                <AppButton title="Testar" onPress={() => router.back()} />
+                <AppButton title="Verificar" onPress={() => router.back()} />
             </View>
         </ScreenContainer>
     );
