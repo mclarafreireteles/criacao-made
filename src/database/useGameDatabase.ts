@@ -15,7 +15,7 @@ export type GameDatabase = {
     prompt: string, // 
     explanation: string,
     model: string,
-    secret_code_length: number
+    secret_code_length: number | null;
 }
 
 export type CardDatabase = {

@@ -31,7 +31,7 @@ export default function AddGame(){
             return; // Interrompe a execução da função
         }
 
-        const response = await gameDatabase.create({ title, subject, user_id: user?.id, goal, prompt, content, grade, authors, rules, background_image_url, explanation, model })
+        const response = await gameDatabase.create({ title, subject, user_id: user?.id, goal, prompt, content, grade, authors, rules, background_image_url, explanation, model, secret_code_length: null })
 
         console.log('jogo criado')
         Alert.alert("Jogo cadastrado")

@@ -29,9 +29,25 @@ export default function Step3() {
             prompt: 'Enunciado',
         };
 
-        for (const [field, label] of Object.entries(requiredFields)) {
-            if (!formData[field as keyof typeof formData]?.trim()) {
-                Alert.alert('Campo Obrigatório', `O campo "${label}" não pode estar vazio.`);
+        // for (const [field, label] of Object.entries(requiredFields)) {
+        //     if (!formData[field as keyof typeof formData]?.trim()) {
+        //         Alert.alert('Campo Obrigatório', `O campo "${label}" não pode estar vazio.`);
+        //         return;
+        //     }
+        // }
+
+        for (const field in requiredFields) {
+            const key = field as keyof typeof requiredFields;
+            const value = formData[key];
+            const label = requiredFields[key];
+            if (typeof value === 'string') {
+                if (value.trim() === '') {
+                    Alert.alert('Campo Obrigatório', `O campo "${label}" não pode estar vazio.`);
+                    return;
+                }
+            } 
+            else if (value === null || value === undefined) {
+                Alert.alert('Campo Obrigatório', `O campo "${label}" precisa ser selecionado.`);
                 return;
             }
         }
@@ -46,7 +62,7 @@ export default function Step3() {
                 ? formData.grade_other
                 : grade.find(g => g.id === formData.grade)?.label || formData.grade;
 
-            const finalData = { ...formData, user_id: user.id, subject: finalSubject, grade: finalGrade };
+            const finalData = { ...formData, user_id: user.id, subject: finalSubject, grade: finalGrade, secret_code_length: null };
 
             delete (finalData as Partial<typeof finalData>).subject_other;
             delete (finalData as Partial<typeof finalData>).grade_other;

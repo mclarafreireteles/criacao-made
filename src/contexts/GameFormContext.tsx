@@ -14,7 +14,8 @@ interface GameFormData {
     background_image_url: string,
     title: string,
     prompt: string,
-    explanation: string
+    explanation: string,
+    secret_code_length: number | null;
 }
 
 interface GameFormContextType {
@@ -38,7 +39,8 @@ const initialState: GameFormData = {
     background_image_url: '',
     title: '',
     prompt: '',
-    explanation: ''
+    explanation: '',
+    secret_code_length: null,
 }
 
 export function GameFormProvider({ children }: { children: ReactNode }) {
