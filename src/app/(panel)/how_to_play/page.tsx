@@ -5,7 +5,8 @@ import { ScreenHeader } from "@/src/components/ScreenHeader";
 import { AppButton } from "@/src/components/AppButton";
 import { useRouter } from "expo-router";
 import Colors from "@/constants/Colors";
-
+import { slider } from "@/data/SliderData";
+import { SliderItem } from "@/src/components/SliderItem";
 
 
 export default function HowToPlay(){
@@ -23,23 +24,14 @@ export default function HowToPlay(){
     return (
         <SafeAreaView style={styles.safeArea}>
             <ScreenHeader title="Como Jogar" />
-            <View style={styles.container}>
+            <View>
                 <FlatList
-                    data={tutorialSteps}
-                    keyExtractor={(item) => item.id}
+                    data={slider}
                     horizontal
-                    pagingEnabled
                     showsHorizontalScrollIndicator={false}
+                    pagingEnabled
                     renderItem={({ item, index}) => <SliderItem item={item} index={index} />}
-                    onViewableItemsChanged={onViewableItemsChanged}
-                    viewabilityConfig={viewabilityConfig}
                 />
-
-                <View style={styles.pagination}>
-                    {tutorialSteps.map((_, index) => (
-                        <View key={index} style={[styles.dot, index === currentIndex && styles.dotActive]}/>
-                    ))}
-                </View>
 
                 <View style={styles.footer}>
                     <AppButton title="Entendi!" onPress={() => router.back()}/>
@@ -51,20 +43,11 @@ export default function HowToPlay(){
 
 const styles = StyleSheet.create({
     safeArea: {
-        flex: 1,
-        backgroundColor: Colors.light.white
     },
-    container: {
-        flex: 1,
-        alignItems: 'center'
-    },
-    stepContainer: {
-        // flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingHorizontal: 30,
-        backgroundColor: 'red'
-    },
+    // container: {
+    //     flex: 1,
+    //     alignItems: 'center'
+    // },
     stepTitle: {
         fontSize: 26,
         fontWeight: 'bold',

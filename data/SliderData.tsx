@@ -2,7 +2,7 @@ export type SliderType = {
     icon: string,
     title: string,
     description: string,
-    details : string //array de strings
+    // details : string //array de strings
 }
 
 export const slider = [
@@ -20,12 +20,12 @@ export const slider = [
         icon: 'stats-chart-outline',
         title: 'Níveis de dificuldade',
         description: 'O desafio aumenta a cada nível, com menos tentativas e novas cartas sendo adicionadas para te confundir:',
-        details: [ //ADICIONAR INFORMACAO SOBRE EMBARALHAMENTO
-            'Nível 1: 10 tentativas. A ordem das cartas é reembaralhada.',
-            'Nível 2: 8 tentativas. A ordem é reembaralhada e 1 carta nova é adicionada.',
-            'Nível 3: 6 tentativas. A ordem é reembaralhada e 2 cartas novas são adicionadas.',
-            'Nível 4: 5 tentativas. A ordem é reembaralhada e 3 cartas novas são adicionadas.'
-        ]
+        // details: [ //ADICIONAR INFORMACAO SOBRE EMBARALHAMENTO
+        //     'Nível 1: 10 tentativas. A ordem das cartas é reembaralhada.',
+        //     'Nível 2: 8 tentativas. A ordem é reembaralhada e 1 carta nova é adicionada.',
+        //     'Nível 3: 6 tentativas. A ordem é reembaralhada e 2 cartas novas são adicionadas.',
+        //     'Nível 4: 5 tentativas. A ordem é reembaralhada e 3 cartas novas são adicionadas.'
+        // ]
     },
     {
         icon: 'trophy-outline',
