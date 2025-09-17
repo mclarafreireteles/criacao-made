@@ -131,7 +131,7 @@ export default function ManageCards (){
         <>
             <Pressable style={styles.infoLink}>
                 <Ionicons name="information-circle-outline" size={20} color={Colors.light.blue} />
-                <Text style={styles.infoLinkTxt}>Como funcionam os níveis?</Text>
+                <Text style={styles.infoLinkTxt} onPress={() => router.push({ pathname: '/how_to_play/page'})}>Como funciona o jogo?</Text>
             </Pressable>
 
             <View style={styles.containerBtn}>

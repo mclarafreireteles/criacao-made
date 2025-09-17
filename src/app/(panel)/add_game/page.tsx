@@ -28,7 +28,7 @@ export default function AddGame(){
     async function create() {
         if (!user || !user.id) {
             Alert.alert("Erro", "Usuário não autenticado. Faça login para continuar.");
-            return; // Interrompe a execução da função
+            return;
         }
 
         const response = await gameDatabase.create({ title, subject, user_id: user?.id, goal, prompt, content, grade, authors, rules, background_image_url, explanation, model, secret_code_length: null })
