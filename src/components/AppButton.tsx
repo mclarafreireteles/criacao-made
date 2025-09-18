@@ -22,10 +22,10 @@ export function AppButton({ title, variant = 'primary', icon, ...pressableProps 
       ]}
       {...pressableProps}
     >
-      {/* Renderiza o ícone apenas se um for passado */}
+
       {icon && <Ionicons name={icon} size={20} color={isPrimary ? '#fff' : Colors.light.blue} />}
       
-      {/* O texto do botão */}
+
       <Text style={isPrimary ? styles.primaryButtonText : styles.secondaryButtonText}>
         {title}
       </Text>

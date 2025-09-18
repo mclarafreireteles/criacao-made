@@ -6,6 +6,7 @@ import { useGameDatabase } from '@/src/database/useGameDatabase';
 import { StyledInput } from '@/src/components/StyledInput';
 import Colors from '@/constants/Colors';
 import { ScreenHeader } from '@/src/components/ScreenHeader';
+import { ScreenContainer } from '@/src/components/ScreenContainer';
 
 export default function EditCardScreen() {
     const router = useRouter();
@@ -83,7 +84,7 @@ export default function EditCardScreen() {
 
 
     return (
-        <SafeAreaView style={styles.safeArea}>
+        <ScreenContainer>
             <View style={styles.containerScreen}>
                 <ScreenHeader title="Editar Carta" />
                 <View style={styles.container}>
@@ -122,19 +123,13 @@ export default function EditCardScreen() {
                     </View>
                 </View>
             </View>
-        </SafeAreaView>
+        </ScreenContainer>
     );
 }
 
 const styles = StyleSheet.create({
-    safeArea: { 
-        flex: 1, 
-        backgroundColor: '#fff',
-    },
     containerScreen: {
-        marginVertical: 80,
         flex: 1
-
     },
     container: {
         padding: 20,

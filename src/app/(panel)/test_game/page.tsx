@@ -101,7 +101,7 @@ export default function TestGameScreen() {
     }
 
     return (
-        <ScreenContainer style={{ backgroundColor: '#F3F4F6' }}>
+        <ScreenContainer style={{ backgroundColor: Colors.light.white }}>
             <ScreenHeader 
                 title="Testar jogo"
                 rightAccessory={
@@ -195,15 +195,25 @@ const styles = StyleSheet.create({
     },
     answerPoolGrid: {
         flex: 1,
+        marginTop: 10,
+        paddingHorizontal: 20
     },
     answerCard: {
         flex: 1,
         margin: 5,
-        height: 60,
         backgroundColor: '#E5E7EB', // Cinza claro
         borderRadius: 12,
         justifyContent: 'center',
         alignItems: 'center',
+        aspectRatio: 0.8, 
+        borderWidth: 1,
+        borderColor: '#E2E8F0',
+        elevation: 2,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+        maxWidth: 100,
     },
     answerCardText: {
         fontSize: 18,
@@ -241,6 +251,7 @@ const styles = StyleSheet.create({
     },
     footer: {
         paddingTop: 10,
+        paddingHorizontal: 20
     },
     promptText: {
         fontSize: 18,

@@ -7,6 +7,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useGameDatabase, CardDatabase } from '@/src/database/useGameDatabase';
 import Colors from '@/constants/Colors';
 import { ScreenHeader } from '@/src/components/ScreenHeader';
+// import { ScreenContainer } from '@/src/components/ScreenContainer';
 
 
 const CODE_LENGTH_OPTIONS = [3, 4, 5, 6];
@@ -42,7 +43,6 @@ export default function ManageCards (){
         }
     }, [gameIdNumber]);
 
-// Aponte o useFocusEffect para a nova função
     useFocusEffect(
         useCallback(() => {
             fetchCardsAndSettings();
@@ -91,7 +91,6 @@ export default function ManageCards (){
     const renderHeader = () => (
         <View style={styles.headerWrapper}> 
             <ScreenHeader title="Criar cartas" />
-
             <View style={styles.settingSection}>
                 <Text style={styles.settingLabel}>Tamanho do código secreto</Text>
                 <View style={styles.optionsContainer}>
@@ -158,32 +157,31 @@ export default function ManageCards (){
     const cardWidth = availableWidth / numColumns;
 
     return (
-        <SafeAreaView style={styles.safeArea}>
-            <FlatList
-                data={cards}
-                keyExtractor={item => item.id.toString()}
-                numColumns={3}
-                renderItem={({ item }) => (
-                    <View style={[styles.card, { width: cardWidth }]}>
-                        <Text style={styles.cardText}>{item.card_text}</Text>
-                        <Pressable onPress={() => handleNavigateToEditCard(item)} style={styles.editBtn}>
-                             <MaterialIcons name="edit" size={18} color={Colors.light.blue} />
-                        </Pressable>
-                    </View>
-                    
-                )}
-                ListHeaderComponent={renderHeader}
-                ListFooterComponent={renderFooter}
-                contentContainerStyle={styles.container}
-                style={styles.grid}
-                ListEmptyComponent={
-                    <View style={styles.emptyGrid}>
-                        <Text style={styles.emptyGridText}>Adicione sua primeira carta</Text>
-                    </View>
-                }
-            />
-        </SafeAreaView>
-        
+            <SafeAreaView style={styles.safeArea}>
+                <FlatList
+                    data={cards}
+                    keyExtractor={item => item.id.toString()}
+                    numColumns={3}
+                    renderItem={({ item }) => (
+                        <View style={[styles.card, { width: cardWidth }]}>
+                            <Text style={styles.cardText}>{item.card_text}</Text>
+                            <Pressable onPress={() => handleNavigateToEditCard(item)} style={styles.editBtn}>
+                                <MaterialIcons name="edit" size={18} color={Colors.light.blue} />
+                            </Pressable>
+                        </View>
+                        
+                    )}
+                    ListHeaderComponent={renderHeader}
+                    ListFooterComponent={renderFooter}
+                    contentContainerStyle={styles.container}
+                    style={styles.grid}
+                    ListEmptyComponent={
+                        <View style={styles.emptyGrid}>
+                            <Text style={styles.emptyGridText}>Adicione sua primeira carta</Text>
+                        </View>
+                    }
+                />
+            </SafeAreaView>
     )
 }
 
@@ -193,7 +191,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         // gap: 30,
         // justifyContent: 'space-between',
-        paddingHorizontal: 20,
+        // paddingHorizontal: 20,
         width: '100%',
     },
     title: {
@@ -294,12 +292,15 @@ const styles = StyleSheet.create({
     },
     grid: {
         flex: 1,
-        paddingTop: 60,
+        paddingTop: 40,
+        width: '100%',
+        // backgroundColor: 'red'
         // height: 10000,
     },
     card: {
         // flex: 1,
         aspectRatio: 0.80,
+        marginTop: 50,
         margin: 6,
         backgroundColor: '#F8FAFC',
         borderRadius: 12,
@@ -337,6 +338,6 @@ const styles = StyleSheet.create({
     },
     headerWrapper: {
         width: '100%',
-        marginBottom: 20, // Espaço entre o header e a grade
+        // marginBottom: 20, // Espaço entre o header e a grade
     }
 })
