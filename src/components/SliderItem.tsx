@@ -1,9 +1,10 @@
-import React from "react"
-import { StyleSheet, View, Text, Dimensions } from "react-native"
+import Reactm, { useState } from "react"
+import { StyleSheet, View, Text, Dimensions, Pressable, Modal } from "react-native"
 import { SliderType } from "@/data/SliderData"
 import { Ionicons } from "@expo/vector-icons"
 import { useWindowDimensions } from "react-native"
 import Colors from "@/constants/Colors"
+import { AppButton } from "./AppButton"
 
 type Props = {
     item: SliderType;
@@ -14,39 +15,54 @@ type Props = {
 export function SliderItem({ item, index }: Props) {
 
     const { width } = useWindowDimensions();
+    const [modalVisible, setModalVisible] = useState(false);
 
     return (
         <View style={[styles.stepContainer, {width}]}>
-            <Ionicons name={item.icon as any} size={80} color="#4A5568" />
+            <Ionicons name={item.icon as any} size={40} color="#4A5568" />
             <Text style={styles.stepTitle}>{item.title}</Text>
             <Text style={styles.stepDescription}>{item.description}</Text>
             {/* {item.details && (
                 <View style={styles.detailsContainer}>
-                    {item.details.map((item.details) => ( //array
-                        <Text key={index} style={styles.detailItem}>• {details}</Text>
-                    ))}
-                </View>
-            )} */}
+                {item.details.map((detail, index) => (
+                    <Text key={index} style={styles.detailItem}>• {detail}</Text>
+            ))} */}
+
+            {item.details && (
+                <Pressable style={styles.detailsLink} onPress={() => setModalVisible(true)}>
+                    <Text style={styles.detailsLinkText}>Ver detalhes dos níveis</Text>
+                </Pressable>
+            )}
+            <Modal
+                visible={modalVisible}
+                transparent={true}
+                animationType="fade"
+                onRequestClose={() => setModalVisible(false)}
+            >
+                <Pressable style={styles.modalOverlay} onPress={() => setModalVisible(false)}>
+                    <Pressable style={styles.modalContent}>
+                        <Text style={styles.modalTitle}>Níveis de Dificuldade</Text>
+                        {item.details?.map((detail, index) => (
+                            <Text key={index} style={styles.detailItem}>• {detail}</Text>
+                        ))}
+                        <View style={{ marginTop: 20 }}>
+                            <AppButton title="Fechar" onPress={() => setModalVisible(false)} />
+                        </View>
+                    </Pressable>
+                </Pressable>
+            </Modal>
         </View>
-    )
-}
+)}
 
 const styles = StyleSheet.create({
-    safeArea: {
-        flex: 1,
-        backgroundColor: Colors.light.white
-    },
-    container: {
-        flex: 1,
-        alignItems: 'center'
-    },
     stepContainer: {
         justifyContent: 'center',
         alignItems: 'center',
-        gap: 20,
+        marginTop: 20,
+        paddingHorizontal: 20
     },
     stepTitle: {
-        fontSize: 26,
+        fontSize: 18,
         fontWeight: 'bold',
         marginTop: 30,
         marginBottom: 16,
@@ -88,9 +104,33 @@ const styles = StyleSheet.create({
         height: 12,
         borderRadius: 6,
     },
-    footer: {
-        width: '100%',
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        justifyContent: 'center',
+        alignItems: 'center',
         padding: 20,
-    }
+    },
+    modalContent: {
+        width: '100%',
+        maxWidth: 400,
+        backgroundColor: '#fff',
+        borderRadius: 12,
+        padding: 24,
+    },
+    modalTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 20,
+    },
+    detailsLink: {
+        marginTop: 20,
+    },
+    detailsLinkText: {
+        color: Colors.light.blue,
+        fontSize: 16,
+        fontWeight: '500',
+    },
 })
 

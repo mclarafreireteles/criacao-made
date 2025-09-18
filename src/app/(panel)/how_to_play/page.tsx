@@ -1,53 +1,85 @@
 import React, { useRef, useState } from "react";
 import { View, Text, StyleSheet, FlatList, useWindowDimensions, SafeAreaView } from 'react-native'
-import { Ionicons } from "@expo/vector-icons";
 import { ScreenHeader } from "@/src/components/ScreenHeader";
 import { AppButton } from "@/src/components/AppButton";
 import { useRouter } from "expo-router";
 import Colors from "@/constants/Colors";
 import { slider } from "@/data/SliderData";
 import { SliderItem } from "@/src/components/SliderItem";
+import { ScreenContainer } from "@/src/components/ScreenContainer";
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, SharedValue } from 'react-native-reanimated';
+
+
+type PaginationDotProps = {
+    index: number;
+    activeIndex: SharedValue<number>;
+};
+
+function PaginationDot({ index, activeIndex }: PaginationDotProps) {
+    const animatedDotStyle = useAnimatedStyle(() => {
+        const isActive = activeIndex.value === index;
+        return {
+            backgroundColor: withTiming(isActive ? '#4A5568' : '#CBD5E0', { duration: 300 }),
+            width: withTiming(isActive ? 12 : 8, { duration: 300 }),
+            height: withTiming(isActive ? 12 : 8, { duration: 300 }),
+        };
+    });
+
+    return <Animated.View style={[styles.dot, animatedDotStyle]} />;
+}
 
 
 export default function HowToPlay(){
     const router = useRouter();
-    const { width } = useWindowDimensions();
+
+    const activeIndex = useSharedValue(0);
+
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const viewabilityConfig = { viewAreaCoveragePercentThreshold: 50 };
+
     const onViewableItemsChanged = useRef(({ viewableItems }: any) => {
         if (viewableItems.length > 0) {
-            setCurrentIndex(viewableItems[0].index);
+            activeIndex.value = viewableItems[0].index;
         }
     }).current;
 
     return (
-        <SafeAreaView style={styles.safeArea}>
+        <ScreenContainer>
             <ScreenHeader title="Como Jogar" />
-            <View>
+            <View style={styles.container}>
                 <FlatList
                     data={slider}
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     pagingEnabled
                     renderItem={({ item, index}) => <SliderItem item={item} index={index} />}
+                    onViewableItemsChanged={onViewableItemsChanged}
+                    viewabilityConfig={viewabilityConfig}
                 />
+
+                <View style={styles.pagination}>
+                    {slider.map((_, index) => (
+                        <PaginationDot
+                            key={index}
+                            index={index}
+                            activeIndex={activeIndex}
+                        />
+                    ))}
+                </View>
 
                 <View style={styles.footer}>
                     <AppButton title="Entendi!" onPress={() => router.back()}/>
                 </View>
             </View>
-        </SafeAreaView>
+        </ScreenContainer>
     )
 }
 
 const styles = StyleSheet.create({
-    safeArea: {
+    container: {
+        flex: 1,
     },
-    // container: {
-    //     flex: 1,
-    //     alignItems: 'center'
-    // },
     stepTitle: {
         fontSize: 26,
         fontWeight: 'bold',

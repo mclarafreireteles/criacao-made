@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-    marginBottom: 20
+    marginBottom: 20, 
   },
   title: {
     fontSize: 22,
@@ -50,10 +50,10 @@ const styles = StyleSheet.create({
   },
   leftAction: {
     position: 'absolute',
-    left: 20, 
+    left: 50, 
   },
   rightAction: {
     position: 'absolute',
-    right: 20, 
+    right: 50, 
   },
 });
