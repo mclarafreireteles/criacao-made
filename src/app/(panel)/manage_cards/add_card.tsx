@@ -13,15 +13,15 @@ export default function AddCardScreen() {
 
     const { createCard } = useGameDatabase();
     const [cardText, setCardText] = useState('');
-    const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+    const [isCorrect, setIsCorrect] = useState<number | null>(null);
     const [loading, setLoading] = useState(false);
 
     const handleSetCorrect = () => {
-        setIsCorrect(true);
+        setIsCorrect(1);
     }
 
     const handleSetIncorrect = () => {
-        setIsCorrect(false);
+        setIsCorrect(0);
     }
 
     const handleSaveCard = async () => {
@@ -62,10 +62,10 @@ export default function AddCardScreen() {
                         <Text style={[styles.classifyButtonText, !isCorrect && isCorrect !== null && styles.incorrectTextActive]}>Incorreta</Text>
                     </Pressable>
                     <Pressable
-                        style={[styles.classifyButton, isCorrect && styles.correctButtonActive]}
+                        style={[styles.classifyButton, isCorrect == 1 && styles.correctButtonActive]}
                         onPress={handleSetCorrect}
                     >
-                        <Text style={[styles.classifyButtonText, isCorrect && styles.correctTextActive]}>Correta</Text>
+                        <Text style={[styles.classifyButtonText, isCorrect == 1 && styles.correctTextActive]}>Correta</Text>
                     </Pressable>
                 </View>
         

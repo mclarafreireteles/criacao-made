@@ -1,6 +1,6 @@
 import { type SQLiteDatabase } from 'expo-sqlite'
 
-export async function initializeDatabase(database: SQLiteDatabase): Promise<void> {
+export async function initializeDatabase(database: SQLiteDatabase) {
     await database.execAsync("PRAGMA foreign_keys = ON;");
     
     await database.execAsync(`
