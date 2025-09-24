@@ -28,7 +28,7 @@ export function Game({data, ...rest}: Props){
 
     const handleEdit = () => {
         router.push({
-            pathname: '/manage_cards/page',
+            pathname: '/game_dashboard/page',
             params: { game_id: data.id }
         })
     }

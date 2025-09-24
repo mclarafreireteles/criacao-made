@@ -13,8 +13,6 @@ import Colors from "@/constants/Colors";
 import { ScreenHeader } from "@/src/components/ScreenHeader";
 import { ScreenContainer } from "@/src/components/ScreenContainer";
 
-// import { BackButtonIcon } from "@/src/components/icons/BackButtonIcon";
-
 export default function ChooseGame(){
     const router = useRouter()
 
