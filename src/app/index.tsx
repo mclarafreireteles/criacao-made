@@ -1,10 +1,7 @@
 import React from 'react';
 import { Image, View, Text, TextInput, Pressable, Alert, StyleSheet } from 'react-native';
-// import { ActivityIndicator } from 'react-native';
 import { Link } from 'expo-router'
 import { useState } from 'react';
-// import { supabase } from '../lib/supabase';
-// import { router } from 'expo-router';
 import Colors from '@/constants/Colors';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
@@ -71,8 +68,8 @@ const styles = StyleSheet.create({
         gap: 10
     },
     logoMade: {
-        width: 300,  // Defina a largura
-        resizeMode: 'contain', // Garante que a imagem se ajuste dentro das dimensões
+        width: 300,
+        resizeMode: 'contain',
     },
     options: {
         display: 'flex',

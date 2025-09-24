@@ -8,7 +8,7 @@ import { initializeDatabase } from '../database/initializeDatabase';
 export default function RootLayout(){
     return(
         <AuthProvider>
-            <SQLiteProvider databaseName='sqlite.db' onInit={initializeDatabase}>
+            <SQLiteProvider databaseName='sqlite.db' onInit={initializeDatabase} options={{ useNewConnection: false }}>
                 <MainLayout/>
             </SQLiteProvider>
         </AuthProvider>

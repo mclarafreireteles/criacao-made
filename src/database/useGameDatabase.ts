@@ -1,18 +1,17 @@
 import { useSQLiteContext } from "expo-sqlite"
 
-//operacoes no banco de dados
 export type GameDatabase = {
     id: number,
-    user_id: string, //
-    title: string, //
-    subject: string, //
+    user_id: string, 
+    title: string, 
+    subject: string, 
     content: string,
     grade: string,
     authors: string,
     rules: string,
-    goal: string, // 
+    goal: string, 
     background_image_url: string,
-    prompt: string, // 
+    prompt: string, 
     explanation: string,
     model: string,
     secret_code_length: number | null;
@@ -36,6 +35,7 @@ export function useGameDatabase(){
     const database = useSQLiteContext()
 
     async function create(data: Omit<GameDatabase, "id">){
+        console.log(`[DEBUG] useGameDatabase: Tentando CRIAR jogo com user_id: ${data.user_id}`);
         const statement = await database.prepareAsync(
             "INSERT INTO games (title, subject, user_id, goal, prompt, content, grade, authors, rules, background_image_url, explanation, model) VALUES ($title, $subject, $user_id, $goal, $prompt, $content, $grade, $authors, $rules, $background_image_url, $explanation, $model)"
         )

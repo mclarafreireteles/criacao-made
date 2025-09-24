@@ -29,12 +29,6 @@ export default function Step3() {
             prompt: 'Enunciado',
         };
 
-        // for (const [field, label] of Object.entries(requiredFields)) {
-        //     if (!formData[field as keyof typeof formData]?.trim()) {
-        //         Alert.alert('Campo Obrigatório', `O campo "${label}" não pode estar vazio.`);
-        //         return;
-        //     }
-        // }
 
         for (const field in requiredFields) {
             const key = field as keyof typeof requiredFields;
@@ -182,12 +176,11 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'center',
         gap: 12
-        // backgroundColor: Colors.light.blue
     },
     backButton: {
         position: 'absolute',
         top: 60,
         left: 40,
-        zIndex: 1, // Garante que ele fique sobre outros elementos
+        zIndex: 1, 
     },
 })
