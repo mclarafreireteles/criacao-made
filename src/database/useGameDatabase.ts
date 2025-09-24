@@ -34,7 +34,7 @@ export function useGameDatabase(){
 
     const database = useSQLiteContext()
 
-    async function create(data: Omit<GameDatabase, "id">){
+    async function createGame(data: Omit<GameDatabase, "id">){
         const statement = await database.prepareAsync(
             "INSERT INTO games (title, subject, user_id, goal, prompt, content, grade, authors, rules, background_image_url, explanation, model, secret_code_length) VALUES ($title, $subject, $user_id, $goal, $prompt, $content, $grade, $authors, $rules, $background_image_url, $explanation, $model, $secret_code_length)"
         )
@@ -65,7 +65,7 @@ export function useGameDatabase(){
         }
     }
 
-    async function searchByTitle(title: string) {
+    async function searchGameByTitle(title: string) {
         try {
             const query = "SELECT * FROM games WHERE title LIKE ?"
 
@@ -77,7 +77,7 @@ export function useGameDatabase(){
         }
     }
 
-    async function searchByUser(userId: string) {
+    async function searchGameByUser(userId: string) {
         try {
             const query = "SELECT * FROM games WHERE user_id = ?"
 
@@ -89,13 +89,31 @@ export function useGameDatabase(){
         }
     }
 
-    async function updateGameSetting(gameId: number, length: number) {
+    async function updateGameLengthSetting(gameId: number, length: number) {
         await database.runAsync(
             'UPDATE games SET secret_code_length = ? WHERE id = ?',
             [length, gameId]
         );
     }
 
+    async function updateGameSettings(gameId: number, data:Omit<GameDatabase, "id" | "user_id">) {
+        const statement = await database.prepareAsync(
+            `UPDATE games 
+             SET title = $title, subject = $subject, content = $content, grade = $grade, 
+                 authors = $authors, rules = $rules, goal = $goal, background_image_url = $background_image_url, 
+                 prompt = $prompt, explanation = $explanation, model = $model
+             WHERE id = $id`
+        );
+        try {
+            await statement.executeAsync({
+
+            })
+        } finally {
+            await statement.finalizeAsync()
+        }
+    }
+
+    // cartas
     async function getCardsByGameId(gameId: number){
         const statement = await database.prepareAsync(
             "SELECT * FROM cards WHERE game_id = ?  ORDER BY id DESC"
@@ -107,7 +125,7 @@ export function useGameDatabase(){
             await statement.finalizeAsync();
         }
     }
-
+    
     async function createCard(data: Omit<CardDatabase, 'id'>) {
         const statement = await database.prepareAsync(
             "INSERT INTO cards (game_id, card_text, card_type) VALUES ($game_id, $card_text, $card_type)"
@@ -147,5 +165,5 @@ export function useGameDatabase(){
     }
 
 
-    return { create, searchByTitle, searchByUser , updateGameSetting, createCard, deleteCard, updateCard, getCardsByGameId, getGameById  }
+    return { createGame, searchGameByTitle, searchGameByUser , updateGameLengthSetting, createCard, deleteCard, updateCard, getCardsByGameId, getGameById  }
 }

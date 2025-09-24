@@ -18,7 +18,7 @@ export default function ManageCards (){
     const { game_id } = useLocalSearchParams();
     const gameIdNumber = Number(game_id)
 
-    const { getCardsByGameId, createCard, updateGameSetting, deleteCard, getGameById } = useGameDatabase();
+    const { getCardsByGameId, createCard, updateGameLengthSetting, deleteCard, getGameById } = useGameDatabase();
 
     const [cards, setCards] = useState<CardDatabase[]>([]);
     const [codeLength, setCodeLength] = useState<number | null>(null);
@@ -53,14 +53,14 @@ export default function ManageCards (){
         setCodeLength(length);
         setSelectionMode('specific');
         console.log(length)
-        await updateGameSetting(gameIdNumber, length);
+        await updateGameLengthSetting(gameIdNumber, length);
     };
 
     const handleSetRandomCodeLength = async () => {
         const randomIndex = Math.floor(Math.random() * CODE_LENGTH_OPTIONS.length);
         const randomLength = CODE_LENGTH_OPTIONS[randomIndex];
 
-        await updateGameSetting(gameIdNumber, randomLength);
+        await updateGameLengthSetting(gameIdNumber, randomLength);
 
         setCodeLength(randomLength);
         setSelectionMode('random');

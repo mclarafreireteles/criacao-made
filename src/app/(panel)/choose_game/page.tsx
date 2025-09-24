@@ -33,7 +33,7 @@ export default function ChooseGame(){
 
         try {
             console.log('CHOOSE GAME SCREEN - Buscando jogos para o User ID:', user.id);
-            const response = await gameDatabase.searchByUser(user.id);
+            const response = await gameDatabase.searchGameByUser(user.id);
 
             console.log("--- DADOS ENCONTRADOS NO SQLITE ---");
             console.log(`Encontrados ${response.length} jogos.`);

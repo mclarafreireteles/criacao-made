@@ -61,7 +61,7 @@ export default function Step3() {
             delete (finalData as Partial<typeof finalData>).subject_other;
             delete (finalData as Partial<typeof finalData>).grade_other;
 
-            const { insertedRowId } = await gameDatabase.create(finalData);
+            const { insertedRowId } = await gameDatabase.createGame(finalData);
 
             if (insertedRowId) {
                 Alert.alert("Sucesso", "Jogo cadastrado!");
