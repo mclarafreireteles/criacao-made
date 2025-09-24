@@ -13,7 +13,7 @@ import Colors from "@/constants/Colors";
 import { ScreenHeader } from "@/src/components/ScreenHeader";
 import { ScreenContainer } from "@/src/components/ScreenContainer";
 
-import { BackButtonIcon } from "@/src/components/icons/BackButtonIcon";
+// import { BackButtonIcon } from "@/src/components/icons/BackButtonIcon";
 
 export default function ChooseGame(){
     const router = useRouter()
@@ -37,7 +37,7 @@ export default function ChooseGame(){
 
             console.log("--- DADOS ENCONTRADOS NO SQLITE ---");
             console.log(`Encontrados ${response.length} jogos.`);
-            console.log(JSON.stringify(response, null, 2)); // Mostra os dados formatados
+            console.log(JSON.stringify(response, null, 2));
             console.log("------------------------------------");
 
             setGames(response);

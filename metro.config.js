@@ -1,21 +1,20 @@
+/** @type {import('expo/metro-config').MetroConfig} */
 const { getDefaultConfig } = require('expo/metro-config');
+
 
 const config = getDefaultConfig(__dirname);
 
-if (!config.resolver.assetExts.includes('wasm')) {
-  config.resolver.assetExts.push('wasm');
-}
-
-config.server = {
-  ...config.server, 
-  headers: {
-    'Cross-Origin-Opener-Policy': 'same-origin',
-    'Cross-Origin-Embedder-Policy': 'require-corp',
-  },
+// Add wasm asset support
+config.resolver.assetExts.push('wasm');
+ 
+// Add COEP and COOP headers to support SharedArrayBuffer
+config.server = (middleware) => {
+  return (req, res, next) => {
+    res.setHeader('Cross-Origin-Embedder-Policy', 'credentialless');
+    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+    middleware(req, res, next);
+  };
 };
 
-
-// Adiciona suporte para arquivos .wasm na lista de extensões de ativos.
-// config.resolver.assetExts.push('wasm');
 
 module.exports = config;

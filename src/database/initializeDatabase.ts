@@ -1,6 +1,8 @@
 import { type SQLiteDatabase } from 'expo-sqlite'
 
-export async function initializeDatabase(database: SQLiteDatabase) {
+export async function initializeDatabase(database: SQLiteDatabase): Promise<void> {
+    await database.execAsync("PRAGMA foreign_keys = ON;");
+    
     await database.execAsync(`
         CREATE TABLE IF NOT EXISTS games (
             id INTEGER PRIMARY KEY AUTOINCREMENT,

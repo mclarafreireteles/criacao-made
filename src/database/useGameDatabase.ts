@@ -21,13 +21,13 @@ export type CardDatabase = {
     id: number,
     game_id: number,
     card_text: string,
-    card_type?: boolean
+    card_type?: number
 }
 
 export type NewCardDatabase = {
     game_id: number;
     card_text: string;
-    card_type?: boolean
+    card_type?: number
 }
 
 export function useGameDatabase(){
@@ -35,9 +35,8 @@ export function useGameDatabase(){
     const database = useSQLiteContext()
 
     async function create(data: Omit<GameDatabase, "id">){
-        console.log(`[DEBUG] useGameDatabase: Tentando CRIAR jogo com user_id: ${data.user_id}`);
         const statement = await database.prepareAsync(
-            "INSERT INTO games (title, subject, user_id, goal, prompt, content, grade, authors, rules, background_image_url, explanation, model) VALUES ($title, $subject, $user_id, $goal, $prompt, $content, $grade, $authors, $rules, $background_image_url, $explanation, $model)"
+            "INSERT INTO games (title, subject, user_id, goal, prompt, content, grade, authors, rules, background_image_url, explanation, model, secret_code_length) VALUES ($title, $subject, $user_id, $goal, $prompt, $content, $grade, $authors, $rules, $background_image_url, $explanation, $model, $secret_code_length)"
         )
         try {
             const result = await statement.executeAsync({
@@ -52,10 +51,11 @@ export function useGameDatabase(){
                 $rules: data.rules,
                 $background_image_url: data.background_image_url,
                 $explanation: data.explanation,
-                $model: data.model
+                $model: data.model,
+                $secret_code_length: data.secret_code_length
             })
 
-            const insertedRowId = result.lastInsertRowId.toLocaleString()
+            const insertedRowId = result.lastInsertRowId;
 
             return { insertedRowId }
         } catch (error) {
@@ -79,7 +79,7 @@ export function useGameDatabase(){
 
     async function searchByUser(userId: string) {
         try {
-            const query = "SELECT * FROM games WHERE user_id == ?"
+            const query = "SELECT * FROM games WHERE user_id = ?"
 
             const response = await database.getAllAsync<GameDatabase>(query, userId)
 
