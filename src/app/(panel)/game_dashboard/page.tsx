@@ -18,7 +18,7 @@ const InfoRow = ({ label, value }: { label: string, value: string | null | undef
     )
 }
 
-export default function gameDashBoard(){
+export default function gameDashBoardScreen(){
     const router = useRouter();
 
     const { game_id } = useLocalSearchParams();
@@ -117,7 +117,9 @@ const styles = StyleSheet.create({
     content: {
         flex: 1,
         justifyContent: 'space-between',
-        paddingVertical: 20,
+        paddingHorizontal: 30,
+        paddingVertical: 60,
+        backgroundColor: Colors.light.white,
     },
     infoSection: {
         gap: 15,
