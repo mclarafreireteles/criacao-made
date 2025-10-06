@@ -4,21 +4,31 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import Colors from '@/constants/Colors';
 import { BackButtonIcon } from './icons/BackButtonIcon';
+import { Href } from 'expo-router';
 
 type Props = {
   title: string;
   rightAccessory?: React.ReactNode;
+  backHref?: Href;
 };
 
-export function ScreenHeader({ title, rightAccessory }: Props) {
+export function ScreenHeader({ title, rightAccessory, backHref }: Props) {
   const router = useRouter();
+
+  const handleBackPress = () => {
+    if (backHref) {
+      router.replace(backHref)
+    } else {
+      router.back();
+    }
+  }
 
   return (
     <View style={styles.container}>
         {router.canGoBack() && (
         <BackButtonIcon
             style={styles.leftAction}
-            onPress={() => router.back()}
+            onPress={handleBackPress}
         />
       )}
       
