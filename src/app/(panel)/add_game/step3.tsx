@@ -15,6 +15,8 @@ export default function Step3() {
     const gameDatabase = useGameDatabase();
     const { formData, updateFormData, resetForm } = useGameForm();
 
+    const isEditing = formData.id !== null;
+
     async function handleSaveGame() {
         if (!user?.id) {
             Alert.alert("Erro", "Usuário não autenticado. Faça login para continuar.");
@@ -99,7 +101,7 @@ export default function Step3() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.createGameTitle}>Criar jogo</Text>
+            <Text style={styles.createGameTitle}>{isEditing ? "Editar Jogo" : "Criar Jogo"}</Text>
             <BackButtonIcon
                 style={styles.backButton}
                 onPress={() => router.back()}
@@ -135,7 +137,7 @@ export default function Step3() {
                 /> */}
             </View>
             <Pressable style={styles.continuarBtn} onPress={handleSaveGame}>
-                <Text style={styles.continuarBtnTxt}>Criar jogo</Text>
+                <Text style={styles.continuarBtnTxt}>{isEditing ? "Salvar alterações" : "Criar Jogo"}</Text>
             </Pressable>
         </View>
     );

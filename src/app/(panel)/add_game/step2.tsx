@@ -10,23 +10,22 @@
         const router = useRouter();
         const { formData, updateFormData } = useGameForm();
 
+        const isEditing = formData.id !== null;
+
         const handleNextStep =() => {
                 const requiredFields = {
                     rules: 'Regras',
                     goal: 'Objetivo',
                 }
         
-                // Faz um loop para verificar cada campo
                 for (const field in requiredFields) {
                     const key = field as keyof typeof requiredFields;
-                    // A verificação `!.trim()` garante que o campo não está vazio ou só com espaços
                     if (!formData[key]?.trim()) {
                         Alert.alert('Campo Obrigatório', `Por favor, preencha o campo "${requiredFields[key]}".`);
-                        return; // Para a execução da função se encontrar um campo vazio
+                        return;
                     }
                 }
         
-                // Se o loop terminar e nenhum campo estiver vazio, navega para a próxima página
                 router.push('/(panel)/add_game/step3');
             }
 
@@ -36,7 +35,7 @@
                     style={styles.backButton}
                     onPress={() => router.back()}
                 />
-                <Text style={styles.createGameTitle}>Criar jogo</Text>
+                <Text style={styles.createGameTitle}>{isEditing ? "Editar Jogo" : "Criar Jogo"}</Text>
                 <View style={styles.containerInput}>
                     <StyledInput
                         label="Regras"
@@ -118,6 +117,6 @@
             position: 'absolute',
             top: 60,
             left: 40,
-            zIndex: 1, // Garante que ele fique sobre outros elementos
+            zIndex: 1,
         },
     })
