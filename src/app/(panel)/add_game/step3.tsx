@@ -15,7 +15,7 @@ export default function Step3() {
     const gameDatabase = useGameDatabase();
     const { formData, updateFormData, resetForm } = useGameForm();
 
-    async function handleCreateGame() {
+    async function handleSaveGame() {
         if (!user?.id) {
             Alert.alert("Erro", "Usuário não autenticado. Faça login para continuar.");
             return;
@@ -61,17 +61,32 @@ export default function Step3() {
             delete (finalData as Partial<typeof finalData>).subject_other;
             delete (finalData as Partial<typeof finalData>).grade_other;
 
-            const { insertedRowId } = await gameDatabase.createGame(finalData);
+            if (formData.id !== null) {
+                await gameDatabase.updateGameSettings(formData.id, finalData);
 
-            if (insertedRowId) {
-                Alert.alert("Sucesso", "Jogo cadastrado!");
-                resetForm()
+                Alert.alert("Sucesso", "Jogo atualizado!");
+                resetForm();
+                router.replace('/(panel)/choose_game/page')
+            } else {
+                 const { insertedRowId } = await gameDatabase.createGame({
+                    ...finalData,
+                    user_id: user.id,
+                    secret_code_length: null
+                 });
 
-                router.replace({
-                    pathname: '/(panel)/add_game/created_game',
-                    params: { game_id: insertedRowId }
-                })
+                if (insertedRowId) {
+                    Alert.alert("Sucesso", "Jogo cadastrado!");
+                    resetForm()
+
+                    router.replace({
+                        pathname: '/(panel)/add_game/created_game',
+                        params: { game_id: insertedRowId }
+                    })
+                }
             }
+           
+
+            
 
             // Alert.alert("Sucesso", "Jogo cadastrado!");
             // resetForm(); 
@@ -119,7 +134,7 @@ export default function Step3() {
                     value={formData.explanation}
                 /> */}
             </View>
-            <Pressable style={styles.continuarBtn} onPress={handleCreateGame}>
+            <Pressable style={styles.continuarBtn} onPress={handleSaveGame}>
                 <Text style={styles.continuarBtnTxt}>Criar jogo</Text>
             </Pressable>
         </View>

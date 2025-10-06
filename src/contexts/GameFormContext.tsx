@@ -2,6 +2,7 @@ import React, { useContext, createContext, useState, ReactNode } from "react";
 import { Game } from "../components/Game";
 
 interface GameFormData {
+    id: number | null,
     model: string,
     subject: string,
     subject_other: string,
@@ -27,6 +28,7 @@ interface GameFormContextType {
 const GameFormContext = createContext<GameFormContextType | undefined>(undefined);
 
 const initialState: GameFormData = {
+    id: null,
     model: '',
     subject: '',
     subject_other: '',

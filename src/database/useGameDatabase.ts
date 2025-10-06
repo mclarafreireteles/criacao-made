@@ -106,8 +106,20 @@ export function useGameDatabase(){
         );
         try {
             await statement.executeAsync({
-
+                $id: gameId,
+                $title: data.title,
+                $subject: data.subject,
+                $content: data.content,
+                $grade: data.grade,
+                $authors: data.authors,
+                $rules: data.rules,
+                $goal: data.goal,
+                $background_image_url: data.background_image_url,
+                $prompt: data.prompt,
+                $explanation: data.explanation,
+                $model: data.model
             })
+            console.log(`Jogo com ID ${gameId} atualizado.`);
         } finally {
             await statement.finalizeAsync()
         }
@@ -165,5 +177,5 @@ export function useGameDatabase(){
     }
 
 
-    return { createGame, searchGameByTitle, searchGameByUser , updateGameLengthSetting, createCard, deleteCard, updateCard, getCardsByGameId, getGameById  }
+    return { createGame, searchGameByTitle, searchGameByUser , updateGameLengthSetting, createCard, deleteCard, updateCard, getCardsByGameId, getGameById, updateGameSettings }
 }
