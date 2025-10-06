@@ -50,7 +50,7 @@ export default function ChooseGame(){
     
     return (
         <ScreenContainer>
-            <ScreenHeader title="Escolher jogos" />
+            <ScreenHeader title="Escolher jogos" backHref={'/(panel)/home/page'}/>
             <FlatList 
                 data={games} 
                 keyExtractor={(item) => String(item.id)} 

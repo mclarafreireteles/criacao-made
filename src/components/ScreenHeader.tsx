@@ -34,7 +34,6 @@ export function ScreenHeader({ title, rightAccessory, backHref }: Props) {
       
       <Text style={styles.title}>{title}</Text>
       
-      {/* Acessório da Direita (logo, etc.) */}
       {rightAccessory && (
         <View style={styles.rightAction}>
           {rightAccessory}
