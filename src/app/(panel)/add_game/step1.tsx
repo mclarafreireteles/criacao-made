@@ -1,4 +1,4 @@
-import { View, Button, Text, StyleSheet, Pressable, Alert } from "react-native";
+import { View, Button, Text, StyleSheet, Pressable, Alert, Image } from "react-native";
 import { useRouter } from "expo-router";
 import { Input } from "@/src/components/input";
 import { useGameForm } from "@/src/contexts/GameFormContext";
@@ -15,7 +15,7 @@ export default function Step1(){
     const isEditing = formData.id !== null;
 
     const gameModels = [
-        {id: 'secret_code', label: 'Código secreto'},
+        {id: 'secret_code', label: 'Código secreto', icon: require('@/assets/images/game_models/secret_code.png')},
     ]
 
     const handleNextStep =() => {
@@ -54,12 +54,17 @@ export default function Step1(){
                             <Pressable
                                 key={model.id}
                                 onPress={() => updateFormData({ model: model.id })}
-                                // Aplica um estilo diferente se este for o modelo selecionado
                                 style={[
                                 styles.option,
-                                formData.model === model.id && styles.optionSelected,
+                                formData.model === model.id && styles.optionSelected, styles.optionWithImage
                                 ]}
                             >
+                                {model.icon && (
+                                    <Image
+                                        source={model.icon}
+                                        style={styles.modelIcon}
+                                    />
+                                )}
                                 <Text
                                 style={[
                                     styles.optionText,
@@ -171,7 +176,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row', 
         flexWrap: 'wrap', 
         gap: 10, 
-        marginBottom: 20, 
+        marginBottom: 20,
+        marginTop: 10, 
     },
     option: {
         borderWidth: 1,
@@ -180,6 +186,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         borderRadius: 20,
         backgroundColor: '#FFF',
+        alignItems: 'center', 
+        justifyContent: 'center',
     },
     optionSelected: {
         backgroundColor: Colors.light.blue, 
@@ -213,4 +221,16 @@ const styles = StyleSheet.create({
         left: 40,
         zIndex: 1, 
     },
+    modelIcon: {
+        width: 100,
+        height: 100,
+        marginRight: 8,
+        resizeMode: 'contain',
+    },
+    optionWithImage: {
+        flexDirection: 'column', 
+        alignItems: 'center', 
+        paddingHorizontal: 15,
+        paddingVertical: 10,
+    }
 })

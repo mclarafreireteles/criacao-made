@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import { View, Text, StyleSheet, ActivityIndicator, ScrollView } from "react-native";
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useGameDatabase, GameDatabase } from '@/src/database/useGameDatabase';
 
@@ -11,9 +11,9 @@ import Colors from '@/constants/Colors';
 
 const InfoRow = ({ label, value }: { label: string, value: string | null | undefined }) => {
     return (
-        <View>
-            <Text>{label}</Text>
-            <Text>{value || "Não informado"}</Text>
+        <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>{label}</Text>
+            <Text style={styles.infoValue}>{value || "Não informado"}</Text>
         </View>
     )
 }
@@ -73,12 +73,19 @@ export default function gameDashBoardScreen(){
         <ScreenContainer>
             <ScreenHeader title="Configurações do jogo"/>
             <View style={styles.content}>
-                <View style={styles.infoSection}>
-                    <InfoRow label="Assunto" value={game.subject} />
-                    <InfoRow label="Série/Ano" value={game.grade} />
-                    <InfoRow label="Autores" value={game.authors} />
-                    <InfoRow label="Objetivo" value={game.goal} />
-                </View>
+                <ScrollView style={styles.scrollView}>
+                    <View style={styles.infoSection}>
+                        <InfoRow label="Assunto" value={game.subject} />
+                        <InfoRow label="Série/Ano" value={game.grade} />
+                        <InfoRow label="Autores" value={game.authors} />
+                        <InfoRow label="Modelo do Jogo" value={game.model} />
+                        <InfoRow label="Objetivo" value={game.goal} />
+                        <InfoRow label="Enunciado Principal" value={game.prompt} />
+                        <InfoRow label="Regras" value={game.rules} />
+                        <InfoRow label="Explicação" value={game.explanation} />
+                        <InfoRow label="Conteúdo" value={game.content} />
+                    </View>
+                </ScrollView>
                 <View style={styles.buttonContainer}>
                     <AppButton 
                         title="Gerenciar Cartas" 
@@ -127,5 +134,25 @@ const styles = StyleSheet.create({
     buttonContainer: {
         gap: 12,
         paddingTop: 20,
+    },
+    scrollView: {
+        flex: 1,
+    },
+    infoRow: {
+        backgroundColor: '#F8FAFC',
+        padding: 16,
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: '#E2E8F0',
+    },
+    infoLabel: {
+        fontSize: 14,
+        color: '#64748B',
+        marginBottom: 4,
+        fontWeight: '500',
+    },
+    infoValue: {
+        fontSize: 16,
+        color: '#1E293B',
     },
 })
