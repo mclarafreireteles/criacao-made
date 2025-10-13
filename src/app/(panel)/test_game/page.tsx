@@ -101,6 +101,11 @@ export default function TestGameScreen() {
                     getGameById(gameIdNumber),
                     getCardsByGameId(gameIdNumber)
                 ]);
+
+                console.log(`--- DADOS BRUTOS DO BANCO ---`);
+                console.log(`Encontradas ${cardsData.length} cartas no total para este jogo:`);
+                console.log(JSON.stringify(cardsData, null, 2));
+                console.log(`------------------------------`);
                 
                 if (gameData && cardsData.length > 0) {
                     setGameDetails(gameData);
@@ -113,7 +118,8 @@ export default function TestGameScreen() {
                     const newSecretCode = shuffledCorrectCards.slice(0, codeLength);
                     setSecretCode(newSecretCode);
 
-                    const distractors = [...incorrectCards].sort(() => Math.random() - 0.5).slice(0, 8);
+                    // const distractors = [...incorrectCards].sort(() => Math.random() - 0.5).slice(0, 8);
+                    const distractors = [...incorrectCards];
                     const newAnswerPool = [...newSecretCode, ...distractors];
 
                     setAnswerPool(newAnswerPool.sort(() => Math.random() - 0.5));
@@ -211,7 +217,7 @@ export default function TestGameScreen() {
                 </View>
 
                 {/* Feedback e Botão Finalizar */}
-                {/* {feedback && (
+                {feedback && (
                     <View style={styles.feedbackContainer}>
                         <View style={[styles.feedbackBox, styles.feedbackIncorrect]}>
                             <Text style={styles.feedbackNumber}>{feedback.correctCardWrongPosition}</Text>
@@ -222,7 +228,7 @@ export default function TestGameScreen() {
                             <Text style={styles.feedbackText}>escolhidas corretas em {'\n'}posição correta</Text>
                         </View>
                     </View>
-                )} */}
+                )}
                 
             </ScrollView>
             <View style={styles.footer}>
@@ -276,7 +282,7 @@ const styles = StyleSheet.create({
     answerPoolGrid: {
         flex: 1,
         marginTop: 10,
-        paddingHorizontal: 20
+        paddingHorizontal: 20,
     },
     answerCard: {
         flex: 1,
@@ -307,9 +313,11 @@ const styles = StyleSheet.create({
     },
     feedbackBox: {
         flex: 1,
-        padding: 10,
+        paddingVertical: 12,
+        paddingHorizontal: 10,
         borderRadius: 12,
         alignItems: 'center',
+        borderWidth: 1,
     },
     feedbackIncorrect: {
         backgroundColor: '#FEE2E2',
@@ -328,6 +336,9 @@ const styles = StyleSheet.create({
     feedbackText: {
         textAlign: 'center',
         marginTop: 4,
+        fontSize: 12,
+        color: '#4B5563', // Cinza escuro para legibilidade
+        lineHeight: 16,
     },
     footer: {
         paddingTop: 10,
@@ -343,6 +354,7 @@ const styles = StyleSheet.create({
     },
     secretCodeContainer: {
         flexDirection: 'row',
+        justifyContent: 'center',
         gap: 10,
     },
     secretCard: {
