@@ -1,6 +1,21 @@
 import React, { useContext, createContext, useState, ReactNode } from "react";
 import { Game } from "../components/Game";
 
+const defaultInput = {
+    rules: "Arrastar as cartas que correspondem ao enunciado do jogo, colocando-as na ordem correta definida pelo próprio jogo ou pelo desenvolvedor (professor, outro colega)",
+    explanation: "1 – Decida qual é o nível do jogo: 1 a 4.\n\n" +
+                 "2 – Escolha as cartas que correspondem ao enunciado do jogo, colocando-as na ordem correta.\n\n" +
+                 "3 – Dependendo do nível você tem até 10 tentativas para encontrar o Código Secreto:\n" +
+                 "   • Nível 1 – 10 tentativas\n" +
+                 "   • Nível 2 – 8 tentativas\n" +
+                 "   • Nível 3 – 6 tentativas\n" +
+                 "   • Nível 4 – 5 tentativas\n\n" +
+                 "4 – O jogo vai te dar um feedback informando quantas cartas estão corretas na posição correta e quantas estão corretas na posição incorreta. Em nenhum momento o jogo informa quais são elas.\n\n" +
+                 "5 – Quando o Código Secreto for descoberto, as cartas iniciais são reveladas e sua pontuação é apresentada na tela.",
+    goal: "Descobrir, no menor número de tentativas, as imagens ou os textos de determinado conteúdo (Código Secreto) definidos pelo jogo ou desenvolvedor do jogo (professor, outro aluno, por exemplo). "
+
+}
+
 interface GameFormData {
     id: number | null,
     model: string,
@@ -36,12 +51,12 @@ const initialState: GameFormData = {
     grade: '',
     grade_other: '',
     authors: '',
-    rules: '',
-    goal: '',
+    rules: defaultInput.rules,
+    goal: defaultInput.goal,
     background_image_url: '',
     title: '',
     prompt: '',
-    explanation: '',
+    explanation: defaultInput.explanation,
     secret_code_length: null,
 }
 

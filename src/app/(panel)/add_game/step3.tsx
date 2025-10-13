@@ -115,13 +115,17 @@ export default function Step3() {
                 />
                 <StyledInput
                     label="Enunciado"
-                    placeholder=""
+                    placeholder="Exemplo: Coloque na ordem correta, os animais que representam os mamíferos. "
+                    multiline={true}
+                    numberOfLines={2}
                     value={formData.prompt}
                     onChangeText={(text: string) => updateFormData({ prompt: text })}
                 />
                 <StyledInput
                     label="Explicação"
                     placeholder=""
+                    multiline={true}
+                    numberOfLines={4}
                     value={formData.explanation}
                     onChangeText={(text: string) => updateFormData({ explanation: text })}
                 />

@@ -38,14 +38,18 @@
                 <Text style={styles.createGameTitle}>{isEditing ? "Editar Jogo" : "Criar Jogo"}</Text>
                 <View style={styles.containerInput}>
                     <StyledInput
-                        label="Regras"
+                        label="Regras do jogo"
                         placeholder=""
                         value={formData.rules}
+                        multiline={true}
+                        numberOfLines={4}
                         onChangeText={(text: string) => updateFormData({ rules: text })}
                     />
                     <StyledInput
                         label="Objetivo"
                         placeholder=""
+                        multiline={true}
+                        numberOfLines={4}
                         value={formData.goal}
                         onChangeText={(text: string) => updateFormData({ goal: text })}
                     />
