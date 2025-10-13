@@ -36,6 +36,7 @@ export default function ManageCards (){
             setCards(cardsResponse);
             if (gameResponse?.secret_code_length) {
                 setCodeLength(gameResponse.secret_code_length);
+                setSelectionMode('specific'); 
             }
 
         } catch (error) {

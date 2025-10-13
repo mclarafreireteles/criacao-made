@@ -68,7 +68,7 @@ export default function ChooseGame(){
 
 const styles = StyleSheet.create({
     container: {
-        paddingHorizontal: 30, 
+        paddingHorizontal: 45, 
         paddingVertical: 60,
         backgroundColor: Colors.light.white,
         flex: 1

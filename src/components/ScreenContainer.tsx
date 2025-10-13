@@ -26,6 +26,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     // paddingHorizontal: 20, // Padding lateral padrão para todas as telas
-    paddingVertical: 20,   // Padding vertical padrão
+    paddingVertical: 45,   // Padding vertical padrão
   },
 });

@@ -28,6 +28,14 @@ export default function gameDashBoardScreen(){
     const [game, setGame] = useState<GameDatabase | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
+    const getModelLabel = (modelId: string) => {
+        if (modelId === 'secret_code') {
+            return 'Código Secreto';
+        }
+        return modelId; 
+    };
+
+
     useEffect(() => {
         console.log('procurando jogo');
         const loadGame = async () => {
@@ -50,6 +58,8 @@ export default function gameDashBoardScreen(){
         }
         loadGame();
     }, [gameIdNumber]);
+
+    
 
     if (isLoading) {
         return (
@@ -78,7 +88,7 @@ export default function gameDashBoardScreen(){
                         <InfoRow label="Assunto" value={game.subject} />
                         <InfoRow label="Série/Ano" value={game.grade} />
                         <InfoRow label="Autores" value={game.authors} />
-                        <InfoRow label="Modelo do Jogo" value={game.model} />
+                        <InfoRow label="Modelo do Jogo" value={getModelLabel(game.model)} />
                         <InfoRow label="Objetivo" value={game.goal} />
                         <InfoRow label="Enunciado Principal" value={game.prompt} />
                         <InfoRow label="Regras" value={game.rules} />
@@ -124,8 +134,8 @@ const styles = StyleSheet.create({
     content: {
         flex: 1,
         justifyContent: 'space-between',
-        paddingHorizontal: 30,
-        paddingVertical: 60,
+        paddingHorizontal: 45,
+        // paddingVertical: 60,
         backgroundColor: Colors.light.white,
     },
     infoSection: {
