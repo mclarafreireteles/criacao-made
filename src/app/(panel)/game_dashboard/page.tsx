@@ -98,19 +98,20 @@ export default function gameDashBoardScreen(){
                 </ScrollView>
                 <View style={styles.buttonContainer}>
                     <AppButton 
-                        title="Gerenciar Cartas" 
-                        icon="copy-outline"
-                        onPress={() => router.push({
-                            pathname: '/manage_cards/page',
-                            params: { game_id: gameIdNumber }
-                        })}
-                    />
-                    <AppButton 
                         title="Editar Jogo" 
                         icon="pencil"
                         variant="secondary"
                         onPress={() => router.push({
                             pathname: '/edit_game/page',
+                            params: { game_id: gameIdNumber }
+                        })}
+                    />
+                    <AppButton 
+                        title="Gerenciar Cartas" 
+                        icon="copy-outline"
+                        variant="secondary"
+                        onPress={() => router.push({
+                            pathname: '/manage_cards/page',
                             params: { game_id: gameIdNumber }
                         })}
                     />

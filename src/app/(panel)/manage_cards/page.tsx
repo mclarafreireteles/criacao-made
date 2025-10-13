@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, Pressable, StyleSheet, FlatList, SafeAreaView, useWindowDimensions } from "react-native";
+import { View, Text, Pressable, StyleSheet, FlatList, SafeAreaView, useWindowDimensions, Alert, Platform } from "react-native";
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -11,6 +11,7 @@ import { ScreenHeader } from '@/src/components/ScreenHeader';
 
 
 const CODE_LENGTH_OPTIONS = [3, 4, 5, 6];
+const MAX_CARDS = 12;
 
 export default function ManageCards (){
     const router = useRouter();
@@ -23,6 +24,8 @@ export default function ManageCards (){
     const [cards, setCards] = useState<CardDatabase[]>([]);
     const [codeLength, setCodeLength] = useState<number | null>(null);
     const [selectionMode, setSelectionMode] = useState<'specific' | 'random' | null>(null);
+
+    const isCardLimitReached = cards.length >= MAX_CARDS;
 
     const fetchCardsAndSettings = useCallback(async () => {
     if (!gameIdNumber) return;
@@ -68,6 +71,15 @@ export default function ManageCards (){
     }
 
     const handleNavigateToAddCard = () => {
+        if (cards.length >= MAX_CARDS) {
+            if (Platform.OS === 'web') {
+                window.alert("Só é possível criar até 12 cartas por jogo.");
+            } else {
+                Alert.alert("Limite Atingido", "Só é possível criar até 12 cartas por jogo.");
+            }
+            return;
+        }
+
         console.log("--- DEBUG ---");
         console.log("Botão clicado. Tentando navegar...");
         console.log("Pathname:", '/manage_cards/add_card');
@@ -120,7 +132,15 @@ export default function ManageCards (){
                 </View>
             </View>
 
-            <Pressable style={styles.addCardButton} onPress={handleNavigateToAddCard} >
+            {/* <Pressable style={styles.addCardButton} onPress={handleNavigateToAddCard} >
+                <Ionicons name="add" size={20} color="white" />
+                <Text style={styles.addCardButtonText}>Adicionar carta</Text>
+            </Pressable> */}
+            <Pressable
+                style={[styles.addCardButton, isCardLimitReached && styles.disabledButton]}
+                onPress={handleNavigateToAddCard}
+                disabled={isCardLimitReached} // Desabilita o botão
+            >
                 <Ionicons name="add" size={20} color="white" />
                 <Text style={styles.addCardButtonText}>Adicionar carta</Text>
             </Pressable>
@@ -340,5 +360,9 @@ const styles = StyleSheet.create({
     headerWrapper: {
         width: '100%',
         // marginBottom: 20, // Espaço entre o header e a grade
-    }
+    },
+    disabledButton: {
+        backgroundColor: '#9CA3AF',
+        opacity: 0.7,
+    },
 })

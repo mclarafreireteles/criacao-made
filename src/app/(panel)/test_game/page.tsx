@@ -106,6 +106,8 @@ export default function TestGameScreen() {
                 console.log(`Encontradas ${cardsData.length} cartas no total para este jogo:`);
                 console.log(JSON.stringify(cardsData, null, 2));
                 console.log(`------------------------------`);
+
+                
                 
                 if (gameData && cardsData.length > 0) {
                     setGameDetails(gameData);
@@ -118,11 +120,14 @@ export default function TestGameScreen() {
                     const newSecretCode = shuffledCorrectCards.slice(0, codeLength);
                     setSecretCode(newSecretCode);
 
-                    // const distractors = [...incorrectCards].sort(() => Math.random() - 0.5).slice(0, 8);
                     const distractors = [...incorrectCards];
                     const newAnswerPool = [...newSecretCode, ...distractors];
 
                     setAnswerPool(newAnswerPool.sort(() => Math.random() - 0.5));
+
+                    console.log("--- DEBUG: RESPOSTA CORRETA ---");
+                    console.log(newSecretCode.map(card => card.card_text)); 
+                    console.log("---------------------------------");
                 }
             } catch (err) {
                 console.log('Erro ao preparar o jogo', err);
