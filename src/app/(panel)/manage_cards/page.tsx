@@ -132,10 +132,6 @@ export default function ManageCards (){
                 </View>
             </View>
 
-            {/* <Pressable style={styles.addCardButton} onPress={handleNavigateToAddCard} >
-                <Ionicons name="add" size={20} color="white" />
-                <Text style={styles.addCardButtonText}>Adicionar carta</Text>
-            </Pressable> */}
             <Pressable
                 style={[styles.addCardButton, isCardLimitReached && styles.disabledButton]}
                 onPress={handleNavigateToAddCard}
@@ -189,6 +185,13 @@ export default function ManageCards (){
                             <Pressable onPress={() => handleNavigateToEditCard(item)} style={styles.editBtn}>
                                 <MaterialIcons name="edit" size={18} color={Colors.light.blue} />
                             </Pressable>
+                            <View style={styles.statusIndicator}>
+                                <Ionicons 
+                                    name={item.card_type === 1 ? "checkmark-circle" : "close-circle"}
+                                    size={24}
+                                    color={item.card_type === 1 ? "#10B981" : "#EF4444"}
+                                />
+                            </View>
                         </View>
                         
                     )}
@@ -364,5 +367,12 @@ const styles = StyleSheet.create({
     disabledButton: {
         backgroundColor: '#9CA3AF',
         opacity: 0.7,
+    },
+    statusIndicator: {
+        position: 'absolute',
+        bottom: 5,
+        left: 5,
+        backgroundColor: 'white',
+        borderRadius: 12, 
     },
 })

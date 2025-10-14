@@ -21,7 +21,6 @@ export async function initializeDatabase(database: SQLiteDatabase) {
             secret_code_length INTEGER
         );
         
-        CREATE INDEX IF NOT EXISTS idx_games_user_id ON games(user_id);
 
         CREATE TABLE IF NOT EXISTS cards (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,5 +31,7 @@ export async function initializeDatabase(database: SQLiteDatabase) {
             display_order INTEGER DEFAULT 0,
             FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE
         );
+
+        CREATE INDEX IF NOT EXISTS idx_games_user_id ON games(user_id);
     `);
 }

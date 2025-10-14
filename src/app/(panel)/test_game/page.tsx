@@ -245,9 +245,10 @@ export default function TestGameScreen() {
                 
             </ScrollView>
             <View style={styles.footer}>
-                 <AppButton title="Verificar Tentativa" onPress={handleCheckAnswer} />
+                <AppButton title="Verificar Tentativa" onPress={handleCheckAnswer} />
             </View>
         </ScreenContainer>
+
     );
 }
 
@@ -389,5 +390,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     secretCardText: { fontSize: 18, fontWeight: 'bold' },
-
+    backgroundImage: {
+        flex: 1, 
+    },
 });
