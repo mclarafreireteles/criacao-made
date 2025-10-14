@@ -1,4 +1,4 @@
-import { View, Button, Text, StyleSheet, Pressable, Alert, Image } from "react-native";
+import { View, Button, Text, StyleSheet, Pressable, Alert, Image, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import { Input } from "@/src/components/input";
 import { useGameForm } from "@/src/contexts/GameFormContext";
@@ -7,6 +7,9 @@ import { OptionSelector } from "@/src/components/OptionSelector";
 import { StyledInput } from "@/src/components/StyledInput";
 import { BackButtonIcon } from "@/src/components/icons/BackButtonIcon";
 import { disciplines, grade } from "@/constants/formOptions";
+import { AppButton } from "@/src/components/AppButton";
+import { ScreenContainer } from "@/src/components/ScreenContainer";
+import { ScreenHeader } from "@/src/components/ScreenHeader";
 
 export default function Step1(){
     const router = useRouter();
@@ -40,13 +43,9 @@ export default function Step1(){
     }
 
     return(
-        <View style={styles.container}>
-            <BackButtonIcon
-                        style={styles.backButton}
-                        onPress={() => router.back()}
-                    />
-            <Text style={styles.createGameTitle}>{isEditing ? "Editar Jogo" : "Criar Jogo"}</Text>
-            <View style={styles.containerInput}>
+        <ScreenContainer>
+           <ScreenHeader title={isEditing ? "Editar Jogo" : "Criar Jogo"} />
+            <ScrollView style={styles.formContainer} showsVerticalScrollIndicator={false}>
                 <View>
                     <Text>Escolha o modelo de jogo</Text>
                     <View style={styles.optionsContainer}>
@@ -140,11 +139,15 @@ export default function Step1(){
                         onChangeText={(text: string) => updateFormData({ authors: text })}
                     />
                 </View>
-            </View>
-            <Pressable style={styles.continuarBtn} onPress={handleNextStep}>
+            </ScrollView>
+            {/* <Pressable style={styles.continuarBtn} onPress={handleNextStep}>
                 <Text style={styles.continuarBtnTxt}>Continuar</Text>
-            </Pressable>
-        </View>
+                
+            </Pressable> */}
+            <View style={styles.footer}>
+                <AppButton title="Continuar" variant="secondary" onPress={handleNextStep} />
+            </View>
+        </ScreenContainer>
     )
 }
 
@@ -232,5 +235,14 @@ const styles = StyleSheet.create({
         alignItems: 'center', 
         paddingHorizontal: 15,
         paddingVertical: 10,
-    }
+    },
+    footer: {
+        paddingTop: 20,
+        gap: 12,
+        paddingHorizontal: 45
+    },
+    formContainer: {
+        flex: 1,
+        paddingHorizontal: 45
+    },
 })
