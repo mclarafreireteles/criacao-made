@@ -139,7 +139,7 @@ export default function ManageCards (){
             <Pressable
                 style={[styles.addCardButton, isCardLimitReached && styles.disabledButton]}
                 onPress={handleNavigateToAddCard}
-                disabled={isCardLimitReached} // Desabilita o botão
+                // disabled={isCardLimitReached} // Desabilita o botão
             >
                 <Ionicons name="add" size={20} color="white" />
                 <Text style={styles.addCardButtonText}>Adicionar carta</Text>

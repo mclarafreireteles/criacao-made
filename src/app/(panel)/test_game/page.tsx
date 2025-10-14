@@ -113,21 +113,29 @@ export default function TestGameScreen() {
                     setGameDetails(gameData);
                     const codeLength = gameData.secret_code_length || 4;
 
-                    const correctCards = cardsData.filter(card => card.card_type);
-                    const incorrectCards = cardsData.filter(card => !card.card_type);
+                    const correctCards = cardsData.filter(card => Number(card.card_type) === 1);
+                    const incorrectCards = cardsData.filter(card => Number(card.card_type) !== 1);
 
                     const shuffledCorrectCards = [...correctCards].sort(() => Math.random() - 0.5);
                     const newSecretCode = shuffledCorrectCards.slice(0, codeLength);
                     setSecretCode(newSecretCode);
 
                     const distractors = [...incorrectCards];
-                    const newAnswerPool = [...newSecretCode, ...distractors];
+                    // const newAnswerPool = [...newSecretCode, ...distractors];
+
+                    // const newAnswerPool = [...cardsData].sort(() => Math.random() - 0.5);
+                    const newAnswerPool = [...correctCards, ...incorrectCards].sort(() => Math.random() - 0.5);
+
+
 
                     setAnswerPool(newAnswerPool.sort(() => Math.random() - 0.5));
 
                     console.log("--- DEBUG: RESPOSTA CORRETA ---");
                     console.log(newSecretCode.map(card => card.card_text)); 
                     console.log("---------------------------------");
+
+                    console.log("✅ CORRETAS:", correctCards.length);
+                    console.log("❌ INCORRETAS:", incorrectCards.length);
                 }
             } catch (err) {
                 console.log('Erro ao preparar o jogo', err);
@@ -304,7 +312,6 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.1,
         shadowRadius: 2,
-        maxWidth: 100,
     },
     answerCardText: {
         fontSize: 18,
