@@ -3,7 +3,7 @@
 # dependencies
 node_modules/
 
-constants/supabase.ts
+constants/
 
 # Expo
 .expo/
