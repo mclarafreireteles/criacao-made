@@ -18,16 +18,18 @@ export type GameDatabase = {
 }
 
 export type CardDatabase = {
-    id: number,
-    game_id: number,
-    card_text: string,
-    card_type?: number
+    id: number;
+    game_id: number;
+    card_text: string;
+    card_type?: number;
+    image_url?: string | null;
 }
 
 export type NewCardDatabase = {
     game_id: number;
     card_text: string;
-    card_type?: number
+    card_type?: number;
+    image_url?: string | null;
 }
 
 export function useGameDatabase(){
@@ -52,7 +54,7 @@ export function useGameDatabase(){
                 $background_image_url: data.background_image_url,
                 $explanation: data.explanation,
                 $model: data.model,
-                $secret_code_length: data.secret_code_length
+                $secret_code_length: data.secret_code_length ?? null
             })
 
             const insertedRowId = result.lastInsertRowId;
@@ -140,13 +142,14 @@ export function useGameDatabase(){
     
     async function createCard(data: Omit<CardDatabase, 'id'>) {
         const statement = await database.prepareAsync(
-            "INSERT INTO cards (game_id, card_text, card_type) VALUES ($game_id, $card_text, $card_type)"
+            "INSERT INTO cards (game_id, card_text, card_type, image_url) VALUES ($game_id, $card_text, $card_type, $image_url)"
         );
         try {
             const result = await statement.executeAsync({
                 $game_id: data.game_id,
                 $card_text: data.card_text,
-                $card_type: data.card_type ? 1 : 0
+                $card_type: data.card_type ? 1 : 0,
+                $image_url: data.image_url ?? null,
             });
             const insertedRowId = result.lastInsertRowId;
             return { insertedRowId }
@@ -159,10 +162,10 @@ export function useGameDatabase(){
         await database.runAsync("DELETE FROM cards WHERE id = ?", [cardId])
     }
 
-    async function updateCard(cardId: number, newText: string, isCorrect: boolean) {
+    async function updateCard(cardId: number, newText: string, isCorrect: boolean, imageUrl: string) {
         await database.runAsync(
-            'UPDATE cards SET card_text = ?, card_type = ? WHERE id = ?',
-            [newText, isCorrect ? 1 : 0, cardId]
+            'UPDATE cards SET card_text = ?, card_type = ?, image_url = ? WHERE id = ?',
+            [newText, isCorrect ? 1 : 0, imageUrl ?? null, cardId]
         )
     }
 
