@@ -15,6 +15,7 @@ export async function initializeDatabase(database: SQLiteDatabase) {
             rules TEXT,
             goal TEXT NOT NULL,
             background_image_url TEXT,
+            card_front_url TEXT,
             prompt TEXT NOT NULL,
             explanation TEXT,
             model TEXT NOT NULL,
@@ -27,7 +28,6 @@ export async function initializeDatabase(database: SQLiteDatabase) {
             game_id INTEGER NOT NULL,
             card_text TEXT NOT NULL,
             card_type INTEGER DEFAULT 0, 
-            image_url TEXT,
             display_order INTEGER DEFAULT 0,
             FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE
         );

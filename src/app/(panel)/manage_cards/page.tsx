@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, Pressable, StyleSheet, FlatList, SafeAreaView, useWindowDimensions, Alert, Platform } from "react-native";
+import { View, Text, Pressable, StyleSheet, FlatList, SafeAreaView, useWindowDimensions, Alert, Platform, ScrollView, Image } from "react-native";
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -7,6 +7,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useGameDatabase, CardDatabase } from '@/src/database/useGameDatabase';
 import Colors from '@/constants/Colors';
 import { ScreenHeader } from '@/src/components/ScreenHeader';
+import { cardFronts } from '@/constants/cardFronts';
 // import { ScreenContainer } from '@/src/components/ScreenContainer';
 
 
@@ -19,11 +20,12 @@ export default function ManageCards (){
     const { game_id } = useLocalSearchParams();
     const gameIdNumber = Number(game_id)
 
-    const { getCardsByGameId, createCard, updateGameLengthSetting, deleteCard, getGameById } = useGameDatabase();
+    const { getCardsByGameId, createCard, updateGameLengthSetting, deleteCard, getGameById, updateGameSettings, updateGameCardFront } = useGameDatabase();
 
     const [cards, setCards] = useState<CardDatabase[]>([]);
     const [codeLength, setCodeLength] = useState<number | null>(null);
     const [selectionMode, setSelectionMode] = useState<'specific' | 'random' | null>(null);
+    const [cardFrontUrl, setCardFrontUrl] = useState<string | null>(null);
 
     const isCardLimitReached = cards.length >= MAX_CARDS;
 
@@ -40,6 +42,7 @@ export default function ManageCards (){
             if (gameResponse?.secret_code_length) {
                 setCodeLength(gameResponse.secret_code_length);
                 setSelectionMode('specific'); 
+                setCardFrontUrl(gameResponse.card_front_url);
             }
 
         } catch (error) {
@@ -150,6 +153,24 @@ export default function ManageCards (){
                 <Text style={styles.infoLinkTxt} onPress={() => router.push({ pathname: '/how_to_play/page'})}>Como funciona o jogo?</Text>
             </Pressable>
 
+            <View style={styles.settingSection}>
+                <Text style={styles.settingLabel}>Moldura da Carta</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.imageSelector}>
+                    {cardFronts.map((front) => (
+                        <Pressable 
+                            key={front.id} 
+                            onPress={() => handleSetCardFront(front.id)}
+                            style={[
+                                styles.imageOption,
+                                cardFrontUrl === front.id && styles.imageSelected
+                            ]}
+                        >
+                            <Image source={front.image} style={styles.cardImage} />
+                        </Pressable>
+                    ))}
+                </ScrollView>
+            </View>
+
             <View style={styles.containerBtn}>
                 <Pressable 
                     style={styles.testarBtn} 
@@ -166,6 +187,11 @@ export default function ManageCards (){
             </View>
         </>
     );
+
+    const handleSetCardFront = async (frontUrl: string) => {
+        setCardFrontUrl(frontUrl);
+        await updateGameCardFront(gameIdNumber, frontUrl);
+    }
 
     const numColumns = 4;
     const screenPadding = 20 * 2;
@@ -375,4 +401,26 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 12, 
     },
+    imageSelector: {
+        flexDirection: 'row',
+        paddingVertical: 10,
+     },
+    imageOption: { 
+        width: 80,
+        height: 112, 
+        borderRadius: 8,
+        borderWidth: 3,
+        borderColor: 'transparent',
+        overflow: 'hidden',
+        marginRight: 15,
+        backgroundColor: '#F3F4F6', 
+     },
+    imageSelected: { 
+        borderColor: Colors.light.blue,
+     },
+    cardImage: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'cover'
+     },
 })

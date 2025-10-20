@@ -7,6 +7,7 @@ import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { AppButton } from '@/src/components/AppButton';
 import { GameDatabase, useGameDatabase, CardDatabase } from '@/src/database/useGameDatabase';
 import { cardBacks } from '@/constants/cardBacks';
+import { cardFronts } from '@/constants/cardFronts';
 
 
 export default function TestGameScreen() {
@@ -28,6 +29,7 @@ export default function TestGameScreen() {
     const [gameState, setGameState] = useState<'playing' | 'won'>('playing'); // Estado do jogo
 
     const selectedCardBack = cardBacks.find(back => back.id === gameDetails?.background_image_url)?.image;
+    const selectedCardFront = cardFronts.find(front => front.id === gameDetails?.card_front_url)?.image;
 
     const handleSelectCard = (selectedCard: CardDatabase) => {
     const isAlreadyGuessed = playerGuess.find(card => card.id === selectedCard.id);
@@ -165,7 +167,15 @@ export default function TestGameScreen() {
         for (let i = 0; i < length; i++) {
             slots.push(
                 <Pressable key={`guess-${i}`} style={styles.guessSlot} onPress={() => handleRemoveFromGuess(i)}>
-                    {playerGuess[i] && <Text style={styles.guessSlotText}>{playerGuess[i].card_text}</Text>}
+                    {/* {playerGuess[i] && <Text style={styles.guessSlotText}>{playerGuess[i].card_text}</Text>} */}
+                    {playerGuess[i] ? (
+                    // ✅ Usa a moldura (selectedCardFront) como fundo
+                    <ImageBackground source={selectedCardFront} style={styles.guessSlot} resizeMode="cover">
+                        <Text style={styles.guessSlotText}>{playerGuess[i].card_text}</Text>
+                    </ImageBackground>
+                ) : (
+                    <View style={styles.guessSlot} /> // Slot vazio
+                )}
                 </Pressable>
             );
         }
@@ -222,7 +232,9 @@ export default function TestGameScreen() {
                         numColumns={4}
                         renderItem={({ item }) => (
                             <Pressable style={styles.answerCard} onPress={() => handleSelectCard(item)}>
-                                <Text style={styles.answerCardText}>{item.card_text}</Text>
+                                <ImageBackground source={selectedCardFront} style={styles.cardFrontImage}>
+                                    <Text style={styles.answerCardText}>{item.card_text}</Text>
+                                </ImageBackground>
                             </Pressable>
                         )}
                         style={styles.answerPoolGrid}
@@ -393,4 +405,9 @@ const styles = StyleSheet.create({
     backgroundImage: {
         flex: 1, 
     },
+    cardFrontImage: {
+        width: '85%',
+        height: '85%',
+        resizeMode: 'contain',
+    }
 });

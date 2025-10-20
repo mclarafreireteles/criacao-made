@@ -11,6 +11,7 @@ export type GameDatabase = {
     rules: string,
     goal: string, 
     background_image_url: string,
+    card_front_url: string | null,
     prompt: string, 
     explanation: string,
     model: string,
@@ -22,14 +23,12 @@ export type CardDatabase = {
     game_id: number;
     card_text: string;
     card_type?: number;
-    image_url?: string | null;
 }
 
 export type NewCardDatabase = {
     game_id: number;
     card_text: string;
     card_type?: number;
-    image_url?: string | null;
 }
 
 export function useGameDatabase(){
@@ -38,7 +37,7 @@ export function useGameDatabase(){
 
     async function createGame(data: Omit<GameDatabase, "id">){
         const statement = await database.prepareAsync(
-            "INSERT INTO games (title, subject, user_id, goal, prompt, content, grade, authors, rules, background_image_url, explanation, model, secret_code_length) VALUES ($title, $subject, $user_id, $goal, $prompt, $content, $grade, $authors, $rules, $background_image_url, $explanation, $model, $secret_code_length)"
+            "INSERT INTO games (title, subject, user_id, goal, prompt, content, grade, authors, rules, background_image_url, explanation, model, secret_code_length, card_front_url) VALUES ($title, $subject, $user_id, $goal, $prompt, $content, $grade, $authors, $rules, $background_image_url, $explanation, $model, $secret_code_length, card_front_url)"
         )
         try {
             const result = await statement.executeAsync({
@@ -54,7 +53,8 @@ export function useGameDatabase(){
                 $background_image_url: data.background_image_url,
                 $explanation: data.explanation,
                 $model: data.model,
-                $secret_code_length: data.secret_code_length ?? null
+                $secret_code_length: data.secret_code_length ?? null,
+                $card_front_url: data.card_front_url ?? null
             })
 
             const insertedRowId = result.lastInsertRowId;
@@ -98,12 +98,19 @@ export function useGameDatabase(){
         );
     }
 
+    async function updateGameCardFront(gameId: number, frontId: string) {
+        await database.runAsync(
+            'UPDATE games SET card_front_id = ? WHERE id = ?',
+            [frontId, gameId]
+        );
+    }
+
     async function updateGameSettings(gameId: number, data:Omit<GameDatabase, "id" | "user_id">) {
         const statement = await database.prepareAsync(
             `UPDATE games 
              SET title = $title, subject = $subject, content = $content, grade = $grade, 
                  authors = $authors, rules = $rules, goal = $goal, background_image_url = $background_image_url, 
-                 prompt = $prompt, explanation = $explanation, model = $model
+                 prompt = $prompt, explanation = $explanation, model = $model, card_front_url = $card_front_url
              WHERE id = $id`
         );
         try {
@@ -119,7 +126,8 @@ export function useGameDatabase(){
                 $background_image_url: data.background_image_url,
                 $prompt: data.prompt,
                 $explanation: data.explanation,
-                $model: data.model
+                $model: data.model,
+                $card_front_id: data.card_front_url
             })
             console.log(`Jogo com ID ${gameId} atualizado.`);
         } finally {
@@ -142,14 +150,13 @@ export function useGameDatabase(){
     
     async function createCard(data: Omit<CardDatabase, 'id'>) {
         const statement = await database.prepareAsync(
-            "INSERT INTO cards (game_id, card_text, card_type, image_url) VALUES ($game_id, $card_text, $card_type, $image_url)"
+            "INSERT INTO cards (game_id, card_text, card_type) VALUES ($game_id, $card_text, $card_type)"
         );
         try {
             const result = await statement.executeAsync({
                 $game_id: data.game_id,
                 $card_text: data.card_text,
                 $card_type: data.card_type ? 1 : 0,
-                $image_url: data.image_url ?? null,
             });
             const insertedRowId = result.lastInsertRowId;
             return { insertedRowId }
@@ -162,10 +169,10 @@ export function useGameDatabase(){
         await database.runAsync("DELETE FROM cards WHERE id = ?", [cardId])
     }
 
-    async function updateCard(cardId: number, newText: string, isCorrect: boolean, imageUrl: string) {
+    async function updateCard(cardId: number, newText: string, isCorrect: boolean) {
         await database.runAsync(
-            'UPDATE cards SET card_text = ?, card_type = ?, image_url = ? WHERE id = ?',
-            [newText, isCorrect ? 1 : 0, imageUrl ?? null, cardId]
+            'UPDATE cards SET card_text = ?, card_type = ?',
+            [newText, isCorrect ? 1 : 0, cardId]
         )
     }
 
@@ -180,5 +187,5 @@ export function useGameDatabase(){
     }
 
 
-    return { createGame, searchGameByTitle, searchGameByUser , updateGameLengthSetting, createCard, deleteCard, updateCard, getCardsByGameId, getGameById, updateGameSettings }
+    return { createGame, searchGameByTitle, searchGameByUser , updateGameLengthSetting, createCard, deleteCard, updateCard, getCardsByGameId, getGameById, updateGameSettings, updateGameCardFront }
 }
