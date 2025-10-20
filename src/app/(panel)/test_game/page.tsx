@@ -21,7 +21,7 @@ export default function TestGameScreen() {
     const [gameDetails, setGameDetails] = useState<GameDatabase | null>(null);
     const [secretCode, setSecretCode] = useState<CardDatabase[]>([]);
     const [answerPool, setAnswerPool] = useState<CardDatabase[]>([]);
-    const [playerGuess, setPlayerGuess] = useState<CardDatabase[]>([]);
+    const [playerGuess, setPlayerGuess] = useState<(CardDatabase | null)[]>([]);
     const [feedback, setFeedback] = useState<{ correctPosition: number, correctCardWrongPosition: number } | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [attempts, setAttempts] = useState(0); // Contador de tentativas
@@ -32,19 +32,41 @@ export default function TestGameScreen() {
     const selectedCardFront = cardFronts.find(front => front.id === gameDetails?.card_front_url)?.image;
 
     const handleSelectCard = (selectedCard: CardDatabase) => {
-    const isAlreadyGuessed = playerGuess.find(card => card.id === selectedCard.id);
-        if (playerGuess.length < (gameDetails?.secret_code_length || 0) && !isAlreadyGuessed) {
-            setPlayerGuess([...playerGuess, selectedCard]);
+        const isAlreadyGuessed = playerGuess.find(card => card?.id === selectedCard.id);
+        if (isAlreadyGuessed) {
+            return; 
         }
+
+        const firstEmptySlot = playerGuess.indexOf(null);
+
+        if (firstEmptySlot === -1) {
+            return;
+        }
+
+        const newGuess = [...playerGuess];
+        newGuess[firstEmptySlot] = selectedCard;
+        setPlayerGuess(newGuess);
+
+        // if (playerGuess.length < (gameDetails?.secret_code_length || 0) && !isAlreadyGuessed) {
+        //     setPlayerGuess([...playerGuess, selectedCard]);
+        // }
     };
 
     const handleRemoveFromGuess = (indexToRemove: number) => {
-        setPlayerGuess(playerGuess.filter((_, index) => index !== indexToRemove));
+        // setPlayerGuess(playerGuess.filter((_, index) => index !== indexToRemove));
+        const newGuess = [...playerGuess];
+        newGuess[indexToRemove] = null;
+        setPlayerGuess(newGuess);
     };
 
 
     const handleCheckAnswer = () => {
         const codeLength = gameDetails?.secret_code_length || 0;
+
+        if (playerGuess.some(slot => slot === null)) {
+            return Alert.alert("Atenção", `Você precisa preencher todos os ${codeLength} espaços para a sua tentativa.`);
+        }
+
         if (playerGuess.length !== codeLength) {
             return Alert.alert("Atenção", `Você precisa selecionar ${codeLength} cartas para a sua tentativa.`);
         }
@@ -115,6 +137,8 @@ export default function TestGameScreen() {
                     setGameDetails(gameData);
                     const codeLength = gameData.secret_code_length || 4;
 
+                    setPlayerGuess(Array(codeLength).fill(null));
+
                     const correctCards = cardsData.filter(card => Number(card.card_type) === 1);
                     const incorrectCards = cardsData.filter(card => Number(card.card_type) !== 1);
 
@@ -123,9 +147,6 @@ export default function TestGameScreen() {
                     setSecretCode(newSecretCode);
 
                     const distractors = [...incorrectCards];
-                    // const newAnswerPool = [...newSecretCode, ...distractors];
-
-                    // const newAnswerPool = [...cardsData].sort(() => Math.random() - 0.5);
                     const newAnswerPool = [...correctCards, ...incorrectCards].sort(() => Math.random() - 0.5);
 
 
@@ -165,16 +186,25 @@ export default function TestGameScreen() {
         const slots = [];
         const length = gameDetails?.secret_code_length || 0;
         for (let i = 0; i < length; i++) {
+
+            const cardInSlot = playerGuess[i];
+
             slots.push(
                 <Pressable key={`guess-${i}`} style={styles.guessSlot} onPress={() => handleRemoveFromGuess(i)}>
-                    {/* {playerGuess[i] && <Text style={styles.guessSlotText}>{playerGuess[i].card_text}</Text>} */}
-                    {playerGuess[i] ? (
+                    {/* {playerGuess[i] ? (
                     <ImageBackground source={selectedCardFront} style={styles.cardFrontImage}>
                         <Text style={styles.guessSlotText}>{playerGuess[i].card_text}</Text>
                     </ImageBackground>
                 ) : (
                     <View style={styles.guessSlot} /> // Slot vazio
-                )}
+                )} */}
+                    {cardInSlot ? (
+                         <ImageBackground source={selectedCardFront} style={styles.cardFrontImage}>
+                            <Text style={styles.guessSlotText}>{cardInSlot.card_text}</Text>
+                        </ImageBackground>
+                    ) : (
+                        null 
+                    )}
                 </Pressable>
             );
         }
@@ -291,7 +321,7 @@ const styles = StyleSheet.create({
         marginBottom: 30,        
     },
     guessSlot: {
-        width: 90,
+        width: 120,
         aspectRatio: 0.8,
         backgroundColor: Colors.light.white,
         // borderRadius: 12,
@@ -322,7 +352,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         aspectRatio: 0.8, 
         elevation: 2,
-        width: 90
+        width: 120
     },
     answerCardText: {
         fontSize: 18,
@@ -342,6 +372,7 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         alignItems: 'center',
         borderWidth: 1,
+        marginHorizontal: 18
     },
     feedbackIncorrect: {
         backgroundColor: '#FEE2E2',
@@ -354,13 +385,13 @@ const styles = StyleSheet.create({
         borderWidth: 1,
     },
     feedbackNumber: {
-        fontSize: 24,
+        fontSize: 18,
         fontWeight: 'bold',
     },
     feedbackText: {
         textAlign: 'center',
         marginTop: 4,
-        fontSize: 12,
+        fontSize: 14,
         color: '#4B5563', // Cinza escuro para legibilidade
         lineHeight: 16,
     },
@@ -394,7 +425,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         aspectRatio: 0.8, 
         elevation: 2,
-        maxWidth: 90,
+        maxWidth: 120,
     },
     cardBackImage: {
         width: '100%',
