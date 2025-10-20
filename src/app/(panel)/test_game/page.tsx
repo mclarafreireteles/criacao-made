@@ -169,8 +169,7 @@ export default function TestGameScreen() {
                 <Pressable key={`guess-${i}`} style={styles.guessSlot} onPress={() => handleRemoveFromGuess(i)}>
                     {/* {playerGuess[i] && <Text style={styles.guessSlotText}>{playerGuess[i].card_text}</Text>} */}
                     {playerGuess[i] ? (
-                    // ✅ Usa a moldura (selectedCardFront) como fundo
-                    <ImageBackground source={selectedCardFront} style={styles.guessSlot} resizeMode="cover">
+                    <ImageBackground source={selectedCardFront} style={styles.cardFrontImage}>
                         <Text style={styles.guessSlotText}>{playerGuess[i].card_text}</Text>
                     </ImageBackground>
                 ) : (
@@ -294,41 +293,41 @@ const styles = StyleSheet.create({
     guessSlot: {
         width: 90,
         aspectRatio: 0.8,
-        backgroundColor: '#dbdbdbff',
-        borderRadius: 12,
+        backgroundColor: Colors.light.white,
+        // borderRadius: 12,
         justifyContent: 'center',
         alignItems: 'center',
+        borderWidth: 2,             
+        borderStyle: 'dashed',     
+        borderColor: '#9CA3AF',
     },
     guessSlotText: {
-        color: 'white',
-        fontSize: 24,
-        fontWeight: 'bold',
+        color: Colors.light.text,
+        fontSize: 18,
+        fontWeight: 600,
+        textAlign: 'center',
     },
     answerPoolGrid: {
         flex: 1,
         marginTop: 10,
-        paddingHorizontal: 20,
+        alignSelf: 'center'
+        // paddingHorizontal: 20,
     },
     answerCard: {
         flex: 1,
         margin: 5,
-        backgroundColor: '#E5E7EB',
+        // backgroundColor: '#E5E7EB',
         borderRadius: 12,
         justifyContent: 'center',
         alignItems: 'center',
         aspectRatio: 0.8, 
-        borderWidth: 1,
-        borderColor: '#E2E8F0',
         elevation: 2,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
-        maxWidth: 90
+        width: 90
     },
     answerCardText: {
         fontSize: 18,
         fontWeight: '600',
+        textAlign: 'center'
     },
     feedbackContainer: {
         flexDirection: 'row',
@@ -371,7 +370,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 45
     },
     promptText: {
-        fontSize: 18,
+        fontSize: 16,
         color: '#374151', 
         textAlign: 'center',
         marginBottom: 20, 
@@ -383,10 +382,19 @@ const styles = StyleSheet.create({
         gap: 10,
     },
     secretCard: {
-        width: 60,
-        height: 80,
-        borderRadius: 8,
-        overflow: 'hidden',
+        // width: 90,
+        // height: 80,
+        // borderRadius: 8,
+        // overflow: 'hidden',
+        margin: 5,
+        flex: 1,
+        // backgroundColor: '#E5E7EB',
+        borderRadius: 12,
+        justifyContent: 'center',
+        alignItems: 'center',
+        aspectRatio: 0.8, 
+        elevation: 2,
+        maxWidth: 90,
     },
     cardBackImage: {
         width: '100%',
@@ -402,15 +410,17 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     secretCardText: { 
-        fontSize: 18, 
-        fontWeight: 'bold' 
+        fontSize: 14, 
+        fontWeight: 600
     },
     backgroundImage: {
         flex: 1, 
     },
     cardFrontImage: {
-        width: '85%',
-        height: '85%',
+        width: '100%',
+        height: '100%',
         resizeMode: 'cover',
+        justifyContent: 'center',
+        alignItems: 'center',
     }
 });
