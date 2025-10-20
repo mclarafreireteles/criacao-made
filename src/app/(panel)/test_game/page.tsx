@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, Pressable, FlatList, ActivityIndicator, ImageBackground, ScrollView, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Pressable, FlatList, ActivityIndicator, ImageBackground, ScrollView, Alert, Platform } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import Colors from '@/constants/Colors';
 import { ScreenContainer } from '@/src/components/ScreenContainer';
@@ -30,6 +30,14 @@ export default function TestGameScreen() {
 
     const selectedCardBack = cardBacks.find(back => back.id === gameDetails?.background_image_url)?.image;
     const selectedCardFront = cardFronts.find(front => front.id === gameDetails?.card_front_url)?.image;
+
+    const showAlert = (title: string, message: string) => {
+        if (Platform.OS === 'web') {
+            window.alert(`${title}\n\n${message}`);
+        } else {
+            Alert.alert(title, message);
+        }
+    }
 
     const handleSelectCard = (selectedCard: CardDatabase) => {
         const isAlreadyGuessed = playerGuess.find(card => card?.id === selectedCard.id);
@@ -126,40 +134,76 @@ export default function TestGameScreen() {
                     getCardsByGameId(gameIdNumber)
                 ]);
 
-                console.log(`--- DADOS BRUTOS DO BANCO ---`);
-                console.log(`Encontradas ${cardsData.length} cartas no total para este jogo:`);
-                console.log(JSON.stringify(cardsData, null, 2));
-                console.log(`------------------------------`);
-
-                
-                
-                if (gameData && cardsData.length > 0) {
-                    setGameDetails(gameData);
-                    const codeLength = gameData.secret_code_length || 4;
-
-                    setPlayerGuess(Array(codeLength).fill(null));
-
-                    const correctCards = cardsData.filter(card => Number(card.card_type) === 1);
-                    const incorrectCards = cardsData.filter(card => Number(card.card_type) !== 1);
-
-                    const shuffledCorrectCards = [...correctCards].sort(() => Math.random() - 0.5);
-                    const newSecretCode = shuffledCorrectCards.slice(0, codeLength);
-                    setSecretCode(newSecretCode);
-
-                    const distractors = [...incorrectCards];
-                    const newAnswerPool = [...correctCards, ...incorrectCards].sort(() => Math.random() - 0.5);
-
-
-
-                    setAnswerPool(newAnswerPool.sort(() => Math.random() - 0.5));
-
-                    console.log("--- DEBUG: RESPOSTA CORRETA ---");
-                    console.log(newSecretCode.map(card => card.card_text)); 
-                    console.log("---------------------------------");
-
-                    console.log("✅ CORRETAS:", correctCards.length);
-                    console.log("❌ INCORRETAS:", incorrectCards.length);
+                if (!gameData || cardsData.length === 0) {
+                    showAlert("Erro", "Esse jogo não possui cartas suficientes");
+                    router.back();
+                    return;
                 }
+
+                setGameDetails(gameData);
+                const codeLength = gameData.secret_code_length || 4; // Pega o tamanho do código (padrão 4)
+
+                // Filtra as cartas corretas
+                const correctCards = cardsData.filter(card => Number(card.card_type) === 1);
+
+                // --- 2. VALIDAÇÃO DE CARTAS SUFICIENTES (A LÓGICA QUE FALTAVA) ---
+                if (correctCards.length < codeLength) {
+                    showAlert(
+                        "Cartas Insuficientes",
+                        `Este jogo está configurado para um código de ${codeLength} cartas, mas você só criou ${correctCards.length} carta(s) correta(s).\n\nAdicione mais cartas corretas para poder testar.`
+                    );
+                    router.back();
+                    return;
+                }
+
+                // --- 3. SE PASSOU, PREPARA O JOGO ---
+                
+                setPlayerGuess(Array(codeLength).fill(null));
+
+                const incorrectCards = cardsData.filter(card => Number(card.card_type) !== 1);
+
+                const shuffledCorrectCards = [...correctCards].sort(() => Math.random() - 0.5);
+                const newSecretCode = shuffledCorrectCards.slice(0, codeLength);
+                setSecretCode(newSecretCode);
+
+                const newAnswerPool = [...correctCards, ...incorrectCards].sort(() => Math.random() - 0.5);
+                setAnswerPool(newAnswerPool);
+
+                console.log("--- DEBUG: RESPOSTA CORRETA ---");
+                console.log(newSecretCode.map(card => card.card_text)); 
+                console.log("---------------------------------");
+
+                console.log("✅ CORRETAS:", correctCards.length);
+                console.log("❌ INCORRETAS:", incorrectCards.length);
+
+                
+                // if (gameData && cardsData.length > 0) {
+                //     setGameDetails(gameData);
+                //     const codeLength = gameData.secret_code_length || 4;
+
+                //     setPlayerGuess(Array(codeLength).fill(null));
+
+                //     const correctCards = cardsData.filter(card => Number(card.card_type) === 1);
+                //     const incorrectCards = cardsData.filter(card => Number(card.card_type) !== 1);
+
+                //     const shuffledCorrectCards = [...correctCards].sort(() => Math.random() - 0.5);
+                //     const newSecretCode = shuffledCorrectCards.slice(0, codeLength);
+                //     setSecretCode(newSecretCode);
+
+                //     const distractors = [...incorrectCards];
+                //     const newAnswerPool = [...correctCards, ...incorrectCards].sort(() => Math.random() - 0.5);
+
+
+
+                //     setAnswerPool(newAnswerPool.sort(() => Math.random() - 0.5));
+
+                //     console.log("--- DEBUG: RESPOSTA CORRETA ---");
+                //     console.log(newSecretCode.map(card => card.card_text)); 
+                //     console.log("---------------------------------");
+
+                //     console.log("✅ CORRETAS:", correctCards.length);
+                //     console.log("❌ INCORRETAS:", incorrectCards.length);
+                // }
             } catch (err) {
                 console.log('Erro ao preparar o jogo', err);
             } finally {
