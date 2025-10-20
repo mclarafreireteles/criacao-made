@@ -289,13 +289,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         gap: 10,
-        marginBottom: 30,
-        height: 80,
+        marginBottom: 30,        
     },
     guessSlot: {
-        width: 60,
-        height: 80,
-        backgroundColor: '#4B5563',
+        width: 90,
+        aspectRatio: 0.8,
+        backgroundColor: '#dbdbdbff',
         borderRadius: 12,
         justifyContent: 'center',
         alignItems: 'center',
@@ -325,6 +324,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.1,
         shadowRadius: 2,
+        maxWidth: 90
     },
     answerCardText: {
         fontSize: 18,
@@ -401,13 +401,16 @@ const styles = StyleSheet.create({
         color: '#4B5563',
         marginBottom: 10,
     },
-    secretCardText: { fontSize: 18, fontWeight: 'bold' },
+    secretCardText: { 
+        fontSize: 18, 
+        fontWeight: 'bold' 
+    },
     backgroundImage: {
         flex: 1, 
     },
     cardFrontImage: {
         width: '85%',
         height: '85%',
-        resizeMode: 'contain',
+        resizeMode: 'cover',
     }
 });

@@ -32,6 +32,7 @@ interface GameFormData {
     prompt: string,
     explanation: string,
     secret_code_length: number | null;
+    card_front_url: string | null;
 }
 
 interface GameFormContextType {
@@ -58,6 +59,7 @@ const initialState: GameFormData = {
     prompt: '',
     explanation: defaultInput.explanation,
     secret_code_length: null,
+    card_front_url: '2',
 }
 
 export function GameFormProvider({ children }: { children: ReactNode }) {

@@ -37,7 +37,7 @@ export function useGameDatabase(){
 
     async function createGame(data: Omit<GameDatabase, "id">){
         const statement = await database.prepareAsync(
-            "INSERT INTO games (title, subject, user_id, goal, prompt, content, grade, authors, rules, background_image_url, explanation, model, secret_code_length, card_front_url) VALUES ($title, $subject, $user_id, $goal, $prompt, $content, $grade, $authors, $rules, $background_image_url, $explanation, $model, $secret_code_length, card_front_url)"
+            "INSERT INTO games (title, subject, user_id, goal, prompt, content, grade, authors, rules, background_image_url, explanation, model, secret_code_length, card_front_url) VALUES ($title, $subject, $user_id, $goal, $prompt, $content, $grade, $authors, $rules, $background_image_url, $explanation, $model, $secret_code_length, $card_front_url)"
         )
         try {
             const result = await statement.executeAsync({
@@ -98,10 +98,10 @@ export function useGameDatabase(){
         );
     }
 
-    async function updateGameCardFront(gameId: number, frontId: string) {
+    async function updateGameCardFront(gameId: number, frontUrl: string) {
         await database.runAsync(
-            'UPDATE games SET card_front_id = ? WHERE id = ?',
-            [frontId, gameId]
+            'UPDATE games SET card_front_url = ? WHERE id = ?',
+            [frontUrl, gameId]
         );
     }
 
@@ -127,7 +127,7 @@ export function useGameDatabase(){
                 $prompt: data.prompt,
                 $explanation: data.explanation,
                 $model: data.model,
-                $card_front_id: data.card_front_url
+                $card_front_url: data.card_front_url
             })
             console.log(`Jogo com ID ${gameId} atualizado.`);
         } finally {
