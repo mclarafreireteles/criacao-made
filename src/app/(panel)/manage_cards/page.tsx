@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, Pressable, StyleSheet, FlatList, SafeAreaView, useWindowDimensions, Alert, Platform, ScrollView, Image } from "react-native";
+import { View, Text, Pressable, StyleSheet, FlatList, useWindowDimensions, Alert, Platform, ScrollView, Image, ImageBackground } from "react-native";
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -200,7 +200,7 @@ export default function ManageCards (){
     const cardWidth = availableWidth / numColumns;
 
     return (
-            <SafeAreaView style={styles.safeArea}>
+            <View style={styles.safeArea}>
                 <FlatList
                     data={cards}
                     keyExtractor={item => item.id.toString()}
@@ -231,7 +231,7 @@ export default function ManageCards (){
                         </View>
                     }
                 />
-            </SafeAreaView>
+            </View>
     )
 }
 
@@ -406,14 +406,14 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
      },
     imageOption: { 
-        width: 80,
+        width: 90,
         height: 112, 
         borderRadius: 8,
         borderWidth: 3,
         borderColor: 'transparent',
         overflow: 'hidden',
         marginRight: 15,
-        backgroundColor: '#F3F4F6', 
+        backgroundColor: '#ffffffff', 
      },
     imageSelected: { 
         borderColor: Colors.light.blue,

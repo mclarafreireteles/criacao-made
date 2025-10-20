@@ -27,6 +27,7 @@ export default function TestGameScreen() {
     const [attempts, setAttempts] = useState(0); // Contador de tentativas
     const [score, setScore] = useState(0); // Pontuação final
     const [gameState, setGameState] = useState<'playing' | 'won'>('playing'); // Estado do jogo
+    const [selectedCard, setSelectedCard] = useState<CardDatabase | null>(null);
 
     const selectedCardBack = cardBacks.find(back => back.id === gameDetails?.background_image_url)?.image;
     const selectedCardFront = cardFronts.find(front => front.id === gameDetails?.card_front_url)?.image;
@@ -39,33 +40,64 @@ export default function TestGameScreen() {
         }
     }
 
-    const handleSelectCard = (selectedCard: CardDatabase) => {
-        const isAlreadyGuessed = playerGuess.find(card => card?.id === selectedCard.id);
+    const handleSelectCardFromPool = (cardFromPool: CardDatabase) => {
+    // Verifica se a carta já está em um dos slots de tentativa
+        const isAlreadyGuessed = playerGuess.find(card => card?.id === cardFromPool.id);
         if (isAlreadyGuessed) {
-            return; 
+            return; // Não faz nada se a carta já foi usada
         }
-
-        const firstEmptySlot = playerGuess.indexOf(null);
-
-        if (firstEmptySlot === -1) {
-            return;
-        }
-
-        const newGuess = [...playerGuess];
-        newGuess[firstEmptySlot] = selectedCard;
-        setPlayerGuess(newGuess);
-
-        // if (playerGuess.length < (gameDetails?.secret_code_length || 0) && !isAlreadyGuessed) {
-        //     setPlayerGuess([...playerGuess, selectedCard]);
-        // }
+    
+    // "Segura" a carta no estado. Se o usuário clicar na mesma, ele a "solta".
+        setSelectedCard(prev => (prev?.id === cardFromPool.id ? null : cardFromPool));
     };
 
-    const handleRemoveFromGuess = (indexToRemove: number) => {
-        // setPlayerGuess(playerGuess.filter((_, index) => index !== indexToRemove));
+    const handleSlotPress = (slotIndex: number) => {
+        const currentCardInSlot = playerGuess[slotIndex];
         const newGuess = [...playerGuess];
-        newGuess[indexToRemove] = null;
-        setPlayerGuess(newGuess);
+
+        if (selectedCard) {
+            // --- CENÁRIO 1: O jogador está "segurando" uma carta ---
+            
+            // Se o slot clicado já tem uma carta, não faz nada
+            if (currentCardInSlot) return; 
+
+            // Coloca a carta que estava "na mão" no slot vazio
+            newGuess[slotIndex] = selectedCard;
+            setPlayerGuess(newGuess);
+            setSelectedCard(null); // Esvazia a "mão" do jogador
+
+        } else if (currentCardInSlot) {
+            // --- CENÁRIO 2: O jogador NÃO está segurando nada e clica em um slot PREENCHIDO ---
+            
+            // Remove a carta do slot (define como null)
+            newGuess[slotIndex] = null;
+            setPlayerGuess(newGuess);
+        }
     };
+
+    // const handleSelectCard = (selectedCard: CardDatabase) => {
+    //     const isAlreadyGuessed = playerGuess.find(card => card?.id === selectedCard.id);
+    //     if (isAlreadyGuessed) {
+    //         return; 
+    //     }
+
+    //     const firstEmptySlot = playerGuess.indexOf(null);
+
+    //     if (firstEmptySlot === -1) {
+    //         return;
+    //     }
+
+    //     const newGuess = [...playerGuess];
+    //     newGuess[firstEmptySlot] = selectedCard;
+    //     setPlayerGuess(newGuess);
+    // };
+
+    // const handleRemoveFromGuess = (indexToRemove: number) => {
+    //     // setPlayerGuess(playerGuess.filter((_, index) => index !== indexToRemove));
+    //     const newGuess = [...playerGuess];
+    //     newGuess[indexToRemove] = null;
+    //     setPlayerGuess(newGuess);
+    // };
 
 
     const handleCheckAnswer = () => {
@@ -234,7 +266,7 @@ export default function TestGameScreen() {
             const cardInSlot = playerGuess[i];
 
             slots.push(
-                <Pressable key={`guess-${i}`} style={styles.guessSlot} onPress={() => handleRemoveFromGuess(i)}>
+                <Pressable key={`guess-${i}`} style={styles.guessSlot} onPress={() => handleSlotPress(i)}>
                     {/* {playerGuess[i] ? (
                     <ImageBackground source={selectedCardFront} style={styles.cardFrontImage}>
                         <Text style={styles.guessSlotText}>{playerGuess[i].card_text}</Text>
@@ -247,7 +279,7 @@ export default function TestGameScreen() {
                             <Text style={styles.guessSlotText}>{cardInSlot.card_text}</Text>
                         </ImageBackground>
                     ) : (
-                        null 
+                        <View style={styles.guessSlotEmpty} />
                     )}
                 </Pressable>
             );
@@ -303,13 +335,33 @@ export default function TestGameScreen() {
                         data={answerPool}
                         keyExtractor={(item) => item.id.toString()}
                         numColumns={4}
-                        renderItem={({ item }) => (
-                            <Pressable style={styles.answerCard} onPress={() => handleSelectCard(item)}>
-                                <ImageBackground source={selectedCardFront} style={styles.cardFrontImage}>
-                                    <Text style={styles.answerCardText}>{item.card_text}</Text>
-                                </ImageBackground>
-                            </Pressable>
-                        )}
+                        // renderItem={({ item }) => (
+                        //     <Pressable style={styles.answerCard} onPress={() => handleSelectCard(item)}>
+                        //         <ImageBackground source={selectedCardFront} style={styles.cardFrontImage}>
+                        //             <Text style={styles.answerCardText}>{item.card_text}</Text>
+                        //         </ImageBackground>
+                        //     </Pressable>
+                        // )}
+                        renderItem={({ item }) => {
+                            const isUsed = playerGuess.some(card => card?.id === item.id);
+                            const isSelected = selectedCard?.id === item.id;
+
+                            return (
+                                <Pressable
+                                    style={[
+                                        styles.answerCardWrapper,
+                                        isUsed && styles.answerCardUsed,
+                                        isSelected && styles.answerCardSelected
+                                    ]}
+                                    onPress={() => handleSelectCardFromPool(item)}
+                                    disabled={isUsed}
+                                >
+                                    <ImageBackground source={selectedCardFront} style={styles.cardFrontImage}>
+                                        <Text style={styles.answerCardText}>{item.card_text}</Text>
+                                    </ImageBackground>
+                                </Pressable>
+                            )
+                        }}
                         style={styles.answerPoolGrid}
                     />
                 </View>
@@ -497,5 +549,33 @@ const styles = StyleSheet.create({
         resizeMode: 'cover',
         justifyContent: 'center',
         alignItems: 'center',
-    }
+    },
+    guessSlotEmpty: {
+        width: '100%',
+        height: '100%',
+        backgroundColor: '#FFFFFF',
+        borderRadius: 12,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 2,           
+        borderStyle: 'dashed',      
+        borderColor: '#9CA3AF',
+    },
+    answerCardWrapper: { 
+        flex: 1,
+        margin: 5,
+        aspectRatio: 0.7, 
+        borderRadius: 12,
+        borderWidth: 2,
+        borderColor: '#E2E8F0',
+        backgroundColor: '#FFFFFF',
+        overflow: 'hidden',
+    },
+    answerCardUsed: {
+        opacity: 0.3, 
+    },
+    answerCardSelected: {
+        borderColor: Colors.light.blue,
+        transform: [{ scale: 1.05 }],
+    },
 });
