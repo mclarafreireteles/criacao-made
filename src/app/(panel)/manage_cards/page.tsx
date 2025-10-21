@@ -29,6 +29,8 @@ export default function ManageCards (){
 
     const isCardLimitReached = cards.length >= MAX_CARDS;
 
+    const selectedCardFront = cardFronts.find(front => front.id === cardFrontUrl)?.image;
+
     const fetchCardsAndSettings = useCallback(async () => {
     if (!gameIdNumber) return;
         try {
@@ -199,6 +201,7 @@ export default function ManageCards (){
     const availableWidth = width - screenPadding - cardMargin;
     const cardWidth = availableWidth / numColumns;
 
+
     return (
             <View style={styles.safeArea}>
                 <FlatList
@@ -206,20 +209,43 @@ export default function ManageCards (){
                     keyExtractor={item => item.id.toString()}
                     numColumns={3}
                     renderItem={({ item }) => (
-                        <View style={[styles.card, { width: cardWidth }]}>
-                            <Text style={styles.cardText}>{item.card_text}</Text>
-                            <Pressable onPress={() => handleNavigateToEditCard(item)} style={styles.editBtn}>
-                                <MaterialIcons name="edit" size={18} color={Colors.light.blue} />
-                            </Pressable>
-                            <View style={styles.statusIndicator}>
-                                <Ionicons 
-                                    name={item.card_type === 1 ? "checkmark-circle" : "close-circle"}
-                                    size={24}
-                                    color={item.card_type === 1 ? "#10B981" : "#EF4444"}
-                                />
-                            </View>
-                        </View>
-                        
+                        // <View style={[styles.card, { width: cardWidth }]}>
+                        //     <Text style={styles.cardText}>{item.card_text}</Text>
+                        //     <Pressable onPress={() => handleNavigateToEditCard(item)} style={styles.editBtn}>
+                        //         <MaterialIcons name="edit" size={18} color={Colors.light.blue} />
+                        //     </Pressable>
+                        //     <View style={styles.statusIndicator}>
+                        //         <Ionicons 
+                        //             name={item.card_type === 1 ? "checkmark-circle" : "close-circle"}
+                        //             size={24}
+                        //             color={item.card_type === 1 ? "#10B981" : "#EF4444"}
+                        //         />
+                        //     </View>
+                        // </View>         
+                        <Pressable onPress={() => handleNavigateToEditCard(item)} style={styles.cardWrapper}>
+                    
+                            <ImageBackground 
+                                source={selectedCardFront} 
+                                style={styles.cardBackground}
+                                imageStyle={styles.cardBackgroundImageStyle}
+                            >
+                                <View style={styles.cardContent}>
+                                    <Text style={styles.cardText}>{item.card_text}</Text>
+                                </View>
+
+
+                                <View style={styles.editBtn}>
+                                    <MaterialIcons name="edit" size={18} color={Colors.light.blue} />
+                                </View>
+                                <View style={styles.statusIndicator}>
+                                    <Ionicons 
+                                        name={item.card_type === 1 ? "checkmark-circle" : "close-circle"}
+                                        size={24}
+                                        color={item.card_type === 1 ? "#10B981" : "#EF4444"}
+                                    />
+                                </View>
+                            </ImageBackground>
+                        </Pressable>
                     )}
                     ListHeaderComponent={renderHeader}
                     ListFooterComponent={renderFooter}
@@ -324,6 +350,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         gap: 8,
+        marginBottom: 32
     },
     addCardButtonText: {
         color: 'white',
@@ -372,6 +399,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap: 6,
         marginVertical: 24,
+        marginBottom: 32,
     },
     infoLinkTxt: {
         color: Colors.light.blue,
@@ -423,4 +451,35 @@ const styles = StyleSheet.create({
         height: '100%',
         resizeMode: 'cover'
      },
+     cardWrapper: {
+        aspectRatio: 0.80,
+        margin: 6,
+        width: 100,
+        maxWidth: 100,
+    },
+    cardBackground: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: Colors.light.white,
+        overflow: 'hidden',
+    },
+    cardBackgroundImageStyle: {
+        borderRadius: 11,
+        resizeMode: 'cover',
+        width: '100%',
+        height: '100%'
+    },
+    cardContent: {
+        width: '100%',
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 5,
+    },
+    cardContentImage: {
+        width: '85%',
+        height: '85%',
+        resizeMode: 'contain',
+    },
 })
