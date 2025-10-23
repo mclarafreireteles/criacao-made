@@ -31,6 +31,7 @@ export default function TestGameScreen() {
 
     const selectedCardBack = cardBacks.find(back => back.id === gameDetails?.background_image_url)?.image;
     const selectedCardFront = cardFronts.find(front => front.id === gameDetails?.card_front_url)?.image;
+    const numColumns = Platform.OS === 'web' ? 12 : 4;
 
     const showAlert = (title: string, message: string) => {
         if (Platform.OS === 'web') {
@@ -307,7 +308,10 @@ export default function TestGameScreen() {
                 }
             />
 
-            <ScrollView style={styles.gameContainer}>
+            <ScrollView 
+                style={styles.gameContainer}
+                contentContainerStyle={styles.scrollContentContainer}
+            >
                 {gameDetails?.prompt && (
                 <Text style={styles.promptText}>{gameDetails.prompt}</Text>
                 )}
@@ -334,7 +338,7 @@ export default function TestGameScreen() {
                     <FlatList
                         data={answerPool}
                         keyExtractor={(item) => item.id.toString()}
-                        numColumns={4}
+                        numColumns={numColumns}
                         // renderItem={({ item }) => (
                         //     <Pressable style={styles.answerCard} onPress={() => handleSelectCard(item)}>
                         //         <ImageBackground source={selectedCardFront} style={styles.cardFrontImage}>
@@ -342,6 +346,7 @@ export default function TestGameScreen() {
                         //         </ImageBackground>
                         //     </Pressable>
                         // )}
+                        key={numColumns}
                         renderItem={({ item }) => {
                             const isUsed = playerGuess.some(card => card?.id === item.id);
                             const isSelected = selectedCard?.id === item.id;
@@ -363,6 +368,7 @@ export default function TestGameScreen() {
                             )
                         }}
                         style={styles.answerPoolGrid}
+                        contentContainerStyle={styles.answerPoolContent}
                     />
                 </View>
 
@@ -413,11 +419,11 @@ const styles = StyleSheet.create({
     guessSlotsContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
-        gap: 10,
+        gap: 24,
         marginBottom: 30,        
     },
     guessSlot: {
-        width: 120,
+        minWidth: 110,
         aspectRatio: 0.8,
         backgroundColor: Colors.light.white,
         // borderRadius: 12,
@@ -436,14 +442,14 @@ const styles = StyleSheet.create({
     answerPoolGrid: {
         flex: 1,
         marginTop: 10,
-        alignSelf: 'center'
+        alignSelf: 'center',
+        width: '100%',
         // paddingHorizontal: 20,
     },
     answerCard: {
         flex: 1,
         margin: 5,
         // backgroundColor: '#E5E7EB',
-        borderRadius: 12,
         justifyContent: 'center',
         alignItems: 'center',
         aspectRatio: 0.8, 
@@ -509,19 +515,13 @@ const styles = StyleSheet.create({
         gap: 10,
     },
     secretCard: {
-        // width: 90,
-        // height: 80,
-        // borderRadius: 8,
-        // overflow: 'hidden',
         margin: 5,
         flex: 1,
-        // backgroundColor: '#E5E7EB',
-        borderRadius: 12,
         justifyContent: 'center',
         alignItems: 'center',
         aspectRatio: 0.8, 
         elevation: 2,
-        maxWidth: 120,
+        maxWidth: 110,
     },
     cardBackImage: {
         width: '100%',
@@ -554,28 +554,35 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
         backgroundColor: '#FFFFFF',
-        borderRadius: 12,
+        // borderRadius: 12,
         justifyContent: 'center',
         alignItems: 'center',
-        borderWidth: 2,           
-        borderStyle: 'dashed',      
-        borderColor: '#9CA3AF',
+        // borderWidth: 2,           
+        // borderStyle: 'dashed',      
+        // borderColor: '#9CA3AF',
     },
     answerCardWrapper: { 
         flex: 1,
         margin: 5,
-        aspectRatio: 0.7, 
-        borderRadius: 12,
-        borderWidth: 2,
-        borderColor: '#E2E8F0',
+        aspectRatio: 0.8, 
+        // borderRadius: 12,
         backgroundColor: '#FFFFFF',
         overflow: 'hidden',
+        width: 110,
     },
     answerCardUsed: {
         opacity: 0.3, 
     },
     answerCardSelected: {
+        borderWidth: 2,
         borderColor: Colors.light.blue,
         transform: [{ scale: 1.05 }],
+    },
+    answerPoolContent: {
+        alignItems: 'center',
+        height: '100%'
+    },
+    scrollContentContainer: {
+        flexGrow: 1,
     },
 });
