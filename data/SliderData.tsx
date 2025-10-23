@@ -20,7 +20,7 @@ export const slider = [
         icon: 'stats-chart-outline',
         title: 'Níveis de dificuldade',
         description: 'O desafio aumenta a cada nível, com menos tentativas e novas cartas sendo adicionadas para te confundir:',
-        details: [ //ADICIONAR INFORMACAO SOBRE EMBARALHAMENTO
+        details: [
             'Nível 1: 10 tentativas. A ordem das cartas é reembaralhada.',
             'Nível 2: 8 tentativas. A ordem é reembaralhada e 1 carta nova é adicionada.',
             'Nível 3: 6 tentativas. A ordem é reembaralhada e 2 cartas novas são adicionadas.',

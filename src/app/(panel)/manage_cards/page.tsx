@@ -8,7 +8,6 @@ import { useGameDatabase, CardDatabase } from '@/src/database/useGameDatabase';
 import Colors from '@/constants/Colors';
 import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { cardFronts } from '@/constants/cardFronts';
-// import { ScreenContainer } from '@/src/components/ScreenContainer';
 
 
 const CODE_LENGTH_OPTIONS = [3, 4, 5, 6];
@@ -208,20 +207,7 @@ export default function ManageCards (){
                     data={cards}
                     keyExtractor={item => item.id.toString()}
                     numColumns={3}
-                    renderItem={({ item }) => (
-                        // <View style={[styles.card, { width: cardWidth }]}>
-                        //     <Text style={styles.cardText}>{item.card_text}</Text>
-                        //     <Pressable onPress={() => handleNavigateToEditCard(item)} style={styles.editBtn}>
-                        //         <MaterialIcons name="edit" size={18} color={Colors.light.blue} />
-                        //     </Pressable>
-                        //     <View style={styles.statusIndicator}>
-                        //         <Ionicons 
-                        //             name={item.card_type === 1 ? "checkmark-circle" : "close-circle"}
-                        //             size={24}
-                        //             color={item.card_type === 1 ? "#10B981" : "#EF4444"}
-                        //         />
-                        //     </View>
-                        // </View>         
+                    renderItem={({ item }) => (     
                         <Pressable onPress={() => handleNavigateToEditCard(item)} style={styles.cardWrapper}>
                     
                             <ImageBackground 
@@ -416,7 +402,6 @@ const styles = StyleSheet.create({
     },
     headerWrapper: {
         width: '100%',
-        // marginBottom: 20, // Espaço entre o header e a grade
     },
     disabledButton: {
         backgroundColor: '#9CA3AF',

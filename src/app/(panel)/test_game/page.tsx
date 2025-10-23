@@ -76,30 +76,6 @@ export default function TestGameScreen() {
         }
     };
 
-    // const handleSelectCard = (selectedCard: CardDatabase) => {
-    //     const isAlreadyGuessed = playerGuess.find(card => card?.id === selectedCard.id);
-    //     if (isAlreadyGuessed) {
-    //         return; 
-    //     }
-
-    //     const firstEmptySlot = playerGuess.indexOf(null);
-
-    //     if (firstEmptySlot === -1) {
-    //         return;
-    //     }
-
-    //     const newGuess = [...playerGuess];
-    //     newGuess[firstEmptySlot] = selectedCard;
-    //     setPlayerGuess(newGuess);
-    // };
-
-    // const handleRemoveFromGuess = (indexToRemove: number) => {
-    //     // setPlayerGuess(playerGuess.filter((_, index) => index !== indexToRemove));
-    //     const newGuess = [...playerGuess];
-    //     newGuess[indexToRemove] = null;
-    //     setPlayerGuess(newGuess);
-    // };
-
 
     const handleCheckAnswer = () => {
         const codeLength = gameDetails?.secret_code_length || 0;
@@ -268,13 +244,6 @@ export default function TestGameScreen() {
 
             slots.push(
                 <Pressable key={`guess-${i}`} style={styles.guessSlot} onPress={() => handleSlotPress(i)}>
-                    {/* {playerGuess[i] ? (
-                    <ImageBackground source={selectedCardFront} style={styles.cardFrontImage}>
-                        <Text style={styles.guessSlotText}>{playerGuess[i].card_text}</Text>
-                    </ImageBackground>
-                ) : (
-                    <View style={styles.guessSlot} /> // Slot vazio
-                )} */}
                     {cardInSlot ? (
                          <ImageBackground source={selectedCardFront} style={styles.cardFrontImage}>
                             <Text style={styles.guessSlotText}>{cardInSlot.card_text}</Text>
@@ -339,13 +308,6 @@ export default function TestGameScreen() {
                         data={answerPool}
                         keyExtractor={(item) => item.id.toString()}
                         numColumns={numColumns}
-                        // renderItem={({ item }) => (
-                        //     <Pressable style={styles.answerCard} onPress={() => handleSelectCard(item)}>
-                        //         <ImageBackground source={selectedCardFront} style={styles.cardFrontImage}>
-                        //             <Text style={styles.answerCardText}>{item.card_text}</Text>
-                        //         </ImageBackground>
-                        //     </Pressable>
-                        // )}
                         key={numColumns}
                         renderItem={({ item }) => {
                             const isUsed = playerGuess.some(card => card?.id === item.id);
@@ -377,11 +339,11 @@ export default function TestGameScreen() {
                     <View style={styles.feedbackContainer}>
                         <View style={[styles.feedbackBox, styles.feedbackIncorrect]}>
                             <Text style={styles.feedbackNumber}>{feedback.correctCardWrongPosition}</Text>
-                            <Text style={styles.feedbackText}>escolhida correta em {'\n'}posição errada</Text>
+                            <Text style={styles.feedbackText}>escolhida correta(s) em {'\n'}posição errada(s)</Text>
                         </View>
                         <View style={[styles.feedbackBox, styles.feedbackCorrect]}>
                             <Text style={styles.feedbackNumber}>{feedback.correctPosition}</Text>
-                            <Text style={styles.feedbackText}>escolhidas corretas em {'\n'}posição correta</Text>
+                            <Text style={styles.feedbackText}>escolhidas correta(s) em {'\n'}posição correta(s)</Text>
                         </View>
                     </View>
                 )}
@@ -494,7 +456,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginTop: 4,
         fontSize: 14,
-        color: '#4B5563', // Cinza escuro para legibilidade
+        color: '#4B5563',
         lineHeight: 16,
     },
     footer: {
