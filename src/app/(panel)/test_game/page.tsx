@@ -503,7 +503,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 45
     },
     promptText: {
-        fontSize: 16,
+        fontSize: 28,
         color: '#374151', 
         textAlign: 'center',
         marginBottom: 20, 
