@@ -15,6 +15,8 @@ export default function PanelLayout() {
         <Stack.Screen name="how_to_play/page" options={{ headerShown: false }} />
         <Stack.Screen name="game_dashboard/page" options={{ headerShown: false }} />
         <Stack.Screen name="edit_game/page" options={{ headerShown: false }} />
+        <Stack.Screen name="game_mode/page" options={{ headerShown: false }} />
+        <Stack.Screen name="manual_setup/page" options={{ headerShown: false }} />
       </Stack>
     </GameFormProvider>
   );

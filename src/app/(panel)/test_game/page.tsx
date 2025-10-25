@@ -226,7 +226,9 @@ export default function TestGameScreen() {
         return secretCode.map((card, index) => (
             <View key={`secret-${index}`} style={styles.secretCard}>
                 {gameState === 'won' ? (
-                    <Text style={styles.secretCardText}>{card.card_text}</Text>
+                    <ImageBackground source={selectedCardFront} style={styles.cardFrontImage}>
+                        <Text style={styles.answerCardText}>{card.card_text}</Text>
+                    </ImageBackground>
                 ) : (
                     <ImageBackground source={selectedCardBack} style={styles.cardBackImage} resizeMode="cover" />
                 )}

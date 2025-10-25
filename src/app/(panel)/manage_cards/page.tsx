@@ -176,7 +176,7 @@ export default function ManageCards (){
                 <Pressable 
                     style={styles.testarBtn} 
                     onPress={() => router.push({ 
-                        pathname: '/(panel)/test_game/page', // A URL não precisa do (panel)
+                        pathname: '/(panel)/game_mode/page',
                         params: { game_id: gameIdNumber } 
                     })}
                 >

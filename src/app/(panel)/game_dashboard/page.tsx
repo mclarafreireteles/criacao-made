@@ -120,7 +120,7 @@ export default function gameDashBoardScreen(){
                         icon="play-circle-outline"
                         variant="secondary"
                         onPress={() => router.push({
-                            pathname: '/test_game/page',
+                            pathname: '/game_mode/page',
                             params: { game_id: gameIdNumber }
                         })}
                     />
