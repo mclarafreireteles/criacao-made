@@ -83,16 +83,13 @@ export default function ManualSetupScreen() {
 
     // --- NAVEGAÇÃO FINAL ---
     const handleStartTest = () => {
-        // Verifica se todos os slots estão preenchidos
         if (secretCodeSequence.some(slot => slot === null)) {
             Alert.alert("Atenção", "Você precisa preencher todos os slots do código secreto.");
             return;
         }
 
-        // Converte o array de cartas em uma string de IDs (ex: "5,2,8,1")
         const manualCodeString = secretCodeSequence.map(card => card!.id).join(',');
 
-        // Navega para a tela de teste com os parâmetros manuais
         router.push({
             pathname: '/test_game/page',
             params: { 
@@ -105,9 +102,9 @@ export default function ManualSetupScreen() {
 
     // --- RENDERIZAÇÃO ---
 
-    // Filtra as cartas disponíveis (que não estão nos slots)
     const usedCardIds = secretCodeSequence.map(card => card?.id);
     const availableCards = allCorrectCards.filter(card => !usedCardIds.includes(card.id));
+    const numColumns = Platform.OS === 'web' ? 12 : 3;
 
     if (isLoading) {
         return <ScreenContainer style={styles.centerContent}><ActivityIndicator size="large" /></ScreenContainer>;
@@ -121,47 +118,52 @@ export default function ManualSetupScreen() {
                 Clique em uma carta "Disponível" e depois clique em um "Slot" para montar a sequência.
             </Text>
 
-            {/* --- 1. SLOTS DO CÓDIGO SECRETO --- */}
-            <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Sequência do Código Secreto</Text>
-                <View style={styles.slotsContainer}>
-                    {secretCodeSequence.map((cardInSlot, index) => (
-                        <Pressable key={index} style={styles.slotWrapper} onPress={() => handleSlotPress(index)}>
-                            {cardInSlot ? (
-                                <ImageBackground source={selectedCardFront} style={styles.cardFrontImage}>
-                                    <Text style={styles.cardText}>{cardInSlot.card_text}</Text>
-                                </ImageBackground>
-                            ) : (
-                                <View style={styles.slotEmpty} />
-                            )}
-                        </Pressable>
-                    ))}
-                </View>
-            </View>
-
-            {/* --- 2. CARTAS CORRETAS DISPONÍVEIS --- */}
-            <View style={[styles.section, { flex: 1 }]}>
-                <Text style={styles.sectionTitle}>Cartas Corretas Disponíveis</Text>
-                <FlatList
-                    data={availableCards}
-                    keyExtractor={(item) => item.id.toString()}
-                    numColumns={3}
-                    renderItem={({ item }) => {
-                        const isSelected = selectedCard?.id === item.id;
-                        return (
-                            <Pressable style={[styles.cardWrapper, isSelected && styles.cardSelected]} onPress={() => handleSelectCardFromPool(item)}>
-                                <ImageBackground source={selectedCardFront} style={styles.cardFrontImage}>
-                                    <Text style={styles.cardText}>{item.card_text}</Text>
-                                </ImageBackground>
+            <View style={styles.containerSection}>
+                {/* --- 1. SLOTS DO CÓDIGO SECRETO --- */}
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Sequência do Código Secreto</Text>
+                    <View style={styles.slotsContainer}>
+                        {secretCodeSequence.map((cardInSlot, index) => (
+                            <Pressable key={index} style={styles.slotWrapper} onPress={() => handleSlotPress(index)}>
+                                {cardInSlot ? (
+                                    <ImageBackground source={selectedCardFront} style={styles.cardFrontImage}>
+                                        <Text style={styles.cardText}>{cardInSlot.card_text}</Text>
+                                    </ImageBackground>
+                                ) : (
+                                    <View style={styles.slotEmpty} />
+                                )}
                             </Pressable>
-                        );
-                    }}
-                />
-            </View>
+                        ))}
+                    </View>
+                </View>
 
+                {/* --- 2. CARTAS CORRETAS DISPONÍVEIS --- */}
+                <View style={[styles.section, { flex: 1 }]}>
+                    <Text style={styles.sectionTitle}>Cartas Corretas Disponíveis</Text>
+                    <FlatList
+                        data={availableCards}
+                        keyExtractor={(item) => item.id.toString()}
+                        numColumns={numColumns}
+                        renderItem={({ item }) => {
+                            const isSelected = selectedCard?.id === item.id;
+                            return (
+                                <Pressable style={[styles.cardWrapper, isSelected && styles.cardSelected]} onPress={() => handleSelectCardFromPool(item)}>
+                                    <ImageBackground source={selectedCardFront} style={styles.cardFrontImage}>
+                                        <Text style={styles.cardText}>{item.card_text}</Text>
+                                    </ImageBackground>
+                                </Pressable>
+                            );
+                        }}
+                        style={styles.answerPoolGrid}
+                        contentContainerStyle={styles.answerPoolContent}
+                    />
+                </View>
+                
+            </View>
             <View style={styles.footer}>
                 <AppButton title="Iniciar Teste com esta Ordem" onPress={handleStartTest} />
             </View>
+            
         </ScreenContainer>
     );
 }
@@ -169,6 +171,9 @@ export default function ManualSetupScreen() {
 // --- ESTILOS ---
 const styles = StyleSheet.create({
     centerContent: { justifyContent: 'center', alignItems: 'center' },
+    containerSection: {
+        paddingHorizontal: 45
+    },
     instructions: {
         fontSize: 16,
         color: '#4B5563',
@@ -185,33 +190,36 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     slotsContainer: {
+        display: 'flex',
+        justifyContent: 'center',
         flexDirection: 'row',
         flexWrap: 'wrap',
         gap: 10,
     },
     slotWrapper: {
-        width: 80,
-        aspectRatio: 0.7,
-        borderRadius: 8,
+        width: 110, // ✅ Definido o tamanho fixo
+        aspectRatio: 0.8,
+        borderRadius: 12,
         overflow: 'hidden',
     },
     slotEmpty: {
         width: '100%',
         height: '100%',
-        backgroundColor: '#F3F4F6',
-        borderRadius: 8,
+        backgroundColor: '#FFFFFF',
+        borderRadius: 12, // Adicionado borderRadius
         borderWidth: 2,
         borderStyle: 'dashed',
         borderColor: '#9CA3AF',
     },
     cardWrapper: {
-        flex: 1 / 3,
-        aspectRatio: 0.7,
+        width: 110, // ✅ Definido o tamanho fixo
+        aspectRatio: 0.8,
         margin: 5,
-        borderRadius: 8,
-        borderWidth: 2,
-        borderColor: 'transparent',
+        backgroundColor: '#FFFFFF',
         overflow: 'hidden',
+        borderRadius: 12, // Adicionado borderRadius
+        borderWidth: 2, // Adicionada borda padrão
+        borderColor: 'transparent',
     },
     cardSelected: {
         borderColor: Colors.light.blue,
@@ -224,16 +232,24 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     cardText: {
-        color: 'white',
+        color: 'black',
         fontSize: 14,
         fontWeight: 'bold',
         textAlign: 'center',
         padding: 5,
-        textShadowColor: 'rgba(0, 0, 0, 0.7)',
-        textShadowOffset: { width: 0, height: 1 },
-        textShadowRadius: 3,
     },
     footer: {
         padding: 20,
-    }
+    },
+    answerPoolContent: {
+        alignItems: 'center',
+        height: '100%'
+    },
+    answerPoolGrid: {
+        flex: 1,
+        marginTop: 10,
+        alignSelf: 'center',
+        width: '100%',
+        // paddingHorizontal: 20,
+    },
 });
