@@ -7,6 +7,7 @@ import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { AppButton } from '@/src/components/AppButton';
 import { GameDatabase, useGameDatabase, CardDatabase } from '@/src/database/useGameDatabase';
 import { cardFronts } from '@/constants/cardFronts';
+import Head from "expo-router/head";
 
 export default function ManualSetupScreen() {
     const router = useRouter();
@@ -111,60 +112,65 @@ export default function ManualSetupScreen() {
     }
 
     return (
-        <ScreenContainer>
-            <ScreenHeader title="Montar Código Manual" />
-            
-            <Text style={styles.instructions}>
-                Clique em uma carta "Disponível" e depois clique em um "Slot" para montar a sequência.
-            </Text>
+        <>
+            <Head>
+                <title>Made</title>
+            </Head>
+            <ScreenContainer>
+                <ScreenHeader title="Montar Código Manual" />
+                
+                <Text style={styles.instructions}>
+                    Clique em uma carta "Disponível" e depois clique em um "Slot" para montar a sequência.
+                </Text>
 
-            <View style={styles.containerSection}>
-                {/* --- 1. SLOTS DO CÓDIGO SECRETO --- */}
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Sequência do Código Secreto</Text>
-                    <View style={styles.slotsContainer}>
-                        {secretCodeSequence.map((cardInSlot, index) => (
-                            <Pressable key={index} style={styles.slotWrapper} onPress={() => handleSlotPress(index)}>
-                                {cardInSlot ? (
-                                    <ImageBackground source={selectedCardFront} style={styles.cardFrontImage}>
-                                        <Text style={styles.cardText}>{cardInSlot.card_text}</Text>
-                                    </ImageBackground>
-                                ) : (
-                                    <View style={styles.slotEmpty} />
-                                )}
-                            </Pressable>
-                        ))}
-                    </View>
-                </View>
-
-                {/* --- 2. CARTAS CORRETAS DISPONÍVEIS --- */}
-                <View style={[styles.section, { flex: 1 }]}>
-                    <Text style={styles.sectionTitle}>Cartas Corretas Disponíveis</Text>
-                    <FlatList
-                        data={availableCards}
-                        keyExtractor={(item) => item.id.toString()}
-                        numColumns={numColumns}
-                        renderItem={({ item }) => {
-                            const isSelected = selectedCard?.id === item.id;
-                            return (
-                                <Pressable style={[styles.cardWrapper, isSelected && styles.cardSelected]} onPress={() => handleSelectCardFromPool(item)}>
-                                    <ImageBackground source={selectedCardFront} style={styles.cardFrontImage}>
-                                        <Text style={styles.cardText}>{item.card_text}</Text>
-                                    </ImageBackground>
+                <View style={styles.containerSection}>
+                    {/* --- 1. SLOTS DO CÓDIGO SECRETO --- */}
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Sequência do Código Secreto</Text>
+                        <View style={styles.slotsContainer}>
+                            {secretCodeSequence.map((cardInSlot, index) => (
+                                <Pressable key={index} style={styles.slotWrapper} onPress={() => handleSlotPress(index)}>
+                                    {cardInSlot ? (
+                                        <ImageBackground source={selectedCardFront} style={styles.cardFrontImage}>
+                                            <Text style={styles.cardText}>{cardInSlot.card_text}</Text>
+                                        </ImageBackground>
+                                    ) : (
+                                        <View style={styles.slotEmpty} />
+                                    )}
                                 </Pressable>
-                            );
-                        }}
-                        style={styles.answerPoolGrid}
-                        contentContainerStyle={styles.answerPoolContent}
-                    />
+                            ))}
+                        </View>
+                    </View>
+
+                    {/* --- 2. CARTAS CORRETAS DISPONÍVEIS --- */}
+                    <View style={[styles.section, { flex: 1 }]}>
+                        <Text style={styles.sectionTitle}>Cartas Corretas Disponíveis</Text>
+                        <FlatList
+                            data={availableCards}
+                            keyExtractor={(item) => item.id.toString()}
+                            numColumns={numColumns}
+                            renderItem={({ item }) => {
+                                const isSelected = selectedCard?.id === item.id;
+                                return (
+                                    <Pressable style={[styles.cardWrapper, isSelected && styles.cardSelected]} onPress={() => handleSelectCardFromPool(item)}>
+                                        <ImageBackground source={selectedCardFront} style={styles.cardFrontImage}>
+                                            <Text style={styles.cardText}>{item.card_text}</Text>
+                                        </ImageBackground>
+                                    </Pressable>
+                                );
+                            }}
+                            style={styles.answerPoolGrid}
+                            contentContainerStyle={styles.answerPoolContent}
+                        />
+                    </View>
+                    
+                </View>
+                <View style={styles.footer}>
+                    <AppButton title="Iniciar Teste com esta Ordem" onPress={handleStartTest} />
                 </View>
                 
-            </View>
-            <View style={styles.footer}>
-                <AppButton title="Iniciar Teste com esta Ordem" onPress={handleStartTest} />
-            </View>
-            
-        </ScreenContainer>
+            </ScreenContainer>
+        </>
     );
 }
 

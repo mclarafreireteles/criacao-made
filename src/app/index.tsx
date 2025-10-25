@@ -5,6 +5,7 @@ import { useState } from 'react';
 import Colors from '@/constants/Colors';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import Head from "expo-router/head";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -32,24 +33,29 @@ export default function Index() {
 
     
     return (
-        <View style={styles.container}>
-            <View style={styles.header}>
-                <Image source={require('../../assets/images/tecnodocencia.png')}/>
-                <Image source={require('../../assets/images/logo-made.png')} style={styles.logoMade}/>
+        <>
+            <Head>
+                <title>Made</title>
+            </Head>
+            <View style={styles.container}>
+                <View style={styles.header}>
+                    <Image source={require('../../assets/images/tecnodocencia.png')}/>
+                    <Image source={require('../../assets/images/logo-made.png')} style={styles.logoMade}/>
+                </View>
+                <View style={styles.options}>
+                    <Pressable style={styles.loginButton}>
+                        <Link href={'/(auth)/signin/page'} style={styles.link}>
+                            <Text style={styles.loginButtonText}>Entrar</Text>
+                        </Link>
+                    </Pressable>
+                    <Pressable style={styles.createButton}>
+                        <Link href={'/(auth)/signup/page'} style={styles.link}>
+                            <Text style={styles.createButtonText}>Ainda não tenho conta</Text>
+                        </Link>
+                    </Pressable>
+                </View>
             </View>
-            <View style={styles.options}>
-                <Pressable style={styles.loginButton}>
-                    <Link href={'/(auth)/signin/page'} style={styles.link}>
-                        <Text style={styles.loginButtonText}>Entrar</Text>
-                    </Link>
-                </Pressable>
-                <Pressable style={styles.createButton}>
-                    <Link href={'/(auth)/signup/page'} style={styles.link}>
-                        <Text style={styles.createButtonText}>Ainda não tenho conta</Text>
-                    </Link>
-                </Pressable>
-            </View>
-        </View>
+        </>
     )
 }
 
