@@ -156,8 +156,15 @@ export default function ManageCards (){
 
             <View style={styles.settingSection}>
                 <Text style={styles.settingLabel}>Moldura da Carta</Text>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.imageSelector}>
-                    {cardFronts.map((front) => (
+                <FlatList
+                    data={cardFronts}
+                    keyExtractor={(item) => item.id}
+                    horizontal 
+                    showsHorizontalScrollIndicator={false} 
+                    contentContainerStyle={styles.imageSelectorContent}
+                    style={styles.imageSelector}
+            
+                    renderItem={({ item: front }) => (
                         <Pressable 
                             key={front.id} 
                             onPress={() => handleSetCardFront(front.id)}
@@ -168,11 +175,11 @@ export default function ManageCards (){
                         >
                             <Image source={front.image} style={styles.cardImage} />
                         </Pressable>
-                    ))}
-                </ScrollView>
+                    )}
+                />
+               
             </View>
-
-            <View style={styles.containerBtn}>
+             <View style={styles.containerBtn}>
                 <Pressable 
                     style={styles.testarBtn} 
                     onPress={() => router.push({ 
@@ -202,48 +209,54 @@ export default function ManageCards (){
 
 
     return (
-            <View style={styles.safeArea}>
-                <FlatList
-                    data={cards}
-                    keyExtractor={item => item.id.toString()}
-                    numColumns={3}
-                    renderItem={({ item }) => (     
-                        <Pressable onPress={() => handleNavigateToEditCard(item)} style={styles.cardWrapper}>
-                    
-                            <ImageBackground 
-                                source={selectedCardFront} 
-                                style={styles.cardBackground}
-                                imageStyle={styles.cardBackgroundImageStyle}
-                            >
-                                <View style={styles.cardContent}>
-                                    <Text style={styles.cardText}>{item.card_text}</Text>
-                                </View>
+        <ScrollView
+            contentContainerStyle={[styles.scrollContainer, { flexGrow: 1 }]}
+            showsVerticalScrollIndicator={false}
+        >
+            {/* HEADER */}
+            {renderHeader()}
 
+            {/* GRID DE CARTAS */}
+            <View style={styles.cardsGrid}>
+            {cards.length > 0 ? (
+                cards.map((item) => (
+                <Pressable
+                    key={item.id}
+                    onPress={() => handleNavigateToEditCard(item)}
+                    style={styles.cardWrapper}
+                >
+                    <ImageBackground
+                    source={selectedCardFront}
+                    style={styles.cardBackground}
+                    imageStyle={styles.cardBackgroundImageStyle}
+                    >
+                    <View style={styles.cardContent}>
+                        <Text style={styles.cardText}>{item.card_text}</Text>
+                    </View>
 
-                                <View style={styles.editBtn}>
-                                    <MaterialIcons name="edit" size={18} color={Colors.light.blue} />
-                                </View>
-                                <View style={styles.statusIndicator}>
-                                    <Ionicons 
-                                        name={item.card_type === 1 ? "checkmark-circle" : "close-circle"}
-                                        size={24}
-                                        color={item.card_type === 1 ? "#10B981" : "#EF4444"}
-                                    />
-                                </View>
-                            </ImageBackground>
-                        </Pressable>
-                    )}
-                    ListHeaderComponent={renderHeader}
-                    ListFooterComponent={renderFooter}
-                    contentContainerStyle={styles.container}
-                    style={styles.grid}
-                    ListEmptyComponent={
-                        <View style={styles.emptyGrid}>
-                            <Text style={styles.emptyGridText}>Adicione sua primeira carta</Text>
-                        </View>
-                    }
-                />
+                    <View style={styles.editBtn}>
+                        <MaterialIcons name="edit" size={18} color={Colors.light.blue} />
+                    </View>
+                    <View style={styles.statusIndicator}>
+                        <Ionicons
+                        name={item.card_type === 1 ? "checkmark-circle" : "close-circle"}
+                        size={24}
+                        color={item.card_type === 1 ? "#10B981" : "#EF4444"}
+                        />
+                    </View>
+                    </ImageBackground>
+                </Pressable>
+                ))
+            ) : (
+                <View style={styles.emptyGrid}>
+                <Text style={styles.emptyGridText}>Adicione sua primeira carta</Text>
+                </View>
+            )}
             </View>
+
+            {/* FOOTER */}
+            {renderFooter()}
+         </ScrollView>
     )
 }
 
@@ -266,6 +279,7 @@ const styles = StyleSheet.create({
     },
     settingSection: {
         marginBottom: 24,
+        flex: 1
     },
     settingLabel:{
         fontSize: 16,
@@ -298,7 +312,7 @@ const styles = StyleSheet.create({
     containerBtn: {
         width: '100%',
         gap: 10,
-        paddingBottom: 60
+        paddingBottom: 60,
     },
     finalizarBtn: {
         borderWidth: 1,
@@ -366,7 +380,7 @@ const styles = StyleSheet.create({
         marginTop: 50,
         margin: 6,
         backgroundColor: '#F8FAFC',
-        borderRadius: 12,
+        // borderRadius: 12,
         borderWidth: 1,
         borderColor: '#E2E8F0',
         justifyContent: 'center',
@@ -421,7 +435,7 @@ const styles = StyleSheet.create({
     imageOption: { 
         width: 90,
         height: 112, 
-        borderRadius: 8,
+        // borderRadius: 8,
         borderWidth: 3,
         borderColor: 'transparent',
         overflow: 'hidden',
@@ -439,7 +453,7 @@ const styles = StyleSheet.create({
      cardWrapper: {
         aspectRatio: 0.80,
         margin: 6,
-        width: 100,
+        width: 80,
         maxWidth: 100,
     },
     cardBackground: {
@@ -450,7 +464,7 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     cardBackgroundImageStyle: {
-        borderRadius: 11,
+        // borderRadius: 11,
         resizeMode: 'cover',
         width: '100%',
         height: '100%'
@@ -466,5 +480,21 @@ const styles = StyleSheet.create({
         width: '85%',
         height: '85%',
         resizeMode: 'contain',
+    },
+    imageSelectorContent: {
+        paddingVertical: 10,
+    },
+    scrollContainer: {
+        paddingHorizontal: 45,
+        paddingTop: 40,
+        paddingBottom: 20, // evita corte no rodapé
+        alignItems: 'center',
+        backgroundColor: Colors.light.white,
+    },
+    cardsGrid: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        width: '100%',
     },
 })

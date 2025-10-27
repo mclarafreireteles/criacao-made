@@ -7,7 +7,7 @@ import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { AppButton } from '@/src/components/AppButton';
 import { GameDatabase, useGameDatabase, CardDatabase } from '@/src/database/useGameDatabase';
 import { cardFronts } from '@/constants/cardFronts';
-import Head from "expo-router/head";
+
 
 export default function ManualSetupScreen() {
     const router = useRouter();
@@ -113,9 +113,7 @@ export default function ManualSetupScreen() {
 
     return (
         <>
-            <Head>
-                <title>Made</title>
-            </Head>
+            
             <ScreenContainer>
                 <ScreenHeader title="Montar Código Manual" />
                 
