@@ -308,6 +308,7 @@ export default function TestGameScreen() {
                     <Text style={styles.sectionTitle}>Opções</Text>
                     <FlatList
                         data={answerPool}
+                        scrollEnabled={false}
                         keyExtractor={(item) => item.id.toString()}
                         numColumns={numColumns}
                         key={numColumns}

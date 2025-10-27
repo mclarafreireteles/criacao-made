@@ -47,25 +47,23 @@ export default function Login() {
             <View style={styles.header}>
                 <Image source={require('../../../../assets/images/tecnodocencia.png')} style={styles.logoTecno}/>
                 <Image source={require('../../../../assets/images/logo-made.png')} style={styles.logoMade}/>
-            </View>
-            <Text style={styles.title}>Entre na sua conta</Text>
-            <View style={styles.inputContainer}>
-
-                <View style={[styles.inputWrapper, focusedInput === 'email' && styles.inputFocused]}>
-                    <TextInput
-                        placeholder='Digite seu e-mail'
-                        value={email}
-                        onChangeText={setEmail}
-                        style={styles.inputField}
-                        keyboardType="email-address"
-                        autoCapitalize='none'
-                        autoComplete='email'
-                        returnKeyType='next'
-                        onSubmitEditing={() => passwordInputRef.current?.focus()}
-                        // onFocus={() => setFocusedInput('email')}
-                        // onBlur={() => setFocusedInput(null)}
-                    />
-                </View>
+                <Text style={styles.title}>Entre na sua conta</Text>
+                <View style={styles.inputContainer}>
+                    <View style={[styles.inputWrapper, focusedInput === 'email' && styles.inputFocused]}>
+                        <TextInput
+                            placeholder='Digite seu e-mail'
+                            value={email}
+                            onChangeText={setEmail}
+                            style={styles.inputField}
+                            keyboardType="email-address"
+                            autoCapitalize='none'
+                            autoComplete='email'
+                            returnKeyType='next'
+                            onSubmitEditing={() => passwordInputRef.current?.focus()}
+                            // onFocus={() => setFocusedInput('email')}
+                            // onBlur={() => setFocusedInput(null)}
+                        />
+                    </View>
 
                 
                 
@@ -96,6 +94,8 @@ export default function Login() {
 
 
             </View>
+            </View>
+            
             <View style={styles.buttons}>
                  <Pressable onPress={handleSignin} style={styles.loginButton}>
                     <Text style={styles.loginButtonText}>{loading ? 'Carregando...' : 'Entrar'}</Text>
@@ -139,7 +139,8 @@ const styles = StyleSheet.create({
     inputContainer: {
         display: 'flex',
         gap: 15,
-        width: '80%'
+        width: '80%',
+        marginTop: 80
     },
     inputLogin: {
         borderColor: Colors.light.grey,
@@ -220,6 +221,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         flexDirection: 'row',
         alignItems: 'center',
+        width: '100%'
     }
 })
 

@@ -36,6 +36,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "e2fbd0ae-88d8-45b9-abf3-2f32e2b6d97d"
+      }
+    },
+    "owner": "mclarafreireteles"
   }
 }
