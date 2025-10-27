@@ -8,12 +8,12 @@ type Props = {
 
 export function ScreenContainer({ children, style }: Props) {
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.safeArea}>
       {/* A View interna aplica nosso padding padrão e qualquer estilo customizado que for passado */}
       <View style={[styles.container, style]}>
         {children}
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
