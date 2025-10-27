@@ -138,10 +138,22 @@ export default function TestGameScreen() {
             if (!gameIdNumber) return;
             try {
                 setIsLoading(true);
+
+                
+
                 const [gameData, cardsData] = await Promise.all([
                     getGameById(gameIdNumber),
                     getCardsByGameId(gameIdNumber)
                 ]);
+
+                // --- DEBUG 1: DADOS BRUTOS DO BANCO ---
+                console.log(`[DEBUG 1] Buscando dados para game_id: ${gameIdNumber}`);
+                
+
+                console.log("[DEBUG 1] Dados brutos recebidos:");
+                console.log("GameData:", JSON.stringify(gameData, null, 2));
+                console.log("CardsData:", JSON.stringify(cardsData, null, 2));
+                // -----------------------------------------
 
                 if (!gameData || cardsData.length === 0) {
                     showAlert("Erro", "Esse jogo não possui cartas suficientes");
@@ -150,6 +162,22 @@ export default function TestGameScreen() {
                 }
 
                 setGameDetails(gameData);
+
+                // --- DEBUG 2: URLs DAS IMAGENS ---
+                // Precisamos fazer isso DEPOIS do setGameDetails
+                // ou ler direto do gameData.
+                console.log(`[DEBUG 2] URLs de imagem do gameData:`);
+                console.log(`background_image_url: ${gameData.background_image_url}`);
+                console.log(`card_front_url: ${gameData.card_front_url}`);
+                
+                // Vamos simular o que o componente faz no topo
+                const foundBack = cardBacks.find(back => back.id === gameData?.background_image_url)?.image;
+                const foundFront = cardFronts.find(front => front.id === gameData?.card_front_url)?.image;
+                
+                console.log(`[DEBUG 2] Imagem de Fundo encontrada: ${foundBack ? 'SIM' : 'NÃO (undefined)'}`);
+                console.log(`[DEBUG 2] Imagem de Frente encontrada: ${foundFront ? 'SIM' : 'NÃO (undefined)'}`);
+                // ------------------------------------
+
                 const codeLength = gameData.secret_code_length || 4; // Pega o tamanho do código (padrão 4)
 
                 // Filtra as cartas corretas
@@ -304,7 +332,7 @@ export default function TestGameScreen() {
                 </View>
                 
                 {/* --- 3. ÁREA DE OPÇÕES (BARALHO PARA ESCOLHER) --- */}
-                <View style={styles.section}>
+                {/* <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Opções</Text>
                     <FlatList
                         data={answerPool}
@@ -335,6 +363,37 @@ export default function TestGameScreen() {
                         style={styles.answerPoolGrid}
                         contentContainerStyle={styles.answerPoolContent}
                     />
+                </View> */}
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Opções</Text>
+
+                    <View style={styles.answerPoolContainer}>
+                        {answerPool.map((item) => {
+                        const isUsed = playerGuess.some(card => card?.id === item.id);
+                        const isSelected = selectedCard?.id === item.id;
+
+                        return (
+                            <Pressable
+                            key={item.id}
+                            style={[
+                                styles.answerCardWrapper,
+                                isUsed && styles.answerCardUsed,
+                                isSelected && styles.answerCardSelected
+                            ]}
+                            onPress={() => handleSelectCardFromPool(item)}
+                            disabled={isUsed}
+                            >
+                            <ImageBackground
+                                source={selectedCardFront}
+                                style={styles.cardFrontImage}
+                                resizeMode="cover"
+                            >
+                                <Text style={styles.answerCardText}>{item.card_text}</Text>
+                            </ImageBackground>
+                            </Pressable>
+                        );
+                        })}
+                    </View>
                 </View>
 
                 {/* Feedback e Botão Finalizar */}
@@ -385,10 +444,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         gap: 24,
-        marginBottom: 30,        
+        marginBottom: 30,   
     },
     guessSlot: {
-        minWidth: 110,
+        minWidth: 90,
         aspectRatio: 0.8,
         backgroundColor: Colors.light.white,
         // borderRadius: 12,
@@ -409,6 +468,8 @@ const styles = StyleSheet.create({
         marginTop: 10,
         alignSelf: 'center',
         width: '100%',
+        borderColor: 'red', // <--- DEBUG
+        borderWidth: 2,
         // paddingHorizontal: 20,
     },
     answerCard: {
@@ -527,13 +588,24 @@ const styles = StyleSheet.create({
         // borderColor: '#9CA3AF',
     },
     answerCardWrapper: { 
-        flex: 1,
-        margin: 5,
-        aspectRatio: 0.8, 
-        // borderRadius: 12,
+        // flex: 1,
+        // margin: 5,
+        // minWidth: 90,
+        // aspectRatio: 0.8, 
+        // // borderRadius: 12,
+        // backgroundColor: '#FFFFFF',
+        // overflow: 'hidden',
+        // width: 110,
+        // borderColor: 'blue', // <--- DEBUG
+        // borderWidth: 1,
+        minWidth: 90,
+        maxWidth: 110,
+        aspectRatio: 0.8,
         backgroundColor: '#FFFFFF',
+        justifyContent: 'center',
+        alignItems: 'center',
         overflow: 'hidden',
-        width: 110,
+        elevation: 2,
     },
     answerCardUsed: {
         opacity: 0.3, 
@@ -550,4 +622,14 @@ const styles = StyleSheet.create({
     scrollContentContainer: {
         flexGrow: 1,
     },
+    answerPoolContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 10,
+        paddingBottom: 30,
+        width: '100%',
+    },
+
 });
