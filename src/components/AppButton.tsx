@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
     gap: 10,
+    width: '100%'
   },
   primaryButton: {
     backgroundColor: Colors.light.blue,

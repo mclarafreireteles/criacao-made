@@ -8,6 +8,7 @@ import Colors from "@/constants/Colors";
 import { StyledInput } from "@/src/components/StyledInput";
 import { BackButtonIcon } from "@/src/components/icons/BackButtonIcon";
 import { disciplines, grade } from "@/constants/formOptions";
+import { AppButton } from "@/src/components/AppButton";
 
 export default function Step3() {
     const router = useRouter();
@@ -140,9 +141,14 @@ export default function Step3() {
                     value={formData.explanation}
                 /> */}
             </View>
-            <Pressable style={styles.continuarBtn} onPress={handleSaveGame}>
+            <View style={styles.footer}>
+                <AppButton title={isEditing ? "Salvar alterações" : "Criar Jogo"} variant="primary" onPress={handleSaveGame} />
+                {/* <AppButton title="Voltar" variant="secondary" onPress={() => router.back()} /> */}
+            </View>
+            {/* <Pressable style={styles.continuarBtn} onPress={handleSaveGame}>
                 <Text style={styles.continuarBtnTxt}>{isEditing ? "Salvar alterações" : "Criar Jogo"}</Text>
-            </Pressable>
+                
+            </Pressable> */}
         </View>
     );
 }
@@ -152,6 +158,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         flex: 1,
         paddingVertical: 60,
+        // paddingHorizontal: 45,
         alignItems: 'center',
         backgroundColor: Colors.light.white,
         maxWidth: '100%',
@@ -162,6 +169,7 @@ const styles = StyleSheet.create({
     },
     containerInput: {
         minWidth: '80%',
+        paddingHorizontal: 45
     },
     continuarBtn: {
         borderWidth: 1,
@@ -203,5 +211,11 @@ const styles = StyleSheet.create({
         top: 60,
         left: 40,
         zIndex: 1, 
+    },
+    footer: {
+        paddingTop: 20,
+        gap: 12,
+        paddingHorizontal: 45,
+        width: '100%',
     },
 })
