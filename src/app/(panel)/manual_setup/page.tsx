@@ -122,7 +122,6 @@ export default function ManualSetupScreen() {
 
     return (
         <>
-            
             <ScreenContainer>
                 <ScreenHeader title="Montar Código" />
                 
@@ -209,7 +208,6 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     sectionCards:{
-        // backgroundColor: 'red's
     },
     sectionTitle: {
         fontSize: 18,
@@ -226,7 +224,7 @@ const styles = StyleSheet.create({
         marginBottom: 24
     },
     slotWrapper: {
-        width: 90, // ✅ Definido o tamanho fixo
+        width: 90,
         height: 160,
         aspectRatio: 0.8,
         borderRadius: 12,
@@ -236,7 +234,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
         backgroundColor: '#FFFFFF',
-        borderRadius: 12, // Adicionado borderRadius
+        borderRadius: 12,
         borderWidth: 2,
         borderStyle: 'dashed',
         borderColor: '#9CA3AF',
@@ -247,7 +245,7 @@ const styles = StyleSheet.create({
         margin: 3,
         backgroundColor: '#FFFFFF',
         overflow: 'hidden',
-        borderWidth: 2, // Adicionada borda padrão
+        borderWidth: 2,
         borderColor: 'transparent',
     },
     cardSelected: {

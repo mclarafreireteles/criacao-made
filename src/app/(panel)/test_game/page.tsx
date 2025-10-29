@@ -529,11 +529,11 @@ const styles = StyleSheet.create({
         marginHorizontal: 45
     },
     promptText: {
-        fontSize: 28,
+        lineHeight: Platform.OS === 'web' ? 32 : 28,
+        fontSize: Platform.OS === 'web' ? 28 : 24,
         color: '#374151', 
         textAlign: 'center',
         marginBottom: 20, 
-        lineHeight: 24, 
     },
     secretCodeContainer: {
         flexDirection: 'row',
