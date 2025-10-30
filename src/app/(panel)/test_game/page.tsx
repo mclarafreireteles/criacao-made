@@ -12,11 +12,11 @@ import { cardFronts } from '@/constants/cardFronts';
 
 export default function TestGameScreen() {
     const router = useRouter();
-    const { game_id } = useLocalSearchParams();
+    const { game_id, mode, manual_code } = useLocalSearchParams();
     const gameIdNumber = Number(game_id);
 
     const { getGameById, getCardsByGameId } = useGameDatabase();
-    
+
     // --- ESTADOS DO JOGO ---
     const [gameDetails, setGameDetails] = useState<GameDatabase | null>(null);
     const [secretCode, setSecretCode] = useState<CardDatabase[]>([]);
@@ -42,13 +42,13 @@ export default function TestGameScreen() {
     }
 
     const handleSelectCardFromPool = (cardFromPool: CardDatabase) => {
-    // Verifica se a carta já está em um dos slots de tentativa
+        // Verifica se a carta já está em um dos slots de tentativa
         const isAlreadyGuessed = playerGuess.find(card => card?.id === cardFromPool.id);
         if (isAlreadyGuessed) {
             return; // Não faz nada se a carta já foi usada
         }
-    
-    // "Segura" a carta no estado. Se o usuário clicar na mesma, ele a "solta".
+
+        // "Segura" a carta no estado. Se o usuário clicar na mesma, ele a "solta".
         setSelectedCard(prev => (prev?.id === cardFromPool.id ? null : cardFromPool));
     };
 
@@ -58,9 +58,9 @@ export default function TestGameScreen() {
 
         if (selectedCard) {
             // --- CENÁRIO 1: O jogador está "segurando" uma carta ---
-            
+
             // Se o slot clicado já tem uma carta, não faz nada
-            if (currentCardInSlot) return; 
+            if (currentCardInSlot) return;
 
             // Coloca a carta que estava "na mão" no slot vazio
             newGuess[slotIndex] = selectedCard;
@@ -69,7 +69,7 @@ export default function TestGameScreen() {
 
         } else if (currentCardInSlot) {
             // --- CENÁRIO 2: O jogador NÃO está segurando nada e clica em um slot PREENCHIDO ---
-            
+
             // Remove a carta do slot (define como null)
             newGuess[slotIndex] = null;
             setPlayerGuess(newGuess);
@@ -100,7 +100,7 @@ export default function TestGameScreen() {
             if (playerGuessCopy[i]?.id === secretCodeCopy[i]?.id) {
                 correctPosition++;
                 // "Anulamos" as cartas encontradas para não contá-las de novo
-                playerGuessCopy[i] = null as any; 
+                playerGuessCopy[i] = null as any;
                 secretCodeCopy[i] = null as any;
             }
         }
@@ -112,11 +112,11 @@ export default function TestGameScreen() {
 
             // Procura a carta da tentativa do jogador no que restou do código secreto
             const foundIndex = secretCodeCopy.findIndex(card => card?.id === playerGuessCopy[i]?.id);
-            
+
             if (foundIndex !== -1) {
                 correctCardWrongPosition++;
                 // "Anulamos" a carta encontrada no código secreto para não contá-la de novo
-                secretCodeCopy[foundIndex] = null as any; 
+                secretCodeCopy[foundIndex] = null as any;
             }
         }
 
@@ -126,7 +126,7 @@ export default function TestGameScreen() {
         // CONDIÇÃO DE VITÓRIA: Se todas as cartas estiverem na posição correta
         if (correctPosition === codeLength) {
             setGameState('won'); // Muda o estado do jogo para "vencido"
-            
+
             // Calcula a pontuação (ex: 1000 pontos menos 100 por tentativa)
             const finalScore = Math.max(1000 - (attempts * 100), 100);
             setScore(finalScore);
@@ -139,7 +139,7 @@ export default function TestGameScreen() {
             try {
                 setIsLoading(true);
 
-                
+
 
                 const [gameData, cardsData] = await Promise.all([
                     getGameById(gameIdNumber),
@@ -148,7 +148,7 @@ export default function TestGameScreen() {
 
                 // --- DEBUG 1: DADOS BRUTOS DO BANCO ---
                 console.log(`[DEBUG 1] Buscando dados para game_id: ${gameIdNumber}`);
-                
+
 
                 console.log("[DEBUG 1] Dados brutos recebidos:");
                 console.log("GameData:", JSON.stringify(gameData, null, 2));
@@ -169,11 +169,11 @@ export default function TestGameScreen() {
                 console.log(`[DEBUG 2] URLs de imagem do gameData:`);
                 console.log(`background_image_url: ${gameData.background_image_url}`);
                 console.log(`card_front_url: ${gameData.card_front_url}`);
-                
+
                 // Vamos simular o que o componente faz no topo
                 const foundBack = cardBacks.find(back => back.id === gameData?.background_image_url)?.image;
                 const foundFront = cardFronts.find(front => front.id === gameData?.card_front_url)?.image;
-                
+
                 console.log(`[DEBUG 2] Imagem de Fundo encontrada: ${foundBack ? 'SIM' : 'NÃO (undefined)'}`);
                 console.log(`[DEBUG 2] Imagem de Frente encontrada: ${foundFront ? 'SIM' : 'NÃO (undefined)'}`);
                 // ------------------------------------
@@ -194,53 +194,58 @@ export default function TestGameScreen() {
                 }
 
                 // --- 3. SE PASSOU, PREPARA O JOGO ---
-                
+
                 setPlayerGuess(Array(codeLength).fill(null));
 
+                // const incorrectCards = cardsData.filter(card => Number(card.card_type) !== 1);
+
+                // const shuffledCorrectCards = [...correctCards].sort(() => Math.random() - 0.5);
+                // const newSecretCode = shuffledCorrectCards.slice(0, codeLength);
+                // setSecretCode(newSecretCode);
+
+                // const newAnswerPool = [...correctCards, ...incorrectCards].sort(() => Math.random() - 0.5);
+                // setAnswerPool(newAnswerPool);
+
+                // console.log("--- DEBUG: RESPOSTA CORRETA ---");
+                // console.log(newSecretCode.map(card => card.card_text)); 
+                // console.log("---------------------------------");
+
+                // console.log("✅ CORRETAS:", correctCards.length);
+                // console.log("❌ INCORRETAS:", incorrectCards.length);
                 const incorrectCards = cardsData.filter(card => Number(card.card_type) !== 1);
 
-                const shuffledCorrectCards = [...correctCards].sort(() => Math.random() - 0.5);
-                const newSecretCode = shuffledCorrectCards.slice(0, codeLength);
-                setSecretCode(newSecretCode);
+                // --- LÓGICA DE MODO MANUAL vs ALEATÓRIO ---
+                if (mode === 'manual' && typeof manual_code === 'string') {
+                    console.log("[DEBUG] Modo MANUAL Ativado. Código recebido:", manual_code);
+
+                    const manualCodeIds = manual_code.split(',').map(Number);
+                    const newSecretCode = manualCodeIds.map(id => {
+                        return cardsData.find(card => card.id === id);
+                    }).filter((card): card is CardDatabase => !!card);
+
+                    setSecretCode(newSecretCode);
+                    console.log("--- DEBUG: RESPOSTA MANUAL ---");
+                    console.log(newSecretCode.map(card => card.card_text));
+                    console.log("---------------------------------");
+
+                } else {
+                    console.log("[DEBUG] Modo ALEATÓRIO Ativado.");
+                    const shuffledCorrectCards = [...correctCards].sort(() => Math.random() - 0.5);
+                    const newSecretCode = shuffledCorrectCards.slice(0, codeLength);
+                    setSecretCode(newSecretCode);
+
+                    console.log("--- DEBUG: RESPOSTA CORRETA (ALEATÓRIA) ---");
+                    console.log(newSecretCode.map(card => card.card_text));
+                    console.log("---------------------------------");
+                }
 
                 const newAnswerPool = [...correctCards, ...incorrectCards].sort(() => Math.random() - 0.5);
                 setAnswerPool(newAnswerPool);
 
-                console.log("--- DEBUG: RESPOSTA CORRETA ---");
-                console.log(newSecretCode.map(card => card.card_text)); 
-                console.log("---------------------------------");
-
                 console.log("✅ CORRETAS:", correctCards.length);
                 console.log("❌ INCORRETAS:", incorrectCards.length);
 
-                
-                // if (gameData && cardsData.length > 0) {
-                //     setGameDetails(gameData);
-                //     const codeLength = gameData.secret_code_length || 4;
 
-                //     setPlayerGuess(Array(codeLength).fill(null));
-
-                //     const correctCards = cardsData.filter(card => Number(card.card_type) === 1);
-                //     const incorrectCards = cardsData.filter(card => Number(card.card_type) !== 1);
-
-                //     const shuffledCorrectCards = [...correctCards].sort(() => Math.random() - 0.5);
-                //     const newSecretCode = shuffledCorrectCards.slice(0, codeLength);
-                //     setSecretCode(newSecretCode);
-
-                //     const distractors = [...incorrectCards];
-                //     const newAnswerPool = [...correctCards, ...incorrectCards].sort(() => Math.random() - 0.5);
-
-
-
-                //     setAnswerPool(newAnswerPool.sort(() => Math.random() - 0.5));
-
-                //     console.log("--- DEBUG: RESPOSTA CORRETA ---");
-                //     console.log(newSecretCode.map(card => card.card_text)); 
-                //     console.log("---------------------------------");
-
-                //     console.log("✅ CORRETAS:", correctCards.length);
-                //     console.log("❌ INCORRETAS:", incorrectCards.length);
-                // }
             } catch (err) {
                 console.log('Erro ao preparar o jogo', err);
             } finally {
@@ -248,7 +253,7 @@ export default function TestGameScreen() {
             }
         };
         setupGame();
-    }, [gameIdNumber]);
+    }, [gameIdNumber, mode, manual_code]);
 
     const renderSecretCode = () => {
         return secretCode.map((card, index) => (
@@ -275,7 +280,7 @@ export default function TestGameScreen() {
             slots.push(
                 <Pressable key={`guess-${i}`} style={styles.guessSlot} onPress={() => handleSlotPress(i)}>
                     {cardInSlot ? (
-                         <ImageBackground source={selectedCardFront} style={styles.cardFrontImage}>
+                        <ImageBackground source={selectedCardFront} style={styles.cardFrontImage}>
                             <Text style={styles.guessSlotText}>{cardInSlot.card_text}</Text>
                         </ImageBackground>
                     ) : (
@@ -286,7 +291,7 @@ export default function TestGameScreen() {
         }
         return slots;
     };
-    
+
     if (isLoading) {
         return (
             <ScreenContainer style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -298,7 +303,7 @@ export default function TestGameScreen() {
 
     return (
         <ScreenContainer style={{ backgroundColor: Colors.light.white }}>
-            <ScreenHeader 
+            <ScreenHeader
                 title="Testar jogo"
                 rightAccessory={
                     <Pressable style={styles.historyButton}>
@@ -307,12 +312,12 @@ export default function TestGameScreen() {
                 }
             />
 
-            <ScrollView 
+            <ScrollView
                 style={styles.gameContainer}
                 contentContainerStyle={styles.scrollContentContainer}
             >
                 {gameDetails?.prompt && (
-                <Text style={styles.promptText}>{gameDetails.prompt}</Text>
+                    <Text style={styles.promptText}>{gameDetails.prompt}</Text>
                 )}
 
                 {/* --- 1. ÁREA DO CÓDIGO SECRETO (CARTAS VIRADAS) --- */}
@@ -330,7 +335,7 @@ export default function TestGameScreen() {
                         {renderGuessSlots()}
                     </View>
                 </View>
-                
+
                 {/* --- 3. ÁREA DE OPÇÕES (BARALHO PARA ESCOLHER) --- */}
                 {/* <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Opções</Text>
@@ -369,29 +374,29 @@ export default function TestGameScreen() {
 
                     <View style={styles.answerPoolContainer}>
                         {answerPool.map((item) => {
-                        const isUsed = playerGuess.some(card => card?.id === item.id);
-                        const isSelected = selectedCard?.id === item.id;
+                            const isUsed = playerGuess.some(card => card?.id === item.id);
+                            const isSelected = selectedCard?.id === item.id;
 
-                        return (
-                            <Pressable
-                            key={item.id}
-                            style={[
-                                styles.answerCardWrapper,
-                                isUsed && styles.answerCardUsed,
-                                isSelected && styles.answerCardSelected
-                            ]}
-                            onPress={() => handleSelectCardFromPool(item)}
-                            disabled={isUsed}
-                            >
-                            <ImageBackground
-                                source={selectedCardFront}
-                                style={styles.cardFrontImage}
-                                resizeMode="cover"
-                            >
-                                <Text style={styles.answerCardText}>{item.card_text}</Text>
-                            </ImageBackground>
-                            </Pressable>
-                        );
+                            return (
+                                <Pressable
+                                    key={item.id}
+                                    style={[
+                                        styles.answerCardWrapper,
+                                        isUsed && styles.answerCardUsed,
+                                        isSelected && styles.answerCardSelected
+                                    ]}
+                                    onPress={() => handleSelectCardFromPool(item)}
+                                    disabled={isUsed}
+                                >
+                                    <ImageBackground
+                                        source={selectedCardFront}
+                                        style={styles.cardFrontImage}
+                                        resizeMode="cover"
+                                    >
+                                        <Text style={styles.answerCardText}>{item.card_text}</Text>
+                                    </ImageBackground>
+                                </Pressable>
+                            );
                         })}
                     </View>
                 </View>
@@ -409,7 +414,7 @@ export default function TestGameScreen() {
                         </View>
                     </View>
                 )}
-                
+
             </ScrollView>
             <View style={styles.footer}>
                 <AppButton title="Verificar Tentativa" onPress={handleCheckAnswer} />
@@ -444,7 +449,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         gap: 24,
-        marginBottom: 30,   
+        marginBottom: 30,
     },
     guessSlot: {
         minWidth: 90,
@@ -453,8 +458,8 @@ const styles = StyleSheet.create({
         // borderRadius: 12,
         justifyContent: 'center',
         alignItems: 'center',
-        borderWidth: 2,             
-        borderStyle: 'dashed',     
+        borderWidth: 2,
+        borderStyle: 'dashed',
         borderColor: '#9CA3AF',
     },
     guessSlotText: {
@@ -478,7 +483,7 @@ const styles = StyleSheet.create({
         // backgroundColor: '#E5E7EB',
         justifyContent: 'center',
         alignItems: 'center',
-        aspectRatio: 0.8, 
+        aspectRatio: 0.8,
         elevation: 2,
         width: 120
     },
@@ -531,9 +536,9 @@ const styles = StyleSheet.create({
     promptText: {
         lineHeight: Platform.OS === 'web' ? 32 : 28,
         fontSize: Platform.OS === 'web' ? 28 : 24,
-        color: '#374151', 
+        color: '#374151',
         textAlign: 'center',
-        marginBottom: 20, 
+        marginBottom: 20,
     },
     secretCodeContainer: {
         flexDirection: 'row',
@@ -545,7 +550,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        aspectRatio: 0.8, 
+        aspectRatio: 0.8,
         elevation: 2,
         maxWidth: 110,
     },
@@ -562,12 +567,12 @@ const styles = StyleSheet.create({
         color: '#4B5563',
         marginBottom: 10,
     },
-    secretCardText: { 
-        fontSize: 14, 
+    secretCardText: {
+        fontSize: 14,
         fontWeight: 600
     },
     backgroundImage: {
-        flex: 1, 
+        flex: 1,
     },
     cardFrontImage: {
         width: '100%',
@@ -587,7 +592,7 @@ const styles = StyleSheet.create({
         // borderStyle: 'dashed',      
         // borderColor: '#9CA3AF',
     },
-    answerCardWrapper: { 
+    answerCardWrapper: {
         // flex: 1,
         // margin: 5,
         // minWidth: 90,
@@ -608,7 +613,7 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     answerCardUsed: {
-        opacity: 0.3, 
+        opacity: 0.3,
     },
     answerCardSelected: {
         borderWidth: 2,

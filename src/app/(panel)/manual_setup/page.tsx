@@ -15,8 +15,7 @@ export default function ManualSetupScreen() {
     const gameIdNumber = Number(game_id);
 
     const { getGameById, getCardsByGameId } = useGameDatabase();
-    
-    // --- ESTADOS ---
+
     const [gameDetails, setGameDetails] = useState<GameDatabase | null>(null);
     const [allCorrectCards, setAllCorrectCards] = useState<CardDatabase[]>([]);
     const [secretCodeSequence, setSecretCodeSequence] = useState<(CardDatabase | null)[]>([]);
@@ -28,7 +27,6 @@ export default function ManualSetupScreen() {
         front => front.id === String(gameDetails?.card_front_url)
     )?.image;
 
-    // --- CARREGAMENTO E PREPARAÇÃO ---
     useEffect(() => {
         const loadData = async () => {
             if (!gameIdNumber) return;
@@ -66,7 +64,6 @@ export default function ManualSetupScreen() {
         loadData();
     }, [gameIdNumber]);
 
-    // --- LÓGICA DE CLIQUE (A MESMA DO TESTGAME) ---
 
     const handleSelectCardFromPool = (cardFromPool: CardDatabase) => {
         const isAlreadyInSequence = secretCodeSequence.find(card => card?.id === cardFromPool.id);
@@ -89,7 +86,6 @@ export default function ManualSetupScreen() {
         }
     };
 
-    // --- NAVEGAÇÃO FINAL ---
     const handleStartTest = () => {
         if (secretCodeSequence.some(slot => slot === null)) {
             Alert.alert("Atenção", "Você precisa preencher todos os slots do código secreto.");
@@ -108,7 +104,6 @@ export default function ManualSetupScreen() {
         });
     };
 
-    // --- RENDERIZAÇÃO ---
 
     const usedCardIds = secretCodeSequence.map(card => card?.id);
     const availableCards = allCorrectCards.filter(card => !usedCardIds.includes(card.id));
