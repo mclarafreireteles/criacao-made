@@ -220,9 +220,7 @@ const styles = StyleSheet.create({
     },
     slotWrapper: {
         width: 90,
-        height: 160,
         aspectRatio: 0.8,
-        borderRadius: 12,
         overflow: 'hidden',
     },
     slotEmpty: {
