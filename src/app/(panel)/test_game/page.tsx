@@ -93,7 +93,6 @@ export default function TestGameScreen() {
             return Alert.alert("Atenção", `Você precisa selecionar ${codeLength} cartas para a sua tentativa.`);
         }
 
-        setAttempts(prev => prev + 1);
         let correctPosition = 0;
         let correctCardWrongPosition = 0;
 
@@ -215,22 +214,6 @@ export default function TestGameScreen() {
                 // --- 3. SE PASSOU, PREPARA O JOGO ---
 
                 setPlayerGuess(Array(codeLength).fill(null));
-
-                // const incorrectCards = cardsData.filter(card => Number(card.card_type) !== 1);
-
-                // const shuffledCorrectCards = [...correctCards].sort(() => Math.random() - 0.5);
-                // const newSecretCode = shuffledCorrectCards.slice(0, codeLength);
-                // setSecretCode(newSecretCode);
-
-                // const newAnswerPool = [...correctCards, ...incorrectCards].sort(() => Math.random() - 0.5);
-                // setAnswerPool(newAnswerPool);
-
-                // console.log("--- DEBUG: RESPOSTA CORRETA ---");
-                // console.log(newSecretCode.map(card => card.card_text)); 
-                // console.log("---------------------------------");
-
-                // console.log("✅ CORRETAS:", correctCards.length);
-                // console.log("❌ INCORRETAS:", incorrectCards.length);
                 const incorrectCards = cardsData.filter(card => Number(card.card_type) !== 1);
 
                 // --- LÓGICA DE MODO MANUAL vs ALEATÓRIO ---
