@@ -8,6 +8,7 @@ import { AppButton } from '@/src/components/AppButton';
 import { GameDatabase, useGameDatabase, CardDatabase } from '@/src/database/useGameDatabase';
 import { cardBacks } from '@/constants/cardBacks';
 import { cardFronts } from '@/constants/cardFronts';
+import { FeedbackHistoryItem, useGameHistory } from '@/src/contexts/GameHistoryContext';
 
 
 export default function TestGameScreen() {
@@ -16,6 +17,7 @@ export default function TestGameScreen() {
     const gameIdNumber = Number(game_id);
 
     const { getGameById, getCardsByGameId } = useGameDatabase();
+    const { addHistoryItem, clearHistory } = useGameHistory();
 
     // --- ESTADOS DO JOGO ---
     const [gameDetails, setGameDetails] = useState<GameDatabase | null>(null);
@@ -78,6 +80,9 @@ export default function TestGameScreen() {
 
 
     const handleCheckAnswer = () => {
+        const currentAttemptNumber = attempts + 1;
+        setAttempts(currentAttemptNumber);
+
         const codeLength = gameDetails?.secret_code_length || 0;
 
         if (playerGuess.some(slot => slot === null)) {
@@ -120,8 +125,22 @@ export default function TestGameScreen() {
             }
         }
 
+        // --- LÓGICA DO HISTÓRICO (MODIFICADA) ---
+        const newFeedback = { correctPosition, correctCardWrongPosition };
+        const newHistoryItem: FeedbackHistoryItem = {
+            guess: [...playerGuess],
+            feedback: newFeedback,
+            attemptNumber: currentAttemptNumber
+        };
+
+        // Atualiza o feedback imediato
+        setFeedback(newFeedback);
+        // Adiciona ao CONTEXTO global
+        addHistoryItem(newHistoryItem);
+        // --- FIM DA LÓGICA DO HISTÓRICO ---
+
         // Atualiza o estado do feedback para exibir o resultado na tela
-        setFeedback({ correctPosition, correctCardWrongPosition });
+        // setFeedback({ correctPosition, correctCardWrongPosition });
 
         // CONDIÇÃO DE VITÓRIA: Se todas as cartas estiverem na posição correta
         if (correctPosition === codeLength) {
@@ -136,10 +155,10 @@ export default function TestGameScreen() {
     useEffect(() => {
         const setupGame = async () => {
             if (!gameIdNumber) return;
+
+            clearHistory();
             try {
                 setIsLoading(true);
-
-
 
                 const [gameData, cardsData] = await Promise.all([
                     getGameById(gameIdNumber),
@@ -306,7 +325,15 @@ export default function TestGameScreen() {
             <ScreenHeader
                 title="Testar jogo"
                 rightAccessory={
-                    <Pressable style={styles.historyButton}>
+                    <Pressable
+                        style={styles.historyButton}
+                        onPress={() => router.push({
+                            pathname: '/test_game/history',
+                            params: {
+                                card_front_url_id: gameDetails?.card_front_url
+                            }
+                        })}
+                    >
                         <Text style={styles.historyButtonText}>Histórico</Text>
                     </Pressable>
                 }
@@ -455,7 +482,6 @@ const styles = StyleSheet.create({
         minWidth: 90,
         aspectRatio: 0.8,
         backgroundColor: Colors.light.white,
-        // borderRadius: 12,
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 2,
@@ -473,14 +499,12 @@ const styles = StyleSheet.create({
         marginTop: 10,
         alignSelf: 'center',
         width: '100%',
-        borderColor: 'red', // <--- DEBUG
+        borderColor: 'red',
         borderWidth: 2,
-        // paddingHorizontal: 20,
     },
     answerCard: {
         flex: 1,
         margin: 5,
-        // backgroundColor: '#E5E7EB',
         justifyContent: 'center',
         alignItems: 'center',
         aspectRatio: 0.8,
@@ -585,24 +609,10 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
         backgroundColor: '#FFFFFF',
-        // borderRadius: 12,
         justifyContent: 'center',
         alignItems: 'center',
-        // borderWidth: 2,           
-        // borderStyle: 'dashed',      
-        // borderColor: '#9CA3AF',
     },
     answerCardWrapper: {
-        // flex: 1,
-        // margin: 5,
-        // minWidth: 90,
-        // aspectRatio: 0.8, 
-        // // borderRadius: 12,
-        // backgroundColor: '#FFFFFF',
-        // overflow: 'hidden',
-        // width: 110,
-        // borderColor: 'blue', // <--- DEBUG
-        // borderWidth: 1,
         minWidth: 90,
         maxWidth: 110,
         aspectRatio: 0.8,
