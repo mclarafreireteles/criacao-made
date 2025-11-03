@@ -189,7 +189,12 @@ export default function ManageCards (){
                 >
                     <Text style={styles.testarBtnTxt}>Testar jogo</Text>
                 </Pressable>
-                <Pressable style={styles.finalizarBtn} onPress={() => router.replace('/(panel)/home/page')}>
+                <Pressable 
+                    style={styles.finalizarBtn} 
+                    onPress={() => router.push({
+                        pathname: '/(panel)/game_dashboard/page',
+                        params: {  game_id: gameIdNumber }
+                    })}>
                     <Text style={styles.finalizarBtnTxt}>Salvar</Text>
                 </Pressable>
             </View>
