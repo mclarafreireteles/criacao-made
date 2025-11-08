@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Pressable, FlatList, ActivityIndicator, ImageBackground, ScrollView, Alert, Platform } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ActivityIndicator, ImageBackground, ScrollView, Alert, Platform, Modal } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import Colors from '@/constants/Colors';
 import { ScreenContainer } from '@/src/components/ScreenContainer';
@@ -30,6 +30,7 @@ export default function TestGameScreen() {
     const [score, setScore] = useState(0); // Pontuação final
     const [gameState, setGameState] = useState<'playing' | 'won'>('playing'); // Estado do jogo
     const [selectedCard, setSelectedCard] = useState<CardDatabase | null>(null);
+    const [isFeedbackModalVisible, setIsFeedbackModalVisible] = useState(false);
 
     const selectedCardBack = cardBacks.find(back => back.id === gameDetails?.background_image_url)?.image;
     const selectedCardFront = cardFronts.find(front => front.id === gameDetails?.card_front_url)?.image;
@@ -80,9 +81,6 @@ export default function TestGameScreen() {
 
 
     const handleCheckAnswer = () => {
-        const currentAttemptNumber = attempts + 1;
-        setAttempts(currentAttemptNumber);
-
         const codeLength = gameDetails?.secret_code_length || 0;
 
         if (playerGuess.some(slot => slot === null)) {
@@ -92,6 +90,9 @@ export default function TestGameScreen() {
         if (playerGuess.length !== codeLength) {
             return Alert.alert("Atenção", `Você precisa selecionar ${codeLength} cartas para a sua tentativa.`);
         }
+
+        const currentAttemptNumber = attempts + 1;
+        setAttempts(currentAttemptNumber);
 
         let correctPosition = 0;
         let correctCardWrongPosition = 0;
@@ -103,7 +104,6 @@ export default function TestGameScreen() {
         for (let i = 0; i < codeLength; i++) {
             if (playerGuessCopy[i]?.id === secretCodeCopy[i]?.id) {
                 correctPosition++;
-                // "Anulamos" as cartas encontradas para não contá-las de novo
                 playerGuessCopy[i] = null as any;
                 secretCodeCopy[i] = null as any;
             }
@@ -111,20 +111,16 @@ export default function TestGameScreen() {
 
         // 2ª Passagem: Verifica as cartas corretas que estão na posição ERRADA
         for (let i = 0; i < codeLength; i++) {
-            // Pula a carta que já foi contada na 1ª passagem
             if (playerGuessCopy[i] === null) continue;
-
-            // Procura a carta da tentativa do jogador no que restou do código secreto
             const foundIndex = secretCodeCopy.findIndex(card => card?.id === playerGuessCopy[i]?.id);
 
             if (foundIndex !== -1) {
                 correctCardWrongPosition++;
-                // "Anulamos" a carta encontrada no código secreto para não contá-la de novo
                 secretCodeCopy[foundIndex] = null as any;
             }
         }
 
-        // --- LÓGICA DO HISTÓRICO (MODIFICADA) ---
+        // --- LÓGICA DO HISTÓRICO ---
         const newFeedback = { correctPosition, correctCardWrongPosition };
         const newHistoryItem: FeedbackHistoryItem = {
             guess: [...playerGuess],
@@ -132,22 +128,21 @@ export default function TestGameScreen() {
             attemptNumber: currentAttemptNumber
         };
 
-        // Atualiza o feedback imediato
+
         setFeedback(newFeedback);
-        // Adiciona ao CONTEXTO global
         addHistoryItem(newHistoryItem);
-        // --- FIM DA LÓGICA DO HISTÓRICO ---
 
-        // Atualiza o estado do feedback para exibir o resultado na tela
-        // setFeedback({ correctPosition, correctCardWrongPosition });
-
-        // CONDIÇÃO DE VITÓRIA: Se todas as cartas estiverem na posição correta
         if (correctPosition === codeLength) {
-            setGameState('won'); // Muda o estado do jogo para "vencido"
-
-            // Calcula a pontuação (ex: 1000 pontos menos 100 por tentativa)
+            setGameState('won');
             const finalScore = Math.max(1000 - (attempts * 100), 100);
             setScore(finalScore);
+
+            showAlert(
+                "Parabéns!",
+                `Você descobriu o código em ${currentAttemptNumber} tentativas!}`
+            );
+        } else {
+            setIsFeedbackModalVisible(true);
         }
     };
 
@@ -171,7 +166,6 @@ export default function TestGameScreen() {
                 console.log("[DEBUG 1] Dados brutos recebidos:");
                 console.log("GameData:", JSON.stringify(gameData, null, 2));
                 console.log("CardsData:", JSON.stringify(cardsData, null, 2));
-                // -----------------------------------------
 
                 if (!gameData || cardsData.length === 0) {
                     showAlert("Erro", "Esse jogo não possui cartas suficientes");
@@ -182,23 +176,18 @@ export default function TestGameScreen() {
                 setGameDetails(gameData);
 
                 // --- DEBUG 2: URLs DAS IMAGENS ---
-                // Precisamos fazer isso DEPOIS do setGameDetails
-                // ou ler direto do gameData.
                 console.log(`[DEBUG 2] URLs de imagem do gameData:`);
                 console.log(`background_image_url: ${gameData.background_image_url}`);
                 console.log(`card_front_url: ${gameData.card_front_url}`);
 
-                // Vamos simular o que o componente faz no topo
                 const foundBack = cardBacks.find(back => back.id === gameData?.background_image_url)?.image;
                 const foundFront = cardFronts.find(front => front.id === gameData?.card_front_url)?.image;
 
                 console.log(`[DEBUG 2] Imagem de Fundo encontrada: ${foundBack ? 'SIM' : 'NÃO (undefined)'}`);
                 console.log(`[DEBUG 2] Imagem de Frente encontrada: ${foundFront ? 'SIM' : 'NÃO (undefined)'}`);
-                // ------------------------------------
 
-                const codeLength = gameData.secret_code_length || 4; // Pega o tamanho do código (padrão 4)
+                const codeLength = gameData.secret_code_length || 4;
 
-                // Filtra as cartas corretas
                 const correctCards = cardsData.filter(card => Number(card.card_type) === 1);
 
                 // --- 2. VALIDAÇÃO DE CARTAS SUFICIENTES (A LÓGICA QUE FALTAVA) ---
@@ -212,7 +201,6 @@ export default function TestGameScreen() {
                 }
 
                 // --- 3. SE PASSOU, PREPARA O JOGO ---
-
                 setPlayerGuess(Array(codeLength).fill(null));
                 const incorrectCards = cardsData.filter(card => Number(card.card_type) !== 1);
 
@@ -346,39 +334,6 @@ export default function TestGameScreen() {
                     </View>
                 </View>
 
-                {/* --- 3. ÁREA DE OPÇÕES (BARALHO PARA ESCOLHER) --- */}
-                {/* <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Opções</Text>
-                    <FlatList
-                        data={answerPool}
-                        scrollEnabled={false}
-                        keyExtractor={(item) => item.id.toString()}
-                        numColumns={numColumns}
-                        key={numColumns}
-                        renderItem={({ item }) => {
-                            const isUsed = playerGuess.some(card => card?.id === item.id);
-                            const isSelected = selectedCard?.id === item.id;
-
-                            return (
-                                <Pressable
-                                    style={[
-                                        styles.answerCardWrapper,
-                                        isUsed && styles.answerCardUsed,
-                                        isSelected && styles.answerCardSelected
-                                    ]}
-                                    onPress={() => handleSelectCardFromPool(item)}
-                                    disabled={isUsed}
-                                >
-                                    <ImageBackground source={selectedCardFront} style={styles.cardFrontImage}>
-                                        <Text style={styles.answerCardText}>{item.card_text}</Text>
-                                    </ImageBackground>
-                                </Pressable>
-                            )
-                        }}
-                        style={styles.answerPoolGrid}
-                        contentContainerStyle={styles.answerPoolContent}
-                    />
-                </View> */}
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Opções</Text>
 
@@ -410,25 +365,36 @@ export default function TestGameScreen() {
                         })}
                     </View>
                 </View>
-
-                {/* Feedback e Botão Finalizar */}
-                {feedback && (
-                    <View style={styles.feedbackContainer}>
-                        <View style={[styles.feedbackBox, styles.feedbackIncorrect]}>
-                            <Text style={styles.feedbackNumber}>{feedback.correctCardWrongPosition}</Text>
-                            <Text style={styles.feedbackText}>escolhida correta(s) em {'\n'}posição errada(s)</Text>
-                        </View>
-                        <View style={[styles.feedbackBox, styles.feedbackCorrect]}>
-                            <Text style={styles.feedbackNumber}>{feedback.correctPosition}</Text>
-                            <Text style={styles.feedbackText}>escolhidas correta(s) em {'\n'}posição correta(s)</Text>
-                        </View>
-                    </View>
-                )}
-
             </ScrollView>
             <View style={styles.footer}>
                 <AppButton title="Verificar Tentativa" onPress={handleCheckAnswer} />
             </View>
+            <Modal
+                transparent={true}
+                animationType="fade"
+                visible={isFeedbackModalVisible}
+                onRequestClose={() => setIsFeedbackModalVisible(false)}
+            >
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalTitle}>Resultado da Tentativa</Text>
+
+                        {feedback && (
+                            <View style={styles.feedbackContainer}>
+                                <View style={[styles.feedbackBox, styles.feedbackIncorrect]}>
+                                    <Text style={styles.feedbackNumber}>{feedback.correctCardWrongPosition}</Text>
+                                    <Text style={styles.feedbackText}>Carta correta na posição errada</Text>
+                                </View>
+                                <View style={[styles.feedbackBox, styles.feedbackCorrect]}>
+                                    <Text style={styles.feedbackNumber}>{feedback.correctPosition}</Text>
+                                    <Text style={styles.feedbackText}>Carta correta na posição correta</Text>
+                                </View>
+                            </View>
+                        )}
+                        <AppButton title="Ok" onPress={() => setIsFeedbackModalVisible(false)} />
+                    </View>
+                </View>
+            </Modal>
         </ScreenContainer>
 
     );
@@ -628,6 +594,44 @@ const styles = StyleSheet.create({
         gap: 10,
         paddingBottom: 30,
         width: '100%',
+    },
+    modalOverlay: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fundo escurecido
+    },
+    modalContent: {
+        width: '90%',
+        maxWidth: 400, // Garante que não fique muito largo na web
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 25,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    modalTitle: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: 20,
+    },
+    modalCloseButton: {
+        marginTop: 25,
+        backgroundColor: Colors.light.blue,
+        borderRadius: 20,
+        paddingVertical: 12,
+        paddingHorizontal: 40,
+        elevation: 2,
+    },
+    modalCloseButtonText: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 16,
     },
 
 });

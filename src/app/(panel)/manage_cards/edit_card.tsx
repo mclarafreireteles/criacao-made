@@ -1,6 +1,5 @@
-// app/(panel)/manage_cards/edit_card.tsx
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable, Alert, SafeAreaView, Platform} from 'react-native';
+import { View, Text, StyleSheet, Pressable, Alert, Platform} from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useGameDatabase } from '@/src/database/useGameDatabase';
 import { StyledInput } from '@/src/components/StyledInput';
@@ -35,9 +34,17 @@ export default function EditCardScreen() {
     const handleUpdateCard = async () => {
         if (cardText.trim() === '') return Alert.alert("Erro", "O texto não pode ser vazio.");
         if (isCorrect === null) return Alert.alert("Atenção", "Por favor, classifique a resposta como correta ou incorreta.");
+
+        if (isNaN(cardId) || cardId < 0){
+            console.error("ID de carta inválido:", cardId);
+            Alert.alert("Erro", "ID da carta inválido.");
+             return;
+        }
+
         setLoading(true);
         try {
             await updateCard(cardId, cardText, isCorrect);
+            console.log("Carta atualizada com sucesso!");
             router.back(); 
         } catch (error) {
             console.error("Erro ao atualizar carta:", error);

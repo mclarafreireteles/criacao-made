@@ -36,11 +36,11 @@ export default function HistoryScreen(){
             <View style={styles.feedbackContainer}>
                 <View style={[styles.feedbackBox, styles.feedbackIncorrect]}>
                     <Text style={styles.feedbackNumber}>{item.feedback.correctCardWrongPosition}</Text>
-                    <Text style={styles.feedbackText}>Pos. Errada</Text>
+                    <Text style={styles.feedbackText}>Carta correta posição correta</Text>
                 </View>
                 <View style={[styles.feedbackBox, styles.feedbackCorrect]}>
                     <Text style={styles.feedbackNumber}>{item.feedback.correctPosition}</Text>
-                    <Text style={styles.feedbackText}>Pos. Correta</Text>
+                    <Text style={styles.feedbackText}>Carta errada posição correta</Text>
                 </View>
             </View>
         </View>
@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
     historyItem: {
         width: '100%',
         paddingVertical: 15,
+        paddingHorizontal: 45,
         borderBottomWidth: 1,
         borderBottomColor: '#EEE',
         alignItems: 'center',
@@ -77,6 +78,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF',
         borderRadius: 12,
         padding: 15,
+        gap: 24
     },
     historyAttemptTitle: {
         fontSize: 16,
@@ -91,11 +93,12 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     historyCard: {
-        width: 60,
+        minWidth: 80,
         aspectRatio: 0.8,
         backgroundColor: '#F0F0F0',
         borderRadius: 8,
         overflow: 'hidden',
+
     },
     cardFrontImage: {
         width: '100%',
@@ -104,7 +107,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     historyCardText: {
-        fontSize: 10,
+        fontSize: 14,
         fontWeight: '600',
         textAlign: 'center',
     },
@@ -126,7 +129,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10, 
         borderRadius: 12, 
         alignItems: 'center', 
-        borderWidth: 1 
+        borderWidth: 1,
     },
     feedbackIncorrect: { 
         backgroundColor: '#FEE2E2', 

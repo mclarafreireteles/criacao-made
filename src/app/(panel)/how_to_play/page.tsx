@@ -1,14 +1,12 @@
 import React, { useRef, useState } from "react";
-import { View, Text, StyleSheet, FlatList, useWindowDimensions } from 'react-native'
+import { View, Text, StyleSheet, FlatList,Platform } from 'react-native'
 import { ScreenHeader } from "@/src/components/ScreenHeader";
 import { AppButton } from "@/src/components/AppButton";
 import { useRouter } from "expo-router";
-import Colors from "@/constants/Colors";
 import { slider } from "@/data/SliderData";
 import { SliderItem } from "@/src/components/SliderItem";
 import { ScreenContainer } from "@/src/components/ScreenContainer";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, SharedValue } from 'react-native-reanimated';
-import { MaterialIcons } from '@expo/vector-icons';
 
 
 type PaginationDotProps = {
@@ -33,7 +31,6 @@ function PaginationDot({ index, activeIndex }: PaginationDotProps) {
 export default function HowToPlay(){
     const router = useRouter();
 
-    const flatListRef = useRef<FlatList>(null);
     const activeIndex = useSharedValue(0);
 
 
@@ -49,41 +46,31 @@ export default function HowToPlay(){
         }
     }).current;
 
-    const goToNext = () => {
-        if (currentIndex < slider.length - 1) {
-            flatListRef.current?.scrollToIndex({ index: currentIndex + 1, animated: true })
-        }
-    }
-    const goToPrevious = () => {
-        if (currentIndex > 0) {
-            flatListRef.current?.scrollToIndex({ index: currentIndex - 1, animated: true })
-        }
-    }
-
     return (
         <ScreenContainer>
             <ScreenHeader title="Como Jogar" />
             <View style={styles.container}>
                 <FlatList
-                    ref={flatListRef}
                     data={slider}
                     horizontal
-                    showsHorizontalScrollIndicator={true}
+                    showsHorizontalScrollIndicator={Platform.OS === 'web'}
                     pagingEnabled
                     renderItem={({ item, index}) => <SliderItem item={item} index={index} />}
                     onViewableItemsChanged={onViewableItemsChanged}
                     viewabilityConfig={viewabilityConfig}
                 />
 
-                {/* <View style={styles.pagination}>
-                    {slider.map((_, index) => (
-                        <PaginationDot
-                            key={index}
-                            index={index}
-                            activeIndex={activeIndex}
-                        />
-                    ))}
-                </View> */}
+                {Platform.OS !== 'web' && (
+                    <View style={styles.pagination}>
+                        {slider.map((_, index) => (
+                            <PaginationDot
+                                key={index}
+                                index={index}
+                                activeIndex={activeIndex}
+                            />
+                        ))}
+                    </View>
+                )}
 
                 <View style={styles.footer}>
                     <AppButton title="Entendi!" onPress={() => router.back()}/>
