@@ -300,7 +300,7 @@ export default function TestGameScreen() {
     return (
         <ScreenContainer style={{ backgroundColor: Colors.light.white }}>
             <ScreenHeader
-                title={gameDetails.prompt || "Carregando..."}
+                title={gameDetails?.prompt || "Carregando..."}
                 rightAccessory={
                     <Pressable
                         style={styles.historyButton}
