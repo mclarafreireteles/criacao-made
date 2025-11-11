@@ -28,7 +28,7 @@ export default function TestGameScreen() {
     const [isLoading, setIsLoading] = useState(true);
     const [attempts, setAttempts] = useState(0); // Contador de tentativas
     const [score, setScore] = useState(0); // Pontuação final
-    const [gameState, setGameState] = useState<'playing' | 'won'>('playing'); // Estado do jogo
+    const [gameState, setGameState] = useState<'playing' | 'won' | 'lost'>('playing'); // Estado do jogo
     const [selectedCard, setSelectedCard] = useState<CardDatabase | null>(null);
     const [isFeedbackModalVisible, setIsFeedbackModalVisible] = useState(false);
 
@@ -134,13 +134,19 @@ export default function TestGameScreen() {
 
         if (correctPosition === codeLength) {
             setGameState('won');
-            const finalScore = Math.max(1000 - (attempts * 100), 100);
+            const finalScore = Math.max(1000 - ((currentAttemptNumber - 1) * 100), 100);
             setScore(finalScore);
 
             showAlert(
                 "Parabéns!",
-                `Você descobriu o código em ${currentAttemptNumber} tentativas!}`
+                `Você descobriu o código em ${currentAttemptNumber} tentativas! \nPontuação Final: ${finalScore}}`
             );
+        } else if (currentAttemptNumber >= 3) {
+            setGameState('lost');
+            showAlert(
+                "Fim de jogo!",
+                "Você usou todas as 10 tentativas. O código secreto será revelado."
+            )
         } else {
             setIsFeedbackModalVisible(true);
         }
@@ -248,7 +254,7 @@ export default function TestGameScreen() {
     const renderSecretCode = () => {
         return secretCode.map((card, index) => (
             <View key={`secret-${index}`} style={styles.secretCard}>
-                {gameState === 'won' ? (
+                {gameState === 'won' || gameState === 'lost' ? (
                     <ImageBackground source={selectedCardFront} style={styles.cardFrontImage}>
                         <Text style={styles.answerCardText}>{card.card_text}</Text>
                     </ImageBackground>
@@ -367,7 +373,15 @@ export default function TestGameScreen() {
                 </View>
             </ScrollView>
             <View style={styles.footer}>
-                <AppButton title="Verificar Tentativa" onPress={handleCheckAnswer} />
+                {gameState === 'playing' ? (
+                    <AppButton title="Verificar Tentativa" onPress={handleCheckAnswer} />
+                ) : (
+                    <Text style={styles.gameOverText}>
+                        {gameState === 'won'
+                            ? `Você Venceu! Pontuação: ${score}`
+                            : 'Fim de Jogo! Você usou todas as tentativas.'}
+                    </Text>
+                )}
             </View>
             <Modal
                 transparent={true}
@@ -633,5 +647,11 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 16,
     },
-
+    gameOverText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: Colors.light.blue,
+        textAlign: 'center',
+        paddingVertical: 15,
+    },
 });

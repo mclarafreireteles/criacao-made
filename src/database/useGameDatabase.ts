@@ -170,10 +170,15 @@ export function useGameDatabase(){
     }
 
     async function updateCard(cardId: number, newText: string, isCorrect: boolean) {
-        await database.runAsync(
-            'UPDATE cards SET card_text = ?, card_type = ?',
-            [newText, isCorrect ? 1 : 0, cardId]
-        )
+        try {
+            await database.runAsync(
+                'UPDATE cards SET card_text = ?, card_type = ? WHERE id = ?',
+                [newText, isCorrect ? 1 : 0, cardId]
+            );
+        } catch (error) {
+            console.error('Erro ao atualizar a carta:', error);
+            throw error;
+        }
     }
 
     async function getGameById(gameId: number){
