@@ -134,14 +134,14 @@ export default function TestGameScreen() {
 
         if (correctPosition === codeLength) {
             setGameState('won');
-            const finalScore = Math.max(1000 - ((currentAttemptNumber - 1) * 100), 100);
+            const finalScore = 10 - (currentAttemptNumber - 1);
             setScore(finalScore);
 
             showAlert(
                 "Parabéns!",
                 `Você descobriu o código em ${currentAttemptNumber} tentativas! \nPontuação Final: ${finalScore}}`
             );
-        } else if (currentAttemptNumber >= 3) {
+        } else if (currentAttemptNumber >= 10) {
             setGameState('lost');
             showAlert(
                 "Fim de jogo!",
@@ -300,7 +300,7 @@ export default function TestGameScreen() {
     return (
         <ScreenContainer style={{ backgroundColor: Colors.light.white }}>
             <ScreenHeader
-                title="Testar jogo"
+                title={gameDetails.prompt || "Carregando..."}
                 rightAccessory={
                     <Pressable
                         style={styles.historyButton}
@@ -320,9 +320,22 @@ export default function TestGameScreen() {
                 style={styles.gameContainer}
                 contentContainerStyle={styles.scrollContentContainer}
             >
-                {gameDetails?.prompt && (
-                    <Text style={styles.promptText}>{gameDetails.prompt}</Text>
-                )}
+                {/* {gameDetails?.prompt && (
+                    <Text style={styles.promptText}>Pontuação: {score}</Text>
+                )} */}
+
+                <View style={styles.gameInfoContainer}>
+                    <View style={styles.infoBox}>
+                        <Text style={styles.infoBoxLabel}>TENTATIVAS</Text>
+                        {/* Mostra '0/10' no início, '1/10' após 1ª tentativa, etc. */}
+                        <Text style={styles.infoBoxValue}>{attempts} / 10</Text>
+                    </View>
+                    <View style={styles.infoBox}>
+                        <Text style={styles.infoBoxLabel}>PONTUAÇÃO</Text>
+                        {/* O 'score' é 0 até você ganhar, quando ele recebe o valor final */}
+                        <Text style={styles.infoBoxValue}>{score}</Text>
+                    </View>
+                </View>
 
                 {/* --- 1. ÁREA DO CÓDIGO SECRETO (CARTAS VIRADAS) --- */}
                 <View style={styles.section}>
@@ -522,7 +535,7 @@ const styles = StyleSheet.create({
     },
     promptText: {
         lineHeight: Platform.OS === 'web' ? 32 : 28,
-        fontSize: Platform.OS === 'web' ? 28 : 24,
+        fontSize: Platform.OS === 'web' ? 20 : 16,
         color: '#374151',
         textAlign: 'center',
         marginBottom: 20,
@@ -653,5 +666,33 @@ const styles = StyleSheet.create({
         color: Colors.light.blue,
         textAlign: 'center',
         paddingVertical: 15,
+    },
+    gameInfoContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        gap: 15,
+        marginBottom: 20, // (Igual às outras seções)
+    },
+    infoBox: {
+        flex: 1,
+        backgroundColor: '#F9FAFB', // Um cinza bem claro
+        borderColor: '#E5E7EB', // Borda clara
+        borderWidth: 1,
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+        borderRadius: 12,
+        alignItems: 'center',
+    },
+    infoBoxLabel: {
+        fontSize: 12,
+        fontWeight: '600',
+        color: '#6B7280', // Um cinza mais escuro
+        textTransform: 'uppercase', // (opcional)
+    },
+    infoBoxValue: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#111827', // Preto
+        marginTop: 4,
     },
 });
