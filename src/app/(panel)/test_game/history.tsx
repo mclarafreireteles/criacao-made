@@ -9,7 +9,7 @@ import { ScreenContainer } from "@/src/components/ScreenContainer";
 import { ScreenHeader } from "@/src/components/ScreenHeader";
 
 
-export default function HistoryScreen(){
+export default function HistoryScreen() {
     const [gameDetails, setGameDetails] = useState<GameDatabase | null>(null);
 
     const { history } = useGameHistory();
@@ -20,7 +20,7 @@ export default function HistoryScreen(){
     const renderHistoryItem = ({ item }: { item: FeedbackHistoryItem }) => (
         <View style={styles.historyItem}>
             <Text style={styles.historyAttemptTitle}>Tentativa {item.attemptNumber}</Text>
-            
+
             <View style={styles.historyGuessContainer}>
                 {item.guess.map((card, index) => (
                     <View key={index} style={styles.historyCard}>
@@ -32,15 +32,23 @@ export default function HistoryScreen(){
                     </View>
                 ))}
             </View>
-            
+
             <View style={styles.feedbackContainer}>
                 <View style={[styles.feedbackBox, styles.feedbackIncorrect]}>
                     <Text style={styles.feedbackNumber}>{item.feedback.correctCardWrongPosition}</Text>
-                    <Text style={styles.feedbackText}>Carta correta posição errada</Text>
+                    <Text style={styles.feedbackText}>
+                        {item.feedback.correctCardWrongPosition === 1
+                            ? 'Carta correta na posição errada'
+                            : 'Cartas corretas na posição errada'}
+                    </Text>
                 </View>
                 <View style={[styles.feedbackBox, styles.feedbackCorrect]}>
                     <Text style={styles.feedbackNumber}>{item.feedback.correctPosition}</Text>
-                    <Text style={styles.feedbackText}>Carta correta posição correta</Text>
+                    <Text style={styles.feedbackText}>
+                        {item.feedback.correctPosition === 1
+                            ? 'Carta correta na posição correta'
+                            : 'Cartas corretas na posição correta'}
+                    </Text>
                 </View>
             </View>
         </View>
@@ -63,9 +71,9 @@ export default function HistoryScreen(){
 }
 
 const styles = StyleSheet.create({
-    listContainer: { 
-        paddingHorizontal: 20, 
-        paddingVertical: 10 
+    listContainer: {
+        paddingHorizontal: 20,
+        paddingVertical: 10
     },
     historyItem: {
         width: '100%',
@@ -117,36 +125,36 @@ const styles = StyleSheet.create({
         color: '#888',
         textAlign: 'center',
     },
-    feedbackContainer: { 
-        flexDirection: 'row', 
-        justifyContent: 'space-around', 
-        gap: 10, 
-        width: '100%' 
+    feedbackContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        gap: 10,
+        width: '100%'
     },
-    feedbackBox: { 
-        flex: 1, 
-        paddingVertical: 8, 
-        paddingHorizontal: 10, 
-        borderRadius: 12, 
-        alignItems: 'center', 
+    feedbackBox: {
+        flex: 1,
+        paddingVertical: 8,
+        paddingHorizontal: 10,
+        borderRadius: 12,
+        alignItems: 'center',
         borderWidth: 1,
     },
-    feedbackIncorrect: { 
-        backgroundColor: '#FEE2E2', 
-        borderColor: '#FCA5A5' 
+    feedbackIncorrect: {
+        backgroundColor: '#FEE2E2',
+        borderColor: '#FCA5A5'
     },
-    feedbackCorrect: { 
-        backgroundColor: '#D1FAE5', 
-        borderColor: '#6EE7B7' 
+    feedbackCorrect: {
+        backgroundColor: '#D1FAE5',
+        borderColor: '#6EE7B7'
     },
-    feedbackNumber: { 
-        fontSize: 18, 
-        fontWeight: 'bold' 
+    feedbackNumber: {
+        fontSize: 18,
+        fontWeight: 'bold'
     },
-    feedbackText: { 
-        textAlign: 'center', 
-        marginTop: 4, 
-        fontSize: 14, 
-        color: '#4B5563' 
+    feedbackText: {
+        textAlign: 'center',
+        marginTop: 4,
+        fontSize: 14,
+        color: '#4B5563'
     },
 })
