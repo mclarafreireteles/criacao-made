@@ -410,11 +410,19 @@ export default function TestGameScreen() {
                             <View style={styles.feedbackContainer}>
                                 <View style={[styles.feedbackBox, styles.feedbackIncorrect]}>
                                     <Text style={styles.feedbackNumber}>{feedback.correctCardWrongPosition}</Text>
-                                    <Text style={styles.feedbackText}>Carta correta na posição errada</Text>
+                                    <Text style={styles.feedbackText}>
+                                        {feedback.correctCardWrongPosition === 1
+                                            ? 'Carta correta na posição errada'
+                                            : 'Cartas corretas na posição errada'}
+                                    </Text>
                                 </View>
                                 <View style={[styles.feedbackBox, styles.feedbackCorrect]}>
                                     <Text style={styles.feedbackNumber}>{feedback.correctPosition}</Text>
-                                    <Text style={styles.feedbackText}>Carta correta na posição correta</Text>
+                                    <Text style={styles.feedbackText}>
+                                        {feedback.correctPosition === 1
+                                            ? 'Carta correta na posição correta'
+                                            : 'Cartas corretas na posição correta'}
+                                    </Text>
                                 </View>
                             </View>
                         )}
