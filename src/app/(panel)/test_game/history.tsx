@@ -36,11 +36,11 @@ export default function HistoryScreen(){
             <View style={styles.feedbackContainer}>
                 <View style={[styles.feedbackBox, styles.feedbackIncorrect]}>
                     <Text style={styles.feedbackNumber}>{item.feedback.correctCardWrongPosition}</Text>
-                    <Text style={styles.feedbackText}>Carta correta posição correta</Text>
+                    <Text style={styles.feedbackText}>Carta correta posição errada</Text>
                 </View>
                 <View style={[styles.feedbackBox, styles.feedbackCorrect]}>
                     <Text style={styles.feedbackNumber}>{item.feedback.correctPosition}</Text>
-                    <Text style={styles.feedbackText}>Carta errada posição correta</Text>
+                    <Text style={styles.feedbackText}>Carta correta posição correta</Text>
                 </View>
             </View>
         </View>
