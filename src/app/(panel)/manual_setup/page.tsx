@@ -95,7 +95,7 @@ export default function ManualSetupScreen() {
         const manualCodeString = secretCodeSequence.map(card => card!.id).join(',');
 
         router.push({
-            pathname: '/test_game/page',
+            pathname: '/test_game/select_level',
             params: { 
                 game_id: gameIdNumber,
                 mode: 'manual',

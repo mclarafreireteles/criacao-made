@@ -10,11 +10,24 @@ import { cardBacks } from '@/constants/cardBacks';
 import { cardFronts } from '@/constants/cardFronts';
 import { FeedbackHistoryItem, useGameHistory } from '@/src/contexts/GameHistoryContext';
 
+type GameLevel = 1 | 2 | 3 | 4;
+
+const LEVEL_CONFIG: Record<GameLevel, { maxAttempts: number }> = {
+    1: { maxAttempts: 10 },
+    2: { maxAttempts: 8 },
+    3: { maxAttempts: 6 },
+    4: { maxAttempts: 5 },
+};
+
+const DEFAULT_LEVEL: GameLevel = 1;
+
 
 export default function TestGameScreen() {
     const router = useRouter();
-    const { game_id, mode, manual_code } = useLocalSearchParams();
+    const { game_id, mode, manual_code, level } = useLocalSearchParams();
     const gameIdNumber = Number(game_id);
+    const currentLevel = (Number(level) as GameLevel) || DEFAULT_LEVEL;
+    const { maxAttempts } = LEVEL_CONFIG[currentLevel];
 
     const { getGameById, getCardsByGameId } = useGameDatabase();
     const { addHistoryItem, clearHistory } = useGameHistory();
@@ -35,7 +48,8 @@ export default function TestGameScreen() {
 
     const selectedCardBack = cardBacks.find(back => back.id === gameDetails?.background_image_url)?.image;
     const selectedCardFront = cardFronts.find(front => front.id === gameDetails?.card_front_url)?.image;
-    const numColumns = Platform.OS === 'web' ? 12 : 4;
+
+
 
     const showAlert = (title: string, message: string) => {
         if (Platform.OS === 'web') {
@@ -144,7 +158,7 @@ export default function TestGameScreen() {
             //     "Parabéns!",
             //     `Você descobriu o código em ${currentAttemptNumber} tentativas! \nPontuação Final: ${finalScore}}`
             // );
-        } else if (currentAttemptNumber >= 10) {
+        } else if (currentAttemptNumber >= maxAttempts) {
             setGameState('lost');
             setIsGameOverModalVisible(true);
             // showAlert(
@@ -264,7 +278,7 @@ export default function TestGameScreen() {
         } finally {
             setIsLoading(false);
         }
-    }, [gameIdNumber, mode, manual_code])
+    }, [gameIdNumber, mode, manual_code, level])
 
     useEffect(() => {
         setupGame();
@@ -348,7 +362,7 @@ export default function TestGameScreen() {
                 <View style={styles.gameInfoContainer}>
                     <View style={styles.infoBox}>
                         <Text style={styles.infoBoxLabel}>TENTATIVAS</Text>
-                        <Text style={styles.infoBoxValue}>{attempts} / 10</Text>
+                        <Text style={styles.infoBoxValue}>{attempts} / {maxAttempts}</Text>
                     </View>
                     <View style={styles.infoBox}>
                         <Text style={styles.infoBoxLabel}>PONTUAÇÃO</Text>
@@ -459,7 +473,6 @@ export default function TestGameScreen() {
                     <View style={styles.modalContent}>
 
                         {gameState === 'won' ? (
-                            // --- CONTEÚDO DE VITÓRIA ---
                             <>
                                 <Text style={[styles.modalTitle, styles.victoryTitle]}>Parabéns!</Text>
                                 <Text style={styles.gameOverMessage}>Você descobriu o código secreto!</Text>
@@ -469,7 +482,7 @@ export default function TestGameScreen() {
                                 </View>
                             </>
                         ) : (
-                            // --- CONTEÚDO DE DERROTA ---
+
                             <>
                                 <Text style={[styles.modalTitle, styles.defeatTitle]}>Fim de Jogo!</Text>
                                 <Text style={styles.gameOverMessage}>Você usou todas as suas tentativas.</Text>

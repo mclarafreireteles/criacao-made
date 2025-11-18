@@ -14,7 +14,7 @@ export default function GameModeScreen() {
 
     const handleRandomMode = () => {
         router.push({
-            pathname: '/test_game/page',
+            pathname: '/test_game/select_level',
             params: { 
                 game_id: gameIdNumber,
                 mode: 'random' 
