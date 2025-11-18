@@ -7,7 +7,7 @@ import { BackButtonIcon } from './icons/BackButtonIcon';
 import { Href } from 'expo-router';
 
 type Props = {
-  title: string;
+  title?: string;
   rightAccessory?: React.ReactNode;
   backHref?: Href;
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, Pressable, ActivityIndicator, ImageBackground, ScrollView, Alert, Platform, Modal } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import Colors from '@/constants/Colors';
@@ -26,11 +26,12 @@ export default function TestGameScreen() {
     const [playerGuess, setPlayerGuess] = useState<(CardDatabase | null)[]>([]);
     const [feedback, setFeedback] = useState<{ correctPosition: number, correctCardWrongPosition: number } | null>(null);
     const [isLoading, setIsLoading] = useState(true);
-    const [attempts, setAttempts] = useState(0); // Contador de tentativas
-    const [score, setScore] = useState(0); // Pontuação final
-    const [gameState, setGameState] = useState<'playing' | 'won' | 'lost'>('playing'); // Estado do jogo
+    const [attempts, setAttempts] = useState(0);
+    const [score, setScore] = useState(0);
+    const [gameState, setGameState] = useState<'playing' | 'won' | 'lost'>('playing');
     const [selectedCard, setSelectedCard] = useState<CardDatabase | null>(null);
     const [isFeedbackModalVisible, setIsFeedbackModalVisible] = useState(false);
+    const [isGameOverModalVisible, setIsGameOverModalVisible] = useState(false);
 
     const selectedCardBack = cardBacks.find(back => back.id === gameDetails?.background_image_url)?.image;
     const selectedCardFront = cardFronts.find(front => front.id === gameDetails?.card_front_url)?.image;
@@ -137,119 +138,137 @@ export default function TestGameScreen() {
             const finalScore = 10 - (currentAttemptNumber - 1);
             setScore(finalScore);
 
-            showAlert(
-                "Parabéns!",
-                `Você descobriu o código em ${currentAttemptNumber} tentativas! \nPontuação Final: ${finalScore}}`
-            );
+            setIsGameOverModalVisible(true);
+
+            // showAlert(
+            //     "Parabéns!",
+            //     `Você descobriu o código em ${currentAttemptNumber} tentativas! \nPontuação Final: ${finalScore}}`
+            // );
         } else if (currentAttemptNumber >= 10) {
             setGameState('lost');
-            showAlert(
-                "Fim de jogo!",
-                "Você usou todas as 10 tentativas. O código secreto será revelado."
-            )
+            setIsGameOverModalVisible(true);
+            // showAlert(
+            //     "Fim de jogo!",
+            //     "Você usou todas as 10 tentativas. O código secreto será revelado."
+            // )
         } else {
             setIsFeedbackModalVisible(true);
         }
     };
 
-    useEffect(() => {
-        const setupGame = async () => {
-            if (!gameIdNumber) return;
+    const handlePlayAgain = () => {
+        setIsGameOverModalVisible(false);
+        setGameState('playing');
+        setAttempts(0);
+        setScore(0);
+        setFeedback(null);
 
-            clearHistory();
-            try {
-                setIsLoading(true);
-
-                const [gameData, cardsData] = await Promise.all([
-                    getGameById(gameIdNumber),
-                    getCardsByGameId(gameIdNumber)
-                ]);
-
-                // --- DEBUG 1: DADOS BRUTOS DO BANCO ---
-                console.log(`[DEBUG 1] Buscando dados para game_id: ${gameIdNumber}`);
-
-
-                console.log("[DEBUG 1] Dados brutos recebidos:");
-                console.log("GameData:", JSON.stringify(gameData, null, 2));
-                console.log("CardsData:", JSON.stringify(cardsData, null, 2));
-
-                if (!gameData || cardsData.length === 0) {
-                    showAlert("Erro", "Esse jogo não possui cartas suficientes");
-                    router.back();
-                    return;
-                }
-
-                setGameDetails(gameData);
-
-                // --- DEBUG 2: URLs DAS IMAGENS ---
-                console.log(`[DEBUG 2] URLs de imagem do gameData:`);
-                console.log(`background_image_url: ${gameData.background_image_url}`);
-                console.log(`card_front_url: ${gameData.card_front_url}`);
-
-                const foundBack = cardBacks.find(back => back.id === gameData?.background_image_url)?.image;
-                const foundFront = cardFronts.find(front => front.id === gameData?.card_front_url)?.image;
-
-                console.log(`[DEBUG 2] Imagem de Fundo encontrada: ${foundBack ? 'SIM' : 'NÃO (undefined)'}`);
-                console.log(`[DEBUG 2] Imagem de Frente encontrada: ${foundFront ? 'SIM' : 'NÃO (undefined)'}`);
-
-                const codeLength = gameData.secret_code_length || 4;
-
-                const correctCards = cardsData.filter(card => Number(card.card_type) === 1);
-
-                // --- 2. VALIDAÇÃO DE CARTAS SUFICIENTES (A LÓGICA QUE FALTAVA) ---
-                if (correctCards.length < codeLength) {
-                    showAlert(
-                        "Cartas Insuficientes",
-                        `Este jogo está configurado para um código de ${codeLength} cartas, mas você só criou ${correctCards.length} carta(s) correta(s).\n\nAdicione mais cartas corretas para poder testar.`
-                    );
-                    router.back();
-                    return;
-                }
-
-                // --- 3. SE PASSOU, PREPARA O JOGO ---
-                setPlayerGuess(Array(codeLength).fill(null));
-                const incorrectCards = cardsData.filter(card => Number(card.card_type) !== 1);
-
-                // --- LÓGICA DE MODO MANUAL vs ALEATÓRIO ---
-                if (mode === 'manual' && typeof manual_code === 'string') {
-                    console.log("[DEBUG] Modo MANUAL Ativado. Código recebido:", manual_code);
-
-                    const manualCodeIds = manual_code.split(',').map(Number);
-                    const newSecretCode = manualCodeIds.map(id => {
-                        return cardsData.find(card => card.id === id);
-                    }).filter((card): card is CardDatabase => !!card);
-
-                    setSecretCode(newSecretCode);
-                    console.log("--- DEBUG: RESPOSTA MANUAL ---");
-                    console.log(newSecretCode.map(card => card.card_text));
-                    console.log("---------------------------------");
-
-                } else {
-                    console.log("[DEBUG] Modo ALEATÓRIO Ativado.");
-                    const shuffledCorrectCards = [...correctCards].sort(() => Math.random() - 0.5);
-                    const newSecretCode = shuffledCorrectCards.slice(0, codeLength);
-                    setSecretCode(newSecretCode);
-
-                    console.log("--- DEBUG: RESPOSTA CORRETA (ALEATÓRIA) ---");
-                    console.log(newSecretCode.map(card => card.card_text));
-                    console.log("---------------------------------");
-                }
-
-                const newAnswerPool = [...correctCards, ...incorrectCards].sort(() => Math.random() - 0.5);
-                setAnswerPool(newAnswerPool);
-
-                console.log("✅ CORRETAS:", correctCards.length);
-                console.log("❌ INCORRETAS:", incorrectCards.length);
-
-
-            } catch (err) {
-                console.log('Erro ao preparar o jogo', err);
-            } finally {
-                setIsLoading(false);
-            }
-        };
         setupGame();
-    }, [gameIdNumber, mode, manual_code]);
+    };
+
+    const handleCloseFeedbackModal = () => {
+        setIsFeedbackModalVisible(false);
+    };
+
+    const setupGame = useCallback(async () => {
+        if (!gameIdNumber) return;
+
+        clearHistory();
+        try {
+            setIsLoading(true);
+
+            const [gameData, cardsData] = await Promise.all([
+                getGameById(gameIdNumber),
+                getCardsByGameId(gameIdNumber)
+            ]);
+
+            // --- DEBUG 1: DADOS BRUTOS DO BANCO ---
+            console.log(`[DEBUG 1] Buscando dados para game_id: ${gameIdNumber}`);
+
+
+            console.log("[DEBUG 1] Dados brutos recebidos:");
+            console.log("GameData:", JSON.stringify(gameData, null, 2));
+            console.log("CardsData:", JSON.stringify(cardsData, null, 2));
+
+            if (!gameData || cardsData.length === 0) {
+                showAlert("Erro", "Esse jogo não possui cartas suficientes");
+                router.back();
+                return;
+            }
+
+            setGameDetails(gameData);
+
+            // --- DEBUG 2: URLs DAS IMAGENS ---
+            console.log(`[DEBUG 2] URLs de imagem do gameData:`);
+            console.log(`background_image_url: ${gameData.background_image_url}`);
+            console.log(`card_front_url: ${gameData.card_front_url}`);
+
+            const foundBack = cardBacks.find(back => back.id === gameData?.background_image_url)?.image;
+            const foundFront = cardFronts.find(front => front.id === gameData?.card_front_url)?.image;
+
+            console.log(`[DEBUG 2] Imagem de Fundo encontrada: ${foundBack ? 'SIM' : 'NÃO (undefined)'}`);
+            console.log(`[DEBUG 2] Imagem de Frente encontrada: ${foundFront ? 'SIM' : 'NÃO (undefined)'}`);
+
+            const codeLength = gameData.secret_code_length || 4;
+
+            const correctCards = cardsData.filter(card => Number(card.card_type) === 1);
+
+            // --- 2. VALIDAÇÃO DE CARTAS SUFICIENTES (A LÓGICA QUE FALTAVA) ---
+            if (correctCards.length < codeLength) {
+                showAlert(
+                    "Cartas Insuficientes",
+                    `Este jogo está configurado para um código de ${codeLength} cartas, mas você só criou ${correctCards.length} carta(s) correta(s).\n\nAdicione mais cartas corretas para poder testar.`
+                );
+                router.back();
+                return;
+            }
+
+            // --- 3. SE PASSOU, PREPARA O JOGO ---
+            setPlayerGuess(Array(codeLength).fill(null));
+            const incorrectCards = cardsData.filter(card => Number(card.card_type) !== 1);
+
+            // --- LÓGICA DE MODO MANUAL vs ALEATÓRIO ---
+            if (mode === 'manual' && typeof manual_code === 'string') {
+                console.log("[DEBUG] Modo MANUAL Ativado. Código recebido:", manual_code);
+
+                const manualCodeIds = manual_code.split(',').map(Number);
+                const newSecretCode = manualCodeIds.map(id => {
+                    return cardsData.find(card => card.id === id);
+                }).filter((card): card is CardDatabase => !!card);
+
+                setSecretCode(newSecretCode);
+                console.log("--- DEBUG: RESPOSTA MANUAL ---");
+                console.log(newSecretCode.map(card => card.card_text));
+                console.log("---------------------------------");
+
+            } else {
+                console.log("[DEBUG] Modo ALEATÓRIO Ativado.");
+                const shuffledCorrectCards = [...correctCards].sort(() => Math.random() - 0.5);
+                const newSecretCode = shuffledCorrectCards.slice(0, codeLength);
+                setSecretCode(newSecretCode);
+
+                console.log("--- DEBUG: RESPOSTA CORRETA (ALEATÓRIA) ---");
+                console.log(newSecretCode.map(card => card.card_text));
+                console.log("---------------------------------");
+            }
+
+            const newAnswerPool = [...correctCards, ...incorrectCards].sort(() => Math.random() - 0.5);
+            setAnswerPool(newAnswerPool);
+
+            console.log("✅ CORRETAS:", correctCards.length);
+            console.log("❌ INCORRETAS:", incorrectCards.length);
+
+
+        } catch (err) {
+            console.log('Erro ao preparar o jogo', err);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [gameIdNumber, mode, manual_code])
+
+    useEffect(() => {
+        setupGame();
+    }, [setupGame]);
 
     const renderSecretCode = () => {
         return secretCode.map((card, index) => (
@@ -299,40 +318,40 @@ export default function TestGameScreen() {
 
     return (
         <ScreenContainer style={{ backgroundColor: Colors.light.white }}>
-            <ScreenHeader
-                title={gameDetails?.prompt || "Carregando..."}
-                rightAccessory={
-                    <Pressable
-                        style={styles.historyButton}
-                        onPress={() => router.push({
-                            pathname: '/test_game/history',
-                            params: {
-                                card_front_url_id: gameDetails?.card_front_url
-                            }
-                        })}
-                    >
-                        <Text style={styles.historyButtonText}>Histórico</Text>
-                    </Pressable>
-                }
-            />
+
 
             <ScrollView
                 style={styles.gameContainer}
                 contentContainerStyle={styles.scrollContentContainer}
             >
-                {/* {gameDetails?.prompt && (
-                    <Text style={styles.promptText}>Pontuação: {score}</Text>
-                )} */}
+                <ScreenHeader
+                    //title={"Testar jogo" || "Carregando..."}
+                    rightAccessory={
+                        <Pressable
+                            style={styles.historyButton}
+                            onPress={() => router.push({
+                                pathname: '/test_game/history',
+                                params: {
+                                    card_front_url_id: gameDetails?.card_front_url
+                                }
+                            })}
+                        >
+                            <Text style={styles.historyButtonText}>Histórico</Text>
+                        </Pressable>
+                    }
+                />
+
+                {gameDetails?.prompt && (
+                    <Text style={styles.promptText}>{gameDetails?.prompt}</Text>
+                )}
 
                 <View style={styles.gameInfoContainer}>
                     <View style={styles.infoBox}>
                         <Text style={styles.infoBoxLabel}>TENTATIVAS</Text>
-                        {/* Mostra '0/10' no início, '1/10' após 1ª tentativa, etc. */}
                         <Text style={styles.infoBoxValue}>{attempts} / 10</Text>
                     </View>
                     <View style={styles.infoBox}>
                         <Text style={styles.infoBoxLabel}>PONTUAÇÃO</Text>
-                        {/* O 'score' é 0 até você ganhar, quando ele recebe o valor final */}
                         <Text style={styles.infoBoxValue}>{score}</Text>
                     </View>
                 </View>
@@ -400,7 +419,7 @@ export default function TestGameScreen() {
                 transparent={true}
                 animationType="fade"
                 visible={isFeedbackModalVisible}
-                onRequestClose={() => setIsFeedbackModalVisible(false)}
+                onRequestClose={handleCloseFeedbackModal}
             >
                 <View style={styles.modalOverlay}>
                     <View style={styles.modalContent}>
@@ -427,6 +446,37 @@ export default function TestGameScreen() {
                             </View>
                         )}
                         <AppButton title="Ok" onPress={() => setIsFeedbackModalVisible(false)} />
+                    </View>
+                </View>
+            </Modal>
+            <Modal
+                transparent={true}
+                animationType="fade"
+                visible={isGameOverModalVisible}
+                onRequestClose={() => { }}
+            >
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+
+                        {gameState === 'won' ? (
+                            // --- CONTEÚDO DE VITÓRIA ---
+                            <>
+                                <Text style={[styles.modalTitle, styles.victoryTitle]}>Parabéns!</Text>
+                                <Text style={styles.gameOverMessage}>Você descobriu o código secreto!</Text>
+                                <View style={styles.finalScoreContainer}>
+                                    <Text style={styles.finalScoreLabel}>Sua Pontuação</Text>
+                                    <Text style={styles.finalScoreValue}>{score}</Text>
+                                </View>
+                            </>
+                        ) : (
+                            // --- CONTEÚDO DE DERROTA ---
+                            <>
+                                <Text style={[styles.modalTitle, styles.defeatTitle]}>Fim de Jogo!</Text>
+                                <Text style={styles.gameOverMessage}>Você usou todas as suas tentativas.</Text>
+                            </>
+                        )}
+
+                        <AppButton title="Jogar Novamente" onPress={handlePlayAgain} />
                     </View>
                 </View>
             </Modal>
@@ -634,11 +684,11 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fundo escurecido
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalContent: {
         width: '90%',
-        maxWidth: 400, // Garante que não fique muito largo na web
+        maxWidth: 400,
         backgroundColor: 'white',
         borderRadius: 20,
         padding: 25,
@@ -679,12 +729,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         gap: 15,
-        marginBottom: 20, // (Igual às outras seções)
+        marginBottom: 20,
     },
     infoBox: {
         flex: 1,
-        backgroundColor: '#F9FAFB', // Um cinza bem claro
-        borderColor: '#E5E7EB', // Borda clara
+        backgroundColor: '#F9FAFB',
+        borderColor: '#E5E7EB',
         borderWidth: 1,
         paddingVertical: 10,
         paddingHorizontal: 10,
@@ -694,13 +744,43 @@ const styles = StyleSheet.create({
     infoBoxLabel: {
         fontSize: 12,
         fontWeight: '600',
-        color: '#6B7280', // Um cinza mais escuro
-        textTransform: 'uppercase', // (opcional)
+        color: '#6B7280',
+        textTransform: 'uppercase',
     },
     infoBoxValue: {
         fontSize: 24,
         fontWeight: 'bold',
-        color: '#111827', // Preto
+        color: '#111827',
         marginTop: 4,
+    },
+    victoryTitle: {
+        color: '#16A34A',
+    },
+    defeatTitle: {
+        color: '#DC2626',
+    },
+    gameOverMessage: {
+        fontSize: 16,
+        color: '#4B5563',
+        textAlign: 'center',
+        marginBottom: 20,
+    },
+    finalScoreContainer: {
+        alignItems: 'center',
+        marginBottom: 25,
+        padding: 15,
+        backgroundColor: '#F9FAFB',
+        borderRadius: 12,
+        width: '100%',
+    },
+    finalScoreLabel: {
+        fontSize: 14,
+        color: '#6B7280',
+        fontWeight: '500',
+    },
+    finalScoreValue: {
+        fontSize: 48,
+        fontWeight: 'bold',
+        color: Colors.light.blue,
     },
 });
