@@ -349,7 +349,7 @@ export default function TestGameScreen() {
                             onPress={() => router.push({
                                 pathname: '/test_game/history',
                                 params: {
-                                    card_front_url_id: gameDetails?.card_front_url
+                                    id: game_id
                                 }
                             })}
                         >

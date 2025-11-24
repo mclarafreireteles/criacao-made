@@ -1,8 +1,8 @@
 import { cardFronts } from "@/constants/cardFronts";
 import { useGameHistory } from "@/src/contexts/GameHistoryContext";
 import { useLocalSearchParams } from "expo-router";
-import { GameDatabase } from "@/src/database/useGameDatabase";
-import { useState } from "react";
+import { GameDatabase, useGameDatabase } from "@/src/database/useGameDatabase";
+import { useEffect, useState } from "react";
 import { FeedbackHistoryItem } from "@/src/contexts/GameHistoryContext";
 import { View, Text, ImageBackground, StyleSheet, FlatList } from "react-native";
 import { ScreenContainer } from "@/src/components/ScreenContainer";
@@ -11,11 +11,33 @@ import { ScreenHeader } from "@/src/components/ScreenHeader";
 
 export default function HistoryScreen() {
     const [gameDetails, setGameDetails] = useState<GameDatabase | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     const { history } = useGameHistory();
-
-    const { card_front_url } = useLocalSearchParams();
+    const database = useGameDatabase();
+    const { id } = useLocalSearchParams();
     const selectedCardFront = cardFronts.find(front => front.id === gameDetails?.card_front_url)?.image;
+
+    useEffect(() => {
+        async function fetchGameData() {
+            console.log('buscando informacoes')
+            if (id) {
+                try {
+                    const data = await database.getGameById(Number(id));
+                    setGameDetails(data);
+                } catch (err) {
+                    console.log("Erro ao buscar jogo")
+                } finally {
+                    setIsLoading(false);
+                }
+            } else {
+                console.log("CANCELADO: ID não encontrado ou inválido");
+                setIsLoading(false);
+                return;
+            }
+        }
+        fetchGameData();
+    }, [id])
 
     const renderHistoryItem = ({ item }: { item: FeedbackHistoryItem }) => (
         <View style={styles.historyItem}>
@@ -103,8 +125,6 @@ const styles = StyleSheet.create({
     historyCard: {
         minWidth: 80,
         aspectRatio: 0.8,
-        backgroundColor: '#F0F0F0',
-        borderRadius: 8,
         overflow: 'hidden',
 
     },
