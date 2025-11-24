@@ -49,6 +49,8 @@ export default function TestGameScreen() {
     const selectedCardBack = cardBacks.find(back => back.id === gameDetails?.background_image_url)?.image;
     const selectedCardFront = cardFronts.find(front => front.id === gameDetails?.card_front_url)?.image;
 
+    const AppLogo = require('../../../../assets/images/logo-made-simples.png');
+
 
 
     const showAlert = (title: string, message: string) => {
@@ -338,8 +340,9 @@ export default function TestGameScreen() {
                 style={styles.gameContainer}
                 contentContainerStyle={styles.scrollContentContainer}
             >
+
                 <ScreenHeader
-                    //title={"Testar jogo" || "Carregando..."}
+                    logoSource={AppLogo}
                     rightAccessory={
                         <Pressable
                             style={styles.historyButton}
@@ -355,6 +358,9 @@ export default function TestGameScreen() {
                     }
                 />
 
+                <View style={styles.gameArea}>
+
+                
                 {gameDetails?.prompt && (
                     <Text style={styles.promptText}>{gameDetails?.prompt}</Text>
                 )}
@@ -417,6 +423,7 @@ export default function TestGameScreen() {
                         })}
                     </View>
                 </View>
+                </View>
             </ScrollView>
             <View style={styles.footer}>
                 {gameState === 'playing' ? (
@@ -444,7 +451,7 @@ export default function TestGameScreen() {
                                 <View style={[styles.feedbackBox, styles.feedbackIncorrect]}>
                                     <Text style={styles.feedbackNumber}>{feedback.correctCardWrongPosition}</Text>
                                     <Text style={styles.feedbackText}>
-                                        {feedback.correctCardWrongPosition === 1 || feedback.correctPosition === 0
+                                        {feedback.correctCardWrongPosition === 1 || feedback.correctCardWrongPosition === 0
                                             ? 'Carta correta na posição errada'
                                             : 'Cartas corretas na posição errada'}
                                     </Text>
@@ -502,11 +509,11 @@ export default function TestGameScreen() {
 const styles = StyleSheet.create({
     gameContainer: {
         flex: 1,
-        paddingHorizontal: 45,
+        //paddingHorizontal: 45,
     },
     gameArea: {
         flex: 1,
-        justifyContent: 'center',
+        paddingHorizontal: 45,
     },
     historyButton: {
         borderWidth: 1,

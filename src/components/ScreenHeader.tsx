@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import Colors from '@/constants/Colors';
@@ -8,12 +8,29 @@ import { Href } from 'expo-router';
 
 type Props = {
   title?: string;
+  logoSource?: any;
   rightAccessory?: React.ReactNode;
   backHref?: Href;
 };
 
-export function ScreenHeader({ title, rightAccessory, backHref }: Props) {
+export function ScreenHeader({ title, rightAccessory, backHref, logoSource }: Props) {
   const router = useRouter();
+
+  let centerContent = null;
+
+  if (logoSource) {
+    centerContent = (
+      <Image 
+        source={logoSource} 
+        style={styles.logo} 
+        resizeMode="contain" 
+      />
+    );
+  } else if (title) {
+    centerContent = (
+      <Text style={styles.title}>{title}</Text>
+    );
+  }
 
   const handleBackPress = () => {
     if (backHref) {
@@ -32,7 +49,7 @@ export function ScreenHeader({ title, rightAccessory, backHref }: Props) {
         />
       )}
       
-      <Text style={styles.title}>{title}</Text>
+      {centerContent}
       
       {rightAccessory && (
         <View style={styles.rightAction}>
@@ -49,7 +66,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    width: '100%',
     marginBottom: 20, 
   },
   title: {
@@ -65,4 +81,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 50, 
   },
+  logo: {
+    height: 40, 
+    width: 120,
+  }
 });
