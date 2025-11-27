@@ -13,6 +13,8 @@ import Colors from "@/constants/Colors";
 import { ScreenHeader } from "@/src/components/ScreenHeader";
 import { ScreenContainer } from "@/src/components/ScreenContainer";
 
+import { Ionicons } from '@expo/vector-icons';
+
 export default function ChooseGame(){
     const router = useRouter()
 
@@ -23,7 +25,6 @@ export default function ChooseGame(){
     const [games, setGames] = useState<GameDatabase[]>([])
 
     async function list(){
-
         if (!user) {
             setGames([]);
             return
@@ -46,7 +47,9 @@ export default function ChooseGame(){
 
     useEffect(() => {
         list()
-    }, [search, user])
+    }, [search, user]);
+
+    
     
     return (
         <ScreenContainer>
