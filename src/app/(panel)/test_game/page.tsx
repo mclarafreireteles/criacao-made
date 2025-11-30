@@ -191,7 +191,7 @@ export default function TestGameScreen() {
         setPlayerGuess(Array(activeCodeLength).fill(null));
     };
 
-    const setupGame = useCallback(async () => {
+    const setupGame = useCallback(async (customLength?: number) => {
         if (!gameIdNumber) return;
 
         clearHistory();
@@ -228,7 +228,7 @@ export default function TestGameScreen() {
             console.log(`[DEBUG 2] Imagem de Frente encontrada: ${foundFront ? 'SIM' : 'NÃO (undefined)'}`);
 
             const codeLength = gameData.secret_code_length || 4;
-            const targetCodeLength = customCodeLength || codeLength;
+            const targetCodeLength = customLength || codeLength;
 
             setActiveCodeLength(targetCodeLength);
 
@@ -265,7 +265,7 @@ export default function TestGameScreen() {
             } else {
                 console.log("[DEBUG] Modo ALEATÓRIO Ativado.");
                 const shuffledCorrectCards = [...correctCards].sort(() => Math.random() - 0.5);
-                const newSecretCode = shuffledCorrectCards.slice(0, codeLength);
+                const newSecretCode = shuffledCorrectCards.slice(0, targetCodeLength);
                 setSecretCode(newSecretCode);
 
                 console.log("--- DEBUG: RESPOSTA CORRETA (ALEATÓRIA) ---");
