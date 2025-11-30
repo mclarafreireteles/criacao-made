@@ -12,11 +12,11 @@ import { FeedbackHistoryItem, useGameHistory } from '@/src/contexts/GameHistoryC
 
 type GameLevel = 1 | 2 | 3 | 4;
 
-const LEVEL_CONFIG: Record<GameLevel, { maxAttempts: number }> = {
-    1: { maxAttempts: 10 },
-    2: { maxAttempts: 8 },
-    3: { maxAttempts: 6 },
-    4: { maxAttempts: 5 },
+const LEVEL_CONFIG: Record<GameLevel, { maxAttempts: number, extraCards: number }> = {
+    1: { maxAttempts: 10, extraCards: 0 },
+    2: { maxAttempts: 8, extraCards: 1 },
+    3: { maxAttempts: 6, extraCards: 2 },
+    4: { maxAttempts: 5, extraCards: 3 },
 };
 
 const DEFAULT_LEVEL: GameLevel = 1;
@@ -45,6 +45,7 @@ export default function TestGameScreen() {
     const [selectedCard, setSelectedCard] = useState<CardDatabase | null>(null);
     const [isFeedbackModalVisible, setIsFeedbackModalVisible] = useState(false);
     const [isGameOverModalVisible, setIsGameOverModalVisible] = useState(false);
+    const [activeCodeLength, setActiveCodeLength] = useState(0);
 
     const selectedCardBack = cardBacks.find(back => back.id === gameDetails?.background_image_url)?.image;
     const selectedCardFront = cardFronts.find(front => front.id === gameDetails?.card_front_url)?.image;
@@ -62,13 +63,10 @@ export default function TestGameScreen() {
     }
 
     const handleSelectCardFromPool = (cardFromPool: CardDatabase) => {
-        // Verifica se a carta já está em um dos slots de tentativa
         const isAlreadyGuessed = playerGuess.find(card => card?.id === cardFromPool.id);
         if (isAlreadyGuessed) {
-            return; // Não faz nada se a carta já foi usada
+            return; 
         }
-
-        // "Segura" a carta no estado. Se o usuário clicar na mesma, ele a "solta".
         setSelectedCard(prev => (prev?.id === cardFromPool.id ? null : cardFromPool));
     };
 
@@ -98,7 +96,7 @@ export default function TestGameScreen() {
 
 
     const handleCheckAnswer = () => {
-        const codeLength = gameDetails?.secret_code_length || 0;
+        const codeLength = activeCodeLength;
 
         if (playerGuess.some(slot => slot === null)) {
             return Alert.alert("Atenção", `Você precisa preencher todos os ${codeLength} espaços para a sua tentativa.`);
@@ -179,11 +177,18 @@ export default function TestGameScreen() {
         setScore(0);
         setFeedback(null);
 
-        setupGame();
+        const { extraCards } = LEVEL_CONFIG[currentLevel];
+        const nextLength = activeCodeLength + extraCards;
+
+        console.log("Tamanho atual do código secreto:", nextLength);
+
+        setupGame(nextLength);
     };
 
     const handleCloseFeedbackModal = () => {
         setIsFeedbackModalVisible(false);
+
+        setPlayerGuess(Array(activeCodeLength).fill(null));
     };
 
     const setupGame = useCallback(async () => {
@@ -214,10 +219,7 @@ export default function TestGameScreen() {
 
             setGameDetails(gameData);
 
-            // --- DEBUG 2: URLs DAS IMAGENS ---
-            console.log(`[DEBUG 2] URLs de imagem do gameData:`);
-            console.log(`background_image_url: ${gameData.background_image_url}`);
-            console.log(`card_front_url: ${gameData.card_front_url}`);
+
 
             const foundBack = cardBacks.find(back => back.id === gameData?.background_image_url)?.image;
             const foundFront = cardFronts.find(front => front.id === gameData?.card_front_url)?.image;
@@ -226,10 +228,12 @@ export default function TestGameScreen() {
             console.log(`[DEBUG 2] Imagem de Frente encontrada: ${foundFront ? 'SIM' : 'NÃO (undefined)'}`);
 
             const codeLength = gameData.secret_code_length || 4;
+            const targetCodeLength = customCodeLength || codeLength;
+
+            setActiveCodeLength(targetCodeLength);
 
             const correctCards = cardsData.filter(card => Number(card.card_type) === 1);
 
-            // --- 2. VALIDAÇÃO DE CARTAS SUFICIENTES (A LÓGICA QUE FALTAVA) ---
             if (correctCards.length < codeLength) {
                 showAlert(
                     "Cartas Insuficientes",
@@ -253,6 +257,7 @@ export default function TestGameScreen() {
                 }).filter((card): card is CardDatabase => !!card);
 
                 setSecretCode(newSecretCode);
+                setActiveCodeLength(newSecretCode.length);
                 console.log("--- DEBUG: RESPOSTA MANUAL ---");
                 console.log(newSecretCode.map(card => card.card_text));
                 console.log("---------------------------------");
@@ -303,7 +308,7 @@ export default function TestGameScreen() {
 
     const renderGuessSlots = () => {
         const slots = [];
-        const length = gameDetails?.secret_code_length || 0;
+        const length = activeCodeLength;
         for (let i = 0; i < length; i++) {
 
             const cardInSlot = playerGuess[i];

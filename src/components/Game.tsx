@@ -61,10 +61,10 @@ export function Game({ data, ...rest }: Props) {
                                 style={styles.playButton}
                                 onPress={() => handlePlayGame(data.id)}
                             >
-                                <Ionicons name="play-circle" size={32} color={Colors.light.blue} />
+                                <Ionicons name="play-circle" size={28} color={Colors.light.blue} />
                             </Pressable>
                             <Pressable onPress={handleEdit} style={styles.editButton}>
-                                <MaterialIcons name="edit" size={32} color={Colors.light.blue} />
+                                <MaterialIcons name="edit" size={28} color={Colors.light.blue} />
                             </Pressable>
                         </View>
                     </View>
@@ -149,7 +149,9 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 8
+        padding: 8,
+        maxHeight: 40,
+        maxWidth: 40,
     },
     editButtonText: {
         color: Colors.light.blue,
@@ -162,7 +164,9 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 8
+        padding: 8,
+        maxHeight: 40,
+        maxWidth: 40,
     },
     actionsContainer: {
         flexDirection: 'row',
