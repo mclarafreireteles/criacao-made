@@ -6,6 +6,8 @@ import Colors from '@/constants/Colors';
 import { BackButtonIcon } from './icons/BackButtonIcon';
 import { Href } from 'expo-router';
 
+const DEFAULT_RIGHT_LOGO = require('@/assets/images/logo-made-simples.png');
+
 type Props = {
   title?: string;
   logoSource?: any;
@@ -20,10 +22,10 @@ export function ScreenHeader({ title, rightAccessory, backHref, logoSource }: Pr
 
   if (logoSource) {
     centerContent = (
-      <Image 
-        source={logoSource} 
-        style={styles.logo} 
-        resizeMode="contain" 
+      <Image
+        source={logoSource}
+        style={styles.logo}
+        resizeMode="contain"
       />
     );
   } else if (title) {
@@ -42,20 +44,26 @@ export function ScreenHeader({ title, rightAccessory, backHref, logoSource }: Pr
 
   return (
     <View style={styles.container}>
-        {router.canGoBack() && (
+      {router.canGoBack() && (
         <BackButtonIcon
-            style={styles.leftAction}
-            onPress={handleBackPress}
+          style={styles.leftAction}
+          onPress={handleBackPress}
         />
       )}
-      
+
       {centerContent}
-      
-      {rightAccessory && (
-        <View style={styles.rightAction}>
-          {rightAccessory}
-        </View>
-      )}
+
+      <View style={styles.rightAction}>
+        {rightAccessory ? (
+          rightAccessory
+        ) : (
+          <Image
+            source={DEFAULT_RIGHT_LOGO}
+            style={styles.rightLogoImage}
+            resizeMode="contain"
+          />
+        )}
+      </View>
     </View>
   );
 }
@@ -66,7 +74,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20, 
+    marginBottom: 20,
   },
   title: {
     fontSize: 22,
@@ -75,14 +83,17 @@ const styles = StyleSheet.create({
   },
   leftAction: {
     position: 'absolute',
-    left: 50, 
+    left: 50,
   },
   rightAction: {
     position: 'absolute',
-    right: 50, 
+    right: 50,
   },
   logo: {
-    height: 40, 
+    height: 40,
     width: 120,
+  },
+  rightLogoImage: {
+    height: 40,
   }
 });

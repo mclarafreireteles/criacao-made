@@ -119,11 +119,15 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Colors.light.white,
         paddingVertical: 50,
-        paddingBottom: 120
+        paddingBottom: 120,
+        // backgroundColor: "blue"
     },
     header: {
         display: 'flex',
         alignItems: 'center',
+        // backgroundColor: 'green',
+        width: '70%',
+        // paddingHorizontal: 45
     },
     logoMade: {
         width: 200,  
@@ -140,8 +144,10 @@ const styles = StyleSheet.create({
     inputContainer: {
         display: 'flex',
         gap: 15,
-        width: '80%',
-        marginTop: 80
+        marginTop: 80,
+        // backgroundColor: "red",
+        maxWidth: 450,
+        width: '100%'
     },
     inputLogin: {
         borderColor: Colors.light.grey,
@@ -174,7 +180,8 @@ const styles = StyleSheet.create({
         display: 'flex',
         gap: 10,
         width: '70%',
-        alignItems: 'center'
+        alignItems: 'center',
+        maxWidth: 450
     },
     signUpText: {
         textAlign: 'center'
