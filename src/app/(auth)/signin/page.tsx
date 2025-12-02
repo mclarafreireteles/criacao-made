@@ -6,8 +6,6 @@ import { supabase } from '../../../lib/supabase';
 import { router } from 'expo-router';
 import Colors from '@/constants/Colors';
 import { Feather } from '@expo/vector-icons';
-import { LoginInput } from '@/src/components/LoginInput';
-import { AppText } from '@/src/components/AppText';
 
 
 export default function Login() {
@@ -99,11 +97,11 @@ export default function Login() {
             
             <View style={styles.buttons}>
                  <Pressable onPress={handleSignin} style={styles.loginButton}>
-                    <AppText style={styles.loginButtonText}>{loading ? 'Carregando...' : 'Entrar'}</AppText>
+                    <Text style={styles.loginButtonText}>{loading ? 'Carregando...' : 'Entrar'}</Text>
                 </Pressable>
 
                 <Link style={styles.signUpText} href='/(auth)/signup/page'>
-                    <AppText>Ainda não tem uma conta? Se inscreva!</AppText>
+                    <Text>Ainda não tem uma conta? Se inscreva!</Text>
                 </Link>
             </View>
         </View>

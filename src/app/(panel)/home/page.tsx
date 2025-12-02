@@ -5,6 +5,7 @@ import { useAuth } from '@/src/contexts/AuthContext';
 import { MaterialIcons } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
+import { GLOBAL_FONT } from '@/src/components/Fonts';
 
 
 export default function Home() {
@@ -28,7 +29,7 @@ export default function Home() {
                 <View style={styles.header}>
                     <Image source={require('../../../../assets/images/logo-made-simples.png')}/>
                     <View style={styles.headerUserinfo}>
-                        <Text>{user?.user_metadata.name}</Text>
+                        <Text style={{ fontFamily: GLOBAL_FONT, fontSize: 20 }}>{user?.user_metadata.name}</Text>
                         <Text style={styles.roleText}>{user?.user_metadata.role}</Text>
                         <Pressable
                             onPress={handleSignout} style={styles.btnSair}
@@ -76,11 +77,13 @@ const styles = StyleSheet.create({
         flexDirection: 'row-reverse',
         gap: 5,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        marginTop: 6
     },
     btnSairText: {
         fontWeight: 500,
-        paddingBottom: 2
+        paddingBottom: 2,
+        fontFamily: GLOBAL_FONT
     },
     header: {
         display: 'flex',
@@ -90,13 +93,15 @@ const styles = StyleSheet.create({
         marginBottom: 20
     },
     headerUserinfo: {
-        alignItems: 'flex-end',
+        alignItems: 'flex-end'
     },
     bemvindoText: {
         fontSize: 24,
-        fontWeight: 600
+        fontWeight: 600,
+        fontFamily: GLOBAL_FONT
     },
     roleText: {
+        fontFamily: GLOBAL_FONT,
         textTransform: 'capitalize',
         marginBottom: 5
     },
@@ -117,7 +122,8 @@ const styles = StyleSheet.create({
     },
     btnJogarText: {
         color: Colors.light.white,
-        fontWeight: 500
+        fontWeight: 500,
+        fontFamily: GLOBAL_FONT
     },
     btnCriarJogo: {
         minWidth: 150,
@@ -131,6 +137,7 @@ const styles = StyleSheet.create({
     },
     btnCriarJogoText: {
         color: Colors.light.blue,
-        fontWeight: 500
+        fontWeight: 500,
+        fontFamily: GLOBAL_FONT
     }
 })
