@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, Pressable, ActivityIndicator, ImageBackground, ScrollView, Alert, Platform, Modal } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ActivityIndicator, ImageBackground, ScrollView, Alert, Platform, Modal, ImageSourcePropType,  } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import Colors from '@/constants/Colors';
 import { ScreenContainer } from '@/src/components/ScreenContainer';
@@ -9,6 +9,10 @@ import { GameDatabase, useGameDatabase, CardDatabase } from '@/src/database/useG
 import { cardBacks } from '@/constants/cardBacks';
 import { cardFronts } from '@/constants/cardFronts';
 import { FeedbackHistoryItem, useGameHistory } from '@/src/contexts/GameHistoryContext';
+
+// COMPONENTS
+import { PlayingCard } from '@/src/components/game/PlayingCard';
+import { GameScoreboard } from '@/src/components/game/GameScoreboard';
 
 type GameLevel = 1 | 2 | 3 | 4;
 
@@ -65,7 +69,7 @@ export default function TestGameScreen() {
     const handleSelectCardFromPool = (cardFromPool: CardDatabase) => {
         const isAlreadyGuessed = playerGuess.find(card => card?.id === cardFromPool.id);
         if (isAlreadyGuessed) {
-            return; 
+            return;
         }
         setSelectedCard(prev => (prev?.id === cardFromPool.id ? null : cardFromPool));
     };
@@ -364,70 +368,81 @@ export default function TestGameScreen() {
                 />
 
                 <View style={styles.gameArea}>
+                    {gameDetails?.prompt && (
+                        <Text style={styles.promptText}>{gameDetails?.prompt}</Text>
+                    )}
 
-                
-                {gameDetails?.prompt && (
-                    <Text style={styles.promptText}>{gameDetails?.prompt}</Text>
-                )}
+                    {/* <View style={styles.gameInfoContainer}>
+                        <View style={styles.infoBox}>
+                            <Text style={styles.infoBoxLabel}>TENTATIVAS</Text>
+                            <Text style={styles.infoBoxValue}>{attempts} / {maxAttempts}</Text>
+                        </View>
+                        <View style={styles.infoBox}>
+                            <Text style={styles.infoBoxLabel}>PONTUAÇÃO</Text>
+                            <Text style={styles.infoBoxValue}>{score}</Text>
+                        </View>
+                    </View> */}
 
-                <View style={styles.gameInfoContainer}>
-                    <View style={styles.infoBox}>
-                        <Text style={styles.infoBoxLabel}>TENTATIVAS</Text>
-                        <Text style={styles.infoBoxValue}>{attempts} / {maxAttempts}</Text>
+                    <GameScoreboard
+                        attempts={attempts}
+                        maxAttempts={maxAttempts}
+                        score={score}
+                    />
+
+                    {/* --- 1. ÁREA DO CÓDIGO SECRETO (CARTAS VIRADAS) --- */}
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Código Secreto</Text>
+                        <View style={styles.secretCodeContainer}>
+                            {/* {renderSecretCode()} */}
+                            {secretCode.map((card, index) => (
+                                <PlayingCard
+                                    key={`secret-${index}`}
+                                    variant={gameState === 'won' || gameState === 'lost' ? 'front' : 'back'}
+                                    text={card.card_text}
+                                    imageSource={gameState === 'won' || gameState === 'lost' ? selectedCardFront as ImageSourcePropType : selectedCardBack as ImageSourcePropType}
+                                />
+                            ))}
+                        </View>
                     </View>
-                    <View style={styles.infoBox}>
-                        <Text style={styles.infoBoxLabel}>PONTUAÇÃO</Text>
-                        <Text style={styles.infoBoxValue}>{score}</Text>
+
+                    {/* --- 2. ÁREA DE TENTATIVA (SLOTS) --- */}
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Sua Tentativa</Text>
+                        <View style={styles.guessSlotsContainer}>
+                            {/* {renderGuessSlots()} */}
+                            {playerGuess.map((cardInSlot, index) => (
+                                <PlayingCard
+                                    key={`guess-${index}`}
+                                    variant={cardInSlot ? 'front' : 'empty'}
+                                    text={cardInSlot?.card_text}
+                                    imageSource={selectedCardFront as ImageSourcePropType}
+                                    onPress={() => handleSlotPress(index)}
+                                />
+                            ))}
+                        </View>
                     </View>
-                </View>
 
-                {/* --- 1. ÁREA DO CÓDIGO SECRETO (CARTAS VIRADAS) --- */}
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Código Secreto</Text>
-                    <View style={styles.secretCodeContainer}>
-                        {renderSecretCode()}
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Opções</Text>
+                        <View style={styles.answerPoolContainer}>
+                            {answerPool.map((item) => {
+                                const isUsed = playerGuess.some(card => card?.id === item.id);
+                                const isSelected = selectedCard?.id === item.id;
+                                return (
+                                    <PlayingCard
+                                        key={item.id}
+                                        variant="front"
+                                        text={item.card_text}
+                                        imageSource={selectedCardFront as ImageSourcePropType}
+                                        onPress={() => handleSelectCardFromPool(item)}
+                                        isUsed={isUsed}
+                                        isSelected={isSelected}
+                                        disabled={isUsed}
+                                    />
+                                );
+                            })}
+                        </View>
                     </View>
-                </View>
-
-                {/* --- 2. ÁREA DE TENTATIVA (SLOTS) --- */}
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Sua Tentativa</Text>
-                    <View style={styles.guessSlotsContainer}>
-                        {renderGuessSlots()}
-                    </View>
-                </View>
-
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Opções</Text>
-
-                    <View style={styles.answerPoolContainer}>
-                        {answerPool.map((item) => {
-                            const isUsed = playerGuess.some(card => card?.id === item.id);
-                            const isSelected = selectedCard?.id === item.id;
-
-                            return (
-                                <Pressable
-                                    key={item.id}
-                                    style={[
-                                        styles.answerCardWrapper,
-                                        isUsed && styles.answerCardUsed,
-                                        isSelected && styles.answerCardSelected
-                                    ]}
-                                    onPress={() => handleSelectCardFromPool(item)}
-                                    disabled={isUsed}
-                                >
-                                    <ImageBackground
-                                        source={selectedCardFront}
-                                        style={styles.cardFrontImage}
-                                        resizeMode="cover"
-                                    >
-                                        <Text style={styles.answerCardText}>{item.card_text}</Text>
-                                    </ImageBackground>
-                                </Pressable>
-                            );
-                        })}
-                    </View>
-                </View>
                 </View>
             </ScrollView>
             <View style={styles.footer}>
@@ -514,7 +529,6 @@ export default function TestGameScreen() {
 const styles = StyleSheet.create({
     gameContainer: {
         flex: 1,
-        //paddingHorizontal: 45,
     },
     gameArea: {
         flex: 1,
@@ -552,23 +566,6 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 600,
         textAlign: 'center',
-    },
-    answerPoolGrid: {
-        flex: 1,
-        marginTop: 10,
-        alignSelf: 'center',
-        width: '100%',
-        borderColor: 'red',
-        borderWidth: 2,
-    },
-    answerCard: {
-        flex: 1,
-        margin: 5,
-        justifyContent: 'center',
-        alignItems: 'center',
-        aspectRatio: 0.8,
-        elevation: 2,
-        width: 120
     },
     answerCardText: {
         fontSize: 18,
@@ -626,7 +623,8 @@ const styles = StyleSheet.create({
     secretCodeContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
-        gap: 10,
+        // flexWrap: 'wrap',
+        gap: 24,
     },
     secretCard: {
         margin: 5,

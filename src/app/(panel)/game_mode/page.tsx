@@ -31,7 +31,7 @@ export default function GameModeScreen() {
 
     return (
         <ScreenContainer>
-            <ScreenHeader title="Modo de Teste" />
+            <ScreenHeader title="Escolha o modo de jogo" />
             <View style={styles.container}>
                 <Text style={styles.title}>Como você quer testar o jogo?</Text>
 

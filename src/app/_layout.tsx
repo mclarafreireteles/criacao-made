@@ -4,8 +4,24 @@ import { useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { SQLiteProvider } from 'expo-sqlite';
 import { initializeDatabase } from '../database/initializeDatabase';
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
 
 export default function RootLayout(){
+
+    const [loaded, error] = useFonts({
+        'Manrope': require('../../assets/fonts/Manrope-VariableFont_wght.ttf'),
+    });
+
+    useEffect(() => {
+        if (loaded || error) {
+            SplashScreen.hideAsync();
+        }
+    }, [loaded, error]);
+
+    if (!loaded && !error) {
+        return null;
+    }
     return(
         <AuthProvider>
             <SQLiteProvider databaseName='sqlite.db' onInit={initializeDatabase} options={{ useNewConnection: false }}>
