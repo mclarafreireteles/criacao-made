@@ -1,6 +1,7 @@
 import React from 'react';
 import { Pressable, View, Text, ImageBackground, StyleSheet, ImageSourcePropType, ViewStyle } from 'react-native';
 import Colors from '@/constants/Colors';
+import { GLOBAL_FONT } from '../Fonts';
 
 export const CARD_WIDTH = 100;
 export const CARD_ASPECT_RATIO = 0.8;
@@ -114,6 +115,7 @@ const styles = StyleSheet.create({
         textShadowColor: 'rgba(255, 255, 255, 0.8)',
         textShadowOffset: { width: 0, height: 1 },
         textShadowRadius: 4,
+        fontFamily: GLOBAL_FONT
     },
     // Estados
     selected: {

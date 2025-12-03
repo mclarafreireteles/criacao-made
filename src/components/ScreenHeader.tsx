@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { View, Text, StyleSheet, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import Colors from '@/constants/Colors';
 import { BackButtonIcon } from './icons/BackButtonIcon';
 import { Href } from 'expo-router';
+import { GLOBAL_FONT } from './Fonts';
 
 const DEFAULT_RIGHT_LOGO = require('@/assets/images/logo-made-simples.png');
 
@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     textAlign: 'center',
     color: Colors.light.text,
+    fontFamily: GLOBAL_FONT
   },
   leftAction: {
     position: 'absolute',

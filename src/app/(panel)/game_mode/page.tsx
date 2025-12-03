@@ -3,9 +3,9 @@ import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ScreenContainer } from '@/src/components/ScreenContainer';
 import { ScreenHeader } from '@/src/components/ScreenHeader';
-import { AppButton } from '@/src/components/AppButton';
 import Colors from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
+import { GLOBAL_FONT } from '@/src/components/Fonts';
 
 export default function GameModeScreen() {
     const router = useRouter();
@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 20,
+        fontFamily: GLOBAL_FONT
     },
     optionCard: {
         width: '100%',
@@ -86,10 +87,12 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         marginTop: 15,
         marginBottom: 5,
+        fontFamily: GLOBAL_FONT
     },
     optionDescription: {
         fontSize: 14,
         color: '#64748B',
         textAlign: 'center',
+        fontFamily: GLOBAL_FONT
     }
 });

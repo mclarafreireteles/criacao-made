@@ -10,6 +10,8 @@ import { cardBacks } from '@/constants/cardBacks';
 import { cardFronts } from '@/constants/cardFronts';
 import { FeedbackHistoryItem, useGameHistory } from '@/src/contexts/GameHistoryContext';
 
+import { GLOBAL_FONT } from '@/src/components/Fonts';
+
 // COMPONENTS
 import { PlayingCard } from '@/src/components/game/PlayingCard';
 import { GameScoreboard } from '@/src/components/game/GameScoreboard';
@@ -158,17 +160,9 @@ export default function TestGameScreen() {
 
             setIsGameOverModalVisible(true);
 
-            // showAlert(
-            //     "Parabéns!",
-            //     `Você descobriu o código em ${currentAttemptNumber} tentativas! \nPontuação Final: ${finalScore}}`
-            // );
         } else if (currentAttemptNumber >= maxAttempts) {
             setGameState('lost');
             setIsGameOverModalVisible(true);
-            // showAlert(
-            //     "Fim de jogo!",
-            //     "Você usou todas as 10 tentativas. O código secreto será revelado."
-            // )
         } else {
             setIsFeedbackModalVisible(true);
         }
@@ -295,61 +289,22 @@ export default function TestGameScreen() {
         setupGame();
     }, [setupGame]);
 
-    const renderSecretCode = () => {
-        return secretCode.map((card, index) => (
-            <View key={`secret-${index}`} style={styles.secretCard}>
-                {gameState === 'won' || gameState === 'lost' ? (
-                    <ImageBackground source={selectedCardFront} style={styles.cardFrontImage}>
-                        <Text style={styles.answerCardText}>{card.card_text}</Text>
-                    </ImageBackground>
-                ) : (
-                    <ImageBackground source={selectedCardBack} style={styles.cardBackImage} resizeMode="cover" />
-                )}
-            </View>
-        ));
-    };
-
-
-    const renderGuessSlots = () => {
-        const slots = [];
-        const length = activeCodeLength;
-        for (let i = 0; i < length; i++) {
-
-            const cardInSlot = playerGuess[i];
-
-            slots.push(
-                <Pressable key={`guess-${i}`} style={styles.guessSlot} onPress={() => handleSlotPress(i)}>
-                    {cardInSlot ? (
-                        <ImageBackground source={selectedCardFront} style={styles.cardFrontImage}>
-                            <Text style={styles.guessSlotText}>{cardInSlot.card_text}</Text>
-                        </ImageBackground>
-                    ) : (
-                        <View style={styles.guessSlotEmpty} />
-                    )}
-                </Pressable>
-            );
-        }
-        return slots;
-    };
 
     if (isLoading) {
         return (
             <ScreenContainer style={{ justifyContent: 'center', alignItems: 'center' }}>
                 <ActivityIndicator size="large" color={Colors.light.blue} />
-                <Text>Preparando o jogo...</Text>
+                <Text style={{ fontFamily: GLOBAL_FONT }}>Preparando o jogo...</Text>
             </ScreenContainer>
         )
     }
 
     return (
         <ScreenContainer style={{ backgroundColor: Colors.light.white }}>
-
-
             <ScrollView
                 style={styles.gameContainer}
                 contentContainerStyle={styles.scrollContentContainer}
             >
-
                 <ScreenHeader
                     logoSource={AppLogo}
                     rightAccessory={
@@ -371,17 +326,6 @@ export default function TestGameScreen() {
                     {gameDetails?.prompt && (
                         <Text style={styles.promptText}>{gameDetails?.prompt}</Text>
                     )}
-
-                    {/* <View style={styles.gameInfoContainer}>
-                        <View style={styles.infoBox}>
-                            <Text style={styles.infoBoxLabel}>TENTATIVAS</Text>
-                            <Text style={styles.infoBoxValue}>{attempts} / {maxAttempts}</Text>
-                        </View>
-                        <View style={styles.infoBox}>
-                            <Text style={styles.infoBoxLabel}>PONTUAÇÃO</Text>
-                            <Text style={styles.infoBoxValue}>{score}</Text>
-                        </View>
-                    </View> */}
 
                     <GameScoreboard
                         attempts={attempts}
@@ -544,6 +488,7 @@ const styles = StyleSheet.create({
     historyButtonText: {
         color: Colors.light.blue,
         fontWeight: '500',
+        fontFamily: GLOBAL_FONT
     },
     guessSlotsContainer: {
         flexDirection: 'row',
@@ -600,6 +545,7 @@ const styles = StyleSheet.create({
     feedbackNumber: {
         fontSize: 18,
         fontWeight: 'bold',
+        fontFamily: GLOBAL_FONT
     },
     feedbackText: {
         textAlign: 'center',
@@ -607,6 +553,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#4B5563',
         lineHeight: 16,
+        fontFamily: GLOBAL_FONT
     },
     footer: {
         paddingTop: 10,
@@ -619,6 +566,7 @@ const styles = StyleSheet.create({
         color: '#374151',
         textAlign: 'center',
         marginBottom: 20,
+        fontFamily: GLOBAL_FONT
     },
     secretCodeContainer: {
         flexDirection: 'row',
@@ -647,6 +595,7 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: '#4B5563',
         marginBottom: 10,
+        fontFamily: GLOBAL_FONT
     },
     secretCardText: {
         fontSize: 14,
@@ -727,6 +676,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#333',
         marginBottom: 20,
+        fontFamily: GLOBAL_FONT
     },
     modalCloseButton: {
         marginTop: 25,
@@ -747,6 +697,7 @@ const styles = StyleSheet.create({
         color: Colors.light.blue,
         textAlign: 'center',
         paddingVertical: 15,
+        fontFamily: GLOBAL_FONT
     },
     gameInfoContainer: {
         flexDirection: 'row',
@@ -787,6 +738,7 @@ const styles = StyleSheet.create({
         color: '#4B5563',
         textAlign: 'center',
         marginBottom: 20,
+        fontFamily: GLOBAL_FONT
     },
     finalScoreContainer: {
         alignItems: 'center',
@@ -800,10 +752,12 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#6B7280',
         fontWeight: '500',
+        fontFamily: GLOBAL_FONT
     },
     finalScoreValue: {
         fontSize: 48,
         fontWeight: 'bold',
         color: Colors.light.blue,
+        fontFamily: GLOBAL_FONT
     },
 });

@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { GLOBAL_FONT } from '../Fonts';
 
 type Props = {
     attempts: number;
@@ -45,11 +46,13 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: '#6B7280',
         textTransform: 'uppercase',
+        fontFamily: GLOBAL_FONT
     },
     value: {
         fontSize: 24,
         fontWeight: 'bold',
         color: '#111827',
         marginTop: 4,
+        fontFamily: GLOBAL_FONT
     },
 });

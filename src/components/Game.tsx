@@ -2,9 +2,10 @@ import React from 'react';
 import { Pressable, Text, PressableProps, View, StyleSheet, Platform } from "react-native"
 import { useRouter } from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { GameDatabase } from '../database/useGameDatabase';
 import Colors from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
+
+import { GLOBAL_FONT } from './Fonts';
 
 type Props = PressableProps & {
     data: {
@@ -75,8 +76,8 @@ export function Game({ data, ...rest }: Props) {
             </View>
 
             <View style={styles.bottomSection}>
-                <Text>{data.subject}</Text>
-                <Text>{data.grade}</Text>
+                <Text style={{fontFamily: GLOBAL_FONT}}>{data.subject}</Text>
+                <Text style={{fontFamily: GLOBAL_FONT}}>{data.grade}</Text>
             </View>
         </Pressable>
     )
@@ -134,15 +135,18 @@ const styles = StyleSheet.create({
         fontWeight: 600,
         color: '#1E293B',
         marginBottom: 4,
+        fontFamily: GLOBAL_FONT
     },
     subtitleText: {
         fontSize: 16,
         color: '#475569',
         marginBottom: 12,
+        fontFamily: GLOBAL_FONT
     },
     authorsText: {
         fontSize: 14,
         color: '#94A3B8',
+        fontFamily: GLOBAL_FONT
     },
     editButton: {
         backgroundColor: '#EFF6FF',

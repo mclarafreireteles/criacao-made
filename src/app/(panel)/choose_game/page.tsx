@@ -13,7 +13,7 @@ import Colors from "@/constants/Colors";
 import { ScreenHeader } from "@/src/components/ScreenHeader";
 import { ScreenContainer } from "@/src/components/ScreenContainer";
 
-import { Ionicons } from '@expo/vector-icons';
+import { GLOBAL_FONT } from "@/src/components/Fonts";
 
 export default function ChooseGame(){
     const router = useRouter()
@@ -91,6 +91,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: Colors.light.darkGrey,
         textAlign: 'center',
+        fontFamily: GLOBAL_FONT
     },
     emptyListStyle: {
         flexGrow: 1,            

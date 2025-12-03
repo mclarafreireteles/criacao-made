@@ -3,6 +3,8 @@ import { Text, StyleSheet, Pressable, PressableProps } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
 
+import { GLOBAL_FONT } from './Fonts';
+
 type Props = PressableProps & {
   title: string;
   variant?: 'primary' | 'secondary';
@@ -56,11 +58,13 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+    fontFamily: GLOBAL_FONT
   },
   secondaryButtonText: {
     color: Colors.light.blue,
     fontSize: 16,
     fontWeight: 'bold',
+    fontFamily: GLOBAL_FONT
   },
   disabledButton: {
     opacity: 0.5, 

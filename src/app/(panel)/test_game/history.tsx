@@ -8,6 +8,8 @@ import { View, Text, ImageBackground, StyleSheet, FlatList } from "react-native"
 import { ScreenContainer } from "@/src/components/ScreenContainer";
 import { ScreenHeader } from "@/src/components/ScreenHeader";
 
+import { GLOBAL_FONT } from "@/src/components/Fonts";
+
 
 export default function HistoryScreen() {
     const [gameDetails, setGameDetails] = useState<GameDatabase | null>(null);
@@ -115,6 +117,7 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: '#333',
         marginBottom: 10,
+        fontFamily: GLOBAL_FONT
     },
     historyGuessContainer: {
         flexDirection: 'row',
@@ -144,6 +147,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#888',
         textAlign: 'center',
+        fontFamily: GLOBAL_FONT
     },
     feedbackContainer: {
         flexDirection: 'row',
@@ -169,12 +173,14 @@ const styles = StyleSheet.create({
     },
     feedbackNumber: {
         fontSize: 18,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        fontFamily: GLOBAL_FONT
     },
     feedbackText: {
         textAlign: 'center',
         marginTop: 4,
         fontSize: 14,
-        color: '#4B5563'
+        color: '#4B5563',
+        fontFamily: GLOBAL_FONT
     },
 })
