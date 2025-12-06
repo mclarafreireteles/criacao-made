@@ -10,18 +10,19 @@ import { disciplines, grade } from "@/constants/formOptions";
 import { AppButton } from "@/src/components/AppButton";
 import { ScreenContainer } from "@/src/components/ScreenContainer";
 import { ScreenHeader } from "@/src/components/ScreenHeader";
+import { GLOBAL_FONT } from "@/src/components/Fonts";
 
-export default function Step1(){
+export default function Step1() {
     const router = useRouter();
     const { formData, updateFormData } = useGameForm();
 
     const isEditing = formData.id !== null;
 
     const gameModels = [
-        {id: 'secret_code', label: 'Código secreto', icon: require('@/assets/images/game_models/secret_code.png')},
+        { id: 'secret_code', label: 'Código secreto', icon: require('@/assets/images/game_models/secret_code.png') },
     ]
 
-    const handleNextStep =() => {
+    const handleNextStep = () => {
         const requiredFields = {
             model: 'Modelo de jogo',
             subject: 'Disciplina',
@@ -30,32 +31,32 @@ export default function Step1(){
             authors: 'Autores',
         }
 
-       
+
         for (const field in requiredFields) {
             const key = field as keyof typeof requiredFields;
             if (!formData[key]?.trim()) {
                 Alert.alert('Campo Obrigatório', `Por favor, preencha o campo "${requiredFields[key]}".`);
-                return; 
+                return;
             }
         }
 
         router.push('/(panel)/add_game/step2');
     }
 
-    return(
+    return (
         <ScreenContainer>
-           <ScreenHeader title={isEditing ? "Editar Jogo" : "Criar Jogo"} />
+            <ScreenHeader title={isEditing ? "Editar Jogo" : "Criar Jogo"} />
             <ScrollView style={styles.formContainer} showsVerticalScrollIndicator={false}>
                 <View>
-                    <Text>Escolha o modelo de jogo</Text>
+                    <Text style={styles.labelText}>Escolha o modelo de jogo</Text>
                     <View style={styles.optionsContainer}>
                         {gameModels.map((model) => (
                             <Pressable
                                 key={model.id}
                                 onPress={() => updateFormData({ model: model.id })}
                                 style={[
-                                styles.option,
-                                formData.model === model.id && styles.optionSelected, styles.optionWithImage
+                                    styles.option,
+                                    formData.model === model.id && styles.optionSelected, styles.optionWithImage
                                 ]}
                             >
                                 {model.icon && (
@@ -65,12 +66,12 @@ export default function Step1(){
                                     />
                                 )}
                                 <Text
-                                style={[
-                                    styles.optionText,
-                                    formData.model === model.id && styles.optionTextSelected,
-                                ]}
+                                    style={[
+                                        styles.optionText,
+                                        formData.model === model.id && styles.optionTextSelected,
+                                    ]}
                                 >
-                                {model.label}
+                                    {model.label}
                                 </Text>
                             </Pressable>
                         ))}
@@ -81,7 +82,6 @@ export default function Step1(){
                         label="Disciplina"
                         options={disciplines}
                         selectedValue={formData.subject}
-                        // onSelect={(id) => updateFormData({ subject: id })}
                         onSelect={(id) => {
                             updateFormData({ subject: id });
                             if (id !== 'outro') {
@@ -115,7 +115,7 @@ export default function Step1(){
                         selectedValue={formData.grade}
                         onSelect={(id) => {
                             updateFormData({ grade: id });
-                            if (id !== 'outro'){
+                            if (id !== 'outro') {
                                 updateFormData({ grade_other: '' })
                             }
                         }}
@@ -140,10 +140,6 @@ export default function Step1(){
                     />
                 </View>
             </ScrollView>
-            {/* <Pressable style={styles.continuarBtn} onPress={handleNextStep}>
-                <Text style={styles.continuarBtnTxt}>Continuar</Text>
-                
-            </Pressable> */}
             <View style={styles.footer}>
                 <AppButton title="Continuar" variant="secondary" onPress={handleNextStep} />
             </View>
@@ -167,7 +163,7 @@ const styles = StyleSheet.create({
     },
     containerInput: {
         minWidth: '80%',
-    }, 
+    },
     inputText: {
         borderWidth: 1,
         paddingHorizontal: 15,
@@ -176,11 +172,11 @@ const styles = StyleSheet.create({
         borderColor: Colors.light.grey
     },
     optionsContainer: {
-        flexDirection: 'row', 
-        flexWrap: 'wrap', 
-        gap: 10, 
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: 10,
         marginBottom: 20,
-        marginTop: 10, 
+        marginTop: 10,
     },
     option: {
         borderWidth: 1,
@@ -189,18 +185,21 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         borderRadius: 20,
         backgroundColor: '#FFF',
-        alignItems: 'center', 
+        alignItems: 'center',
         justifyContent: 'center',
+        display: 'flex',
+        gap: 8
     },
     optionSelected: {
-        backgroundColor: Colors.light.blue, 
+        backgroundColor: Colors.light.blue,
         borderColor: Colors.light.blue,
     },
     optionText: {
         color: Colors.light.darkGrey,
+        fontFamily: GLOBAL_FONT
     },
     optionTextSelected: {
-        color: '#FFF', 
+        color: '#FFF',
         fontWeight: 'bold',
     },
     continuarBtn: {
@@ -222,7 +221,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 60,
         left: 40,
-        zIndex: 1, 
+        zIndex: 1,
     },
     modelIcon: {
         width: 100,
@@ -231,8 +230,8 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
     },
     optionWithImage: {
-        flexDirection: 'column', 
-        alignItems: 'center', 
+        flexDirection: 'column',
+        alignItems: 'center',
         paddingHorizontal: 15,
         paddingVertical: 10,
     },
@@ -245,4 +244,10 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingHorizontal: 45
     },
+    labelText: {
+        marginBottom: 8,
+        fontSize: 16,
+        color: '#333',
+        fontFamily: GLOBAL_FONT
+    }
 })

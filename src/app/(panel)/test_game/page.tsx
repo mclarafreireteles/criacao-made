@@ -262,27 +262,18 @@ export default function TestGameScreen() {
                 console.log("---------------------------------");
 
             } else if (swapOptions) {
-                // --- LÓGICA DE TROCA (JOGAR NOVAMENTE) ---
                 const { swapCount, previousCodeIds } = swapOptions;
-
-                // 1. Identifica quais cartas do baralho total estavam no código anterior
                 const previousCards = correctCards.filter(c => previousCodeIds.includes(c.id));
-
-                // 2. Identifica cartas "novas" (que NÃO estavam no código anterior)
                 const availableForSwap = correctCards.filter(c => !previousCodeIds.includes(c.id));
 
-                // Verifica se é possível fazer a troca
                 if (availableForSwap.length >= swapCount) {
-                    // Mantém (Total - Swap) cartas antigas
                     const cardsToKeepCount = codeLength - swapCount;
                     const shuffledPrevious = [...previousCards].sort(() => Math.random() - 0.5);
                     const keptCards = shuffledPrevious.slice(0, cardsToKeepCount);
 
-                    // Adiciona (Swap) cartas novas
                     const shuffledAvailable = [...availableForSwap].sort(() => Math.random() - 0.5);
                     const addedCards = shuffledAvailable.slice(0, swapCount);
 
-                    // Combina e embaralha tudo
                     const newSecretCode = [...keptCards, ...addedCards].sort(() => Math.random() - 0.5);
                     setSecretCode(newSecretCode);
 
@@ -292,7 +283,6 @@ export default function TestGameScreen() {
                     console.log(newSecretCode.map(card => card.card_text));
 
                 } else {
-                    // Fallback: Se não tiver cartas novas suficientes no banco, faz um shuffle normal
                     console.log("[SWAP] Cartas insuficientes para troca limpa. Fazendo shuffle total.");
                     const shuffled = [...correctCards].sort(() => Math.random() - 0.5);
                     setSecretCode(shuffled.slice(0, codeLength));

@@ -13,7 +13,7 @@ import { cardFronts } from '@/constants/cardFronts';
 const CODE_LENGTH_OPTIONS = [3, 4, 5, 6];
 const MAX_CARDS = 12;
 
-export default function ManageCards (){
+export default function ManageCards() {
     const router = useRouter();
     const { width } = useWindowDimensions();
     const { game_id } = useLocalSearchParams();
@@ -30,19 +30,29 @@ export default function ManageCards (){
 
     const selectedCardFront = cardFronts.find(front => front.id === cardFrontUrl)?.image;
 
+    const correctCount = cards.filter(card => card.card_type === 1).length;
+    const incorrectCount = cards.filter(card => card.card_type === 0).length;
+
+    const MIN_CORRECT = 9;
+    const MIN_INCORRECT = 3;
+
+    const hasEnoughCorrect = correctCount >= MIN_CORRECT;
+    const hasEnoughIncorrect = incorrectCount >= MIN_INCORRECT;
+    const isGameReady = hasEnoughCorrect && hasEnoughIncorrect;
+
     const fetchCardsAndSettings = useCallback(async () => {
-    if (!gameIdNumber) return;
+        if (!gameIdNumber) return;
         try {
             // Busca as cartas e as configurações do jogo ao mesmo tempo
             const [cardsResponse, gameResponse] = await Promise.all([
                 getCardsByGameId(gameIdNumber),
                 getGameById(gameIdNumber)
             ]);
-            
+
             setCards(cardsResponse);
             if (gameResponse?.secret_code_length) {
                 setCodeLength(gameResponse.secret_code_length);
-                setSelectionMode('specific'); 
+                setSelectionMode('specific');
                 setCardFrontUrl(gameResponse.card_front_url);
             }
 
@@ -90,8 +100,8 @@ export default function ManageCards (){
         console.log("game_id:", gameIdNumber);
         console.log("--- FIM DEBUG ---");
         router.push({
-            pathname:'/manage_cards/add_card',
-            params: {game_id: gameIdNumber}
+            pathname: '/manage_cards/add_card',
+            params: { game_id: gameIdNumber }
         })
     }
 
@@ -106,30 +116,30 @@ export default function ManageCards (){
     }
 
     const renderHeader = () => (
-        <View style={styles.headerWrapper}> 
+        <View style={styles.headerWrapper}>
             <ScreenHeader title="Criar cartas" />
             <View style={styles.settingSection}>
                 <Text style={styles.settingLabel}>Tamanho do código secreto</Text>
                 <View style={styles.optionsContainer}>
                     {CODE_LENGTH_OPTIONS.map(len => (
                         <Pressable
-                            key={len} 
+                            key={len}
                             style={[styles.lengthButton, selectionMode == 'specific' && codeLength === len && styles.lengthButtonActive]}
-                            onPress={() => handleSetCodeLength(len)} 
+                            onPress={() => handleSetCodeLength(len)}
                         >
                             <Text style={[styles.lengthButtonText, selectionMode === 'specific' && codeLength === len && styles.lengthButtonTextActive]}>{len}</Text>
                         </Pressable>
                     ))}
-                    <Pressable 
+                    <Pressable
                         style={[
-                            styles.lengthButton, 
+                            styles.lengthButton,
                             selectionMode === 'random' && styles.lengthButtonActive
                         ]}
                         onPress={handleSetRandomCodeLength}
                     >
-                        <Ionicons 
-                            name="dice-outline" 
-                            size={22} 
+                        <Ionicons
+                            name="dice-outline"
+                            size={22}
                             color={selectionMode === 'random' ? Colors.light.white : Colors.light.blue}
                         />
                     </Pressable>
@@ -139,7 +149,7 @@ export default function ManageCards (){
             <Pressable
                 style={[styles.addCardButton, isCardLimitReached && styles.disabledButton]}
                 onPress={handleNavigateToAddCard}
-                // disabled={isCardLimitReached} // Desabilita o botão
+            // disabled={isCardLimitReached} // Desabilita o botão
             >
                 <Ionicons name="add" size={20} color="white" />
                 <Text style={styles.addCardButtonText}>Adicionar carta</Text>
@@ -151,7 +161,7 @@ export default function ManageCards (){
         <>
             <Pressable style={styles.infoLink}>
                 <Ionicons name="information-circle-outline" size={20} color={Colors.light.blue} />
-                <Text style={styles.infoLinkTxt} onPress={() => router.push({ pathname: '/how_to_play/page'})}>Como funciona o jogo?</Text>
+                <Text style={styles.infoLinkTxt} onPress={() => router.push({ pathname: '/how_to_play/page' })}>Como funciona o jogo?</Text>
             </Pressable>
 
             <View style={styles.settingSection}>
@@ -159,14 +169,14 @@ export default function ManageCards (){
                 <FlatList
                     data={cardFronts}
                     keyExtractor={(item) => item.id}
-                    horizontal 
-                    showsHorizontalScrollIndicator={false} 
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
                     contentContainerStyle={styles.imageSelectorContent}
                     style={styles.imageSelector}
-            
+
                     renderItem={({ item: front }) => (
-                        <Pressable 
-                            key={front.id} 
+                        <Pressable
+                            key={front.id}
                             onPress={() => handleSetCardFront(front.id)}
                             style={[
                                 styles.imageOption,
@@ -177,25 +187,24 @@ export default function ManageCards (){
                         </Pressable>
                     )}
                 />
-               
+
             </View>
-             <View style={styles.containerBtn}>
-                <Pressable 
-                    style={styles.testarBtn} 
-                    onPress={() => router.push({ 
-                        pathname: '/(panel)/game_mode/page',
-                        params: { game_id: gameIdNumber } 
-                    })}
+            <View style={styles.containerBtn}>
+                <Pressable
+                    style={[styles.testarBtn, !isGameReady && styles.disabledButton]}
+                    // disabled={!isGameReady}
+                    onPress={() => {
+                        if (isGameReady) {
+                            Alert.alert("Jogo Incompleto", `Você precisa de pelo menos ${MIN_CORRECT} cartas corretas e ${MIN_INCORRECT} incorretas.`);
+                            return;
+                        }
+                        router.push({
+                            pathname: '/(panel)/game_mode/page',
+                            params: { game_id: gameIdNumber }
+                        })
+                    }}
                 >
                     <Text style={styles.testarBtnTxt}>Testar jogo</Text>
-                </Pressable>
-                <Pressable 
-                    style={styles.finalizarBtn} 
-                    onPress={() => router.push({
-                        pathname: '/(panel)/game_dashboard/page',
-                        params: {  game_id: gameIdNumber }
-                    })}>
-                    <Text style={styles.finalizarBtnTxt}>Salvar</Text>
                 </Pressable>
             </View>
         </>
@@ -221,47 +230,75 @@ export default function ManageCards (){
             {/* HEADER */}
             {renderHeader()}
 
+            <View style={styles.statusContainer}>
+                <View style={[styles.statusBox, hasEnoughCorrect ? styles.statusSuccess : styles.statusPending]}>
+                    <Text style={styles.statusLabel}>Corretas</Text>
+                    <Text style={styles.statusValue}>{correctCount} / {MIN_CORRECT}</Text>
+                    <Ionicons
+                        name={hasEnoughCorrect ? "checkmark-circle" : "alert-circle"}
+                        size={20}
+                        color={hasEnoughCorrect ? "#15803d" : "#b91c1c"}
+                    />
+                </View>
+
+                <View style={[styles.statusBox, hasEnoughIncorrect ? styles.statusSuccess : styles.statusPending]}>
+                    <Text style={styles.statusLabel}>Incorretas</Text>
+                    <Text style={styles.statusValue}>{incorrectCount} / {MIN_INCORRECT}</Text>
+                    <Ionicons
+                        name={hasEnoughIncorrect ? "checkmark-circle" : "alert-circle"}
+                        size={20}
+                        color={hasEnoughIncorrect ? "#15803d" : "#b91c1c"}
+                    />
+                </View>
+            </View>
+
+            {!isGameReady && (
+                <Text style={styles.warningText}>
+                    Adicione mais cartas para habilitar o teste do jogo.
+                </Text>
+            )}
+
             {/* GRID DE CARTAS */}
             <View style={styles.cardsGrid}>
-            {cards.length > 0 ? (
-                cards.map((item) => (
-                <Pressable
-                    key={item.id}
-                    onPress={() => handleNavigateToEditCard(item)}
-                    style={styles.cardWrapper}
-                >
-                    <ImageBackground
-                    source={selectedCardFront}
-                    style={styles.cardBackground}
-                    imageStyle={styles.cardBackgroundImageStyle}
-                    >
-                    <View style={styles.cardContent}>
-                        <Text style={styles.cardText}>{item.card_text}</Text>
-                    </View>
+                {cards.length > 0 ? (
+                    cards.map((item) => (
+                        <Pressable
+                            key={item.id}
+                            onPress={() => handleNavigateToEditCard(item)}
+                            style={styles.cardWrapper}
+                        >
+                            <ImageBackground
+                                source={selectedCardFront}
+                                style={styles.cardBackground}
+                                imageStyle={styles.cardBackgroundImageStyle}
+                            >
+                                <View style={styles.cardContent}>
+                                    <Text style={styles.cardText}>{item.card_text}</Text>
+                                </View>
 
-                    <View style={styles.editBtn}>
-                        <MaterialIcons name="edit" size={18} color={Colors.light.blue} />
+                                <View style={styles.editBtn}>
+                                    <MaterialIcons name="edit" size={18} color={Colors.light.blue} />
+                                </View>
+                                <View style={styles.statusIndicator}>
+                                    <Ionicons
+                                        name={item.card_type === 1 ? "checkmark-circle" : "close-circle"}
+                                        size={24}
+                                        color={item.card_type === 1 ? "#10B981" : "#EF4444"}
+                                    />
+                                </View>
+                            </ImageBackground>
+                        </Pressable>
+                    ))
+                ) : (
+                    <View style={styles.emptyGrid}>
+                        <Text style={styles.emptyGridText}>Adicione sua primeira carta</Text>
                     </View>
-                    <View style={styles.statusIndicator}>
-                        <Ionicons
-                        name={item.card_type === 1 ? "checkmark-circle" : "close-circle"}
-                        size={24}
-                        color={item.card_type === 1 ? "#10B981" : "#EF4444"}
-                        />
-                    </View>
-                    </ImageBackground>
-                </Pressable>
-                ))
-            ) : (
-                <View style={styles.emptyGrid}>
-                <Text style={styles.emptyGridText}>Adicione sua primeira carta</Text>
-                </View>
-            )}
+                )}
             </View>
 
             {/* FOOTER */}
             {renderFooter()}
-         </ScrollView>
+        </ScrollView>
     )
 }
 
@@ -286,7 +323,7 @@ const styles = StyleSheet.create({
         marginBottom: 24,
         flex: 1
     },
-    settingLabel:{
+    settingLabel: {
         fontSize: 16,
         color: Colors.light.darkGrey,
         marginBottom: 12,
@@ -423,39 +460,38 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     disabledButton: {
-        backgroundColor: '#9CA3AF',
-        opacity: 0.7,
+        backgroundColor: 'rgba(197, 197, 197, 1)',
     },
     statusIndicator: {
         position: 'absolute',
         bottom: 5,
         left: 5,
         backgroundColor: 'white',
-        borderRadius: 12, 
+        borderRadius: 12,
     },
     imageSelector: {
         flexDirection: 'row',
         paddingVertical: 10,
-     },
-    imageOption: { 
+    },
+    imageOption: {
         width: 90,
-        height: 112, 
+        height: 112,
         // borderRadius: 8,
         borderWidth: 3,
         borderColor: 'transparent',
         overflow: 'hidden',
         marginRight: 15,
-        backgroundColor: '#ffffffff', 
-     },
-    imageSelected: { 
+        backgroundColor: '#ffffffff',
+    },
+    imageSelected: {
         borderColor: Colors.light.blue,
-     },
+    },
     cardImage: {
         width: '100%',
         height: '100%',
         resizeMode: 'cover'
-     },
-     cardWrapper: {
+    },
+    cardWrapper: {
         aspectRatio: 0.80,
         margin: 6,
         width: 80,
@@ -501,5 +537,45 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         justifyContent: 'center',
         width: '100%',
+    },
+    statusContainer: {
+        flexDirection: 'row',
+        gap: 10,
+        marginBottom: 15,
+        width: '100%',
+    },
+    statusBox: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: 10,
+        borderRadius: 8,
+        borderWidth: 1,
+    },
+    statusSuccess: {
+        backgroundColor: '#DCFCE7', // Verde claro
+        borderColor: '#86EFAC',
+    },
+    statusPending: {
+        backgroundColor: '#FEE2E2', // Vermelho claro
+        borderColor: '#FCA5A5',
+    },
+    statusLabel: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#374151',
+    },
+    statusValue: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#111827',
+    },
+    warningText: {
+        fontSize: 12,
+        color: '#EF4444',
+        textAlign: 'center',
+        marginBottom: 15,
+        fontWeight: '500'
     },
 })

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Pressable, Modal, FlatList, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
+import { GLOBAL_FONT } from './Fonts';
 
 
 type Option = {
@@ -76,6 +77,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     fontSize: 16,
     color: '#333',
+    fontFamily: GLOBAL_FONT
   },
   dropdownButton: {
     flexDirection: 'row',
@@ -91,10 +93,12 @@ const styles = StyleSheet.create({
   dropdownButtonText: {
     fontSize: 16,
     color: '#000',
+    fontFamily: GLOBAL_FONT
   },
   placeholderText: {
     fontSize: 16,
     color: Colors.light.grey,
+    fontFamily: GLOBAL_FONT
   },
   modalOverlay: {
     flex: 1,
@@ -116,5 +120,6 @@ const styles = StyleSheet.create({
   },
   modalOptionText: {
     fontSize: 16,
+    fontFamily: GLOBAL_FONT 
   },
 });
