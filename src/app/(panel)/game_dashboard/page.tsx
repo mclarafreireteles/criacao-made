@@ -9,6 +9,8 @@ import { AppButton } from '@/src/components/AppButton';
 
 import Colors from '@/constants/Colors';
 
+import { GLOBAL_FONT } from '@/src/components/Fonts';
+
 const InfoRow = ({ label, value }: { label: string, value: string | null | undefined }) => {
     return (
         <View style={styles.infoRow}>
@@ -65,7 +67,7 @@ export default function gameDashBoardScreen(){
         return (
             <ScreenContainer style={{ justifyContent: 'center', alignItems: 'center' }}>
                 <ActivityIndicator size="large" color={Colors.light.blue} />
-                <Text style={{ marginTop: 10 }}>Carregando jogo...</Text>
+                <Text style={{ marginTop: 10, fontFamily: GLOBAL_FONT }}>Carregando jogo...</Text>
             </ScreenContainer>
         );
     }
@@ -161,9 +163,11 @@ const styles = StyleSheet.create({
         color: '#64748B',
         marginBottom: 4,
         fontWeight: '500',
+        fontFamily: GLOBAL_FONT
     },
     infoValue: {
         fontSize: 16,
         color: '#1E293B',
+        fontFamily: GLOBAL_FONT
     },
 })

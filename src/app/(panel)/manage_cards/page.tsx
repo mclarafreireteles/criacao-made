@@ -8,6 +8,7 @@ import { useGameDatabase, CardDatabase } from '@/src/database/useGameDatabase';
 import Colors from '@/constants/Colors';
 import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { cardFronts } from '@/constants/cardFronts';
+import { GLOBAL_FONT } from '@/src/components/Fonts';
 
 
 const CODE_LENGTH_OPTIONS = [3, 4, 5, 6];
@@ -327,6 +328,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: Colors.light.darkGrey,
         marginBottom: 12,
+        fontFamily: GLOBAL_FONT
     },
     optionsContainer: {
         flexDirection: 'row',
@@ -346,6 +348,7 @@ const styles = StyleSheet.create({
     lengthButtonText: {
         fontSize: 16,
         color: Colors.light.blue,
+        fontFamily: GLOBAL_FONT
     },
     lengthButtonTextActive: {
         color: '#FFFFFF',
@@ -382,7 +385,8 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 16,
         fontWeight: 600,
-        color: Colors.light.blue
+        color: Colors.light.blue,
+        fontFamily: GLOBAL_FONT
     },
     addCardButton: {
         backgroundColor: Colors.light.blue,
@@ -398,6 +402,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
         fontWeight: 'bold',
+        fontFamily: GLOBAL_FONT
     },
     emptyGrid: {
         flex: 1,
@@ -434,6 +439,7 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: '500',
         textAlign: 'center',
+        fontFamily: GLOBAL_FONT
     },
     infoLink: {
         flexDirection: 'row',
@@ -447,6 +453,7 @@ const styles = StyleSheet.create({
         color: Colors.light.blue,
         fontSize: 16,
         fontWeight: '500',
+        fontFamily: GLOBAL_FONT
     },
     editBtn: {
         position: 'absolute',
@@ -565,17 +572,20 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: '600',
         color: '#374151',
+        fontFamily: GLOBAL_FONT
     },
     statusValue: {
         fontSize: 14,
         fontWeight: 'bold',
         color: '#111827',
+        fontFamily: GLOBAL_FONT
     },
     warningText: {
         fontSize: 12,
         color: '#EF4444',
         textAlign: 'center',
         marginBottom: 15,
-        fontWeight: '500'
+        fontWeight: '500',
+        fontFamily: GLOBAL_FONT
     },
 })
