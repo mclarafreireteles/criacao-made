@@ -4,9 +4,10 @@ import { useLocalSearchParams } from "expo-router";
 import { GameDatabase, useGameDatabase } from "@/src/database/useGameDatabase";
 import { useEffect, useState } from "react";
 import { FeedbackHistoryItem } from "@/src/contexts/GameHistoryContext";
-import { View, Text, ImageBackground, StyleSheet, FlatList } from "react-native";
+import { View, Text, ImageBackground, StyleSheet, FlatList, ImageSourcePropType } from "react-native";
 import { ScreenContainer } from "@/src/components/ScreenContainer";
 import { ScreenHeader } from "@/src/components/ScreenHeader";
+import { PlayingCard } from "@/src/components/game/PlayingCard";
 
 import { GLOBAL_FONT } from "@/src/components/Fonts";
 
@@ -47,13 +48,13 @@ export default function HistoryScreen() {
 
             <View style={styles.historyGuessContainer}>
                 {item.guess.map((card, index) => (
-                    <View key={index} style={styles.historyCard}>
-                        {card ? (
-                            <ImageBackground source={selectedCardFront} style={styles.cardFrontImage} resizeMode="cover">
-                                <Text style={styles.historyCardText}>{card.card_text}</Text>
-                            </ImageBackground>
-                        ) : null}
-                    </View>
+                    <PlayingCard
+                        key={index}
+                        variant={card ? 'front' : 'empty'}
+                        text={card?.card_text}
+                        imageSource={selectedCardFront as ImageSourcePropType}
+                        disabled={true} 
+                    />
                 ))}
             </View>
 
@@ -122,25 +123,9 @@ const styles = StyleSheet.create({
     historyGuessContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
+        flexWrap: "wrap",
         gap: 10,
         marginBottom: 10,
-    },
-    historyCard: {
-        minWidth: 80,
-        aspectRatio: 0.8,
-        overflow: 'hidden',
-
-    },
-    cardFrontImage: {
-        width: '100%',
-        height: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    historyCardText: {
-        fontSize: 14,
-        fontWeight: '600',
-        textAlign: 'center',
     },
     historyEmptyText: {
         padding: 20,

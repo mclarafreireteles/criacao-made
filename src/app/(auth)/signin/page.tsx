@@ -6,6 +6,7 @@ import { supabase } from '../../../lib/supabase';
 import { router } from 'expo-router';
 import Colors from '@/constants/Colors';
 import { Feather } from '@expo/vector-icons';
+import { GLOBAL_FONT } from '@/src/components/Fonts';
 
 
 export default function Login() {
@@ -101,7 +102,7 @@ export default function Login() {
                 </Pressable>
 
                 <Link style={styles.signUpText} href='/(auth)/signup/page'>
-                    <Text>Ainda não tem uma conta? Se inscreva!</Text>
+                    <Text style={styles.footerText}>Ainda não tem uma conta? Se inscreva!</Text>
                 </Link>
             </View>
         </View>
@@ -138,6 +139,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         fontWeight: '700',
+        fontFamily: GLOBAL_FONT
     },
     inputContainer: {
         display: 'flex',
@@ -172,7 +174,8 @@ const styles = StyleSheet.create({
         color: Colors.light.white,
         textAlign: 'center',
         fontSize: 18,
-        fontWeight: '600'
+        fontWeight: '600',
+        fontFamily: GLOBAL_FONT
     },
     buttons: {
         display: 'flex',
@@ -214,10 +217,11 @@ const styles = StyleSheet.create({
     inputField: {
         flex: 1,
         color: Colors.light.darkGrey,
-        fontSize: 14,
+        fontSize: 16,
         fontWeight: '500',
         paddingVertical: 10,
         borderWidth: 0,
+        fontFamily: GLOBAL_FONT
     },
     inputWrapper: {
         borderColor: Colors.light.grey,
@@ -228,6 +232,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         width: '100%'
+    },
+    footerText: {
+        fontFamily: GLOBAL_FONT,
+        fontSize: 16,
     }
 })
 

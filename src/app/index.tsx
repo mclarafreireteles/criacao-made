@@ -6,30 +6,14 @@ import Colors from '@/constants/Colors';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import Head from "expo-router/head";
+import { GLOBAL_FONT } from "@/src/components/Fonts";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function Index() {
-    const [fontsLoaded] = useFonts({
-        'Manrope': require('../../assets/fonts/Manrope-VariableFont_wght.ttf')
-    })
-    
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-
-    
-
-    React.useEffect(() => {
-        if (fontsLoaded) {
-        SplashScreen.hideAsync();
-        }
-    }, [fontsLoaded]);
-
-    if (!fontsLoaded) {
-    // Retorna nulo ou um componente de carregamento enquanto as fontes não carregam
-        return null;
-    }
 
     
     return (
@@ -104,14 +88,14 @@ const styles = StyleSheet.create({
         color: Colors.light.white,
         textAlign: 'center',
         fontSize: 20,
-        fontFamily: 'Manrope',
+        fontFamily: GLOBAL_FONT,
         fontWeight: 700
     },
     createButtonText: {
         color: Colors.light.blue,
         textAlign: 'center',
         fontSize: 18,
-        fontFamily: 'Manrope',
+        fontFamily: GLOBAL_FONT,
         fontWeight: 700
     },
     link: {
