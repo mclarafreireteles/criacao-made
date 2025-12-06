@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, Pressable, ActivityIndicator, ImageBackground, ScrollView, Alert, Platform, Modal, ImageSourcePropType,  } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ActivityIndicator, ImageBackground, ScrollView, Alert, Platform, Modal, ImageSourcePropType, } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import Colors from '@/constants/Colors';
 import { ScreenContainer } from '@/src/components/ScreenContainer';
@@ -18,11 +18,11 @@ import { GameScoreboard } from '@/src/components/game/GameScoreboard';
 
 type GameLevel = 1 | 2 | 3 | 4;
 
-const LEVEL_CONFIG: Record<GameLevel, { maxAttempts: number, extraCards: number }> = {
-    1: { maxAttempts: 10, extraCards: 0 },
-    2: { maxAttempts: 8, extraCards: 1 },
-    3: { maxAttempts: 6, extraCards: 2 },
-    4: { maxAttempts: 5, extraCards: 3 },
+const LEVEL_CONFIG: Record<GameLevel, { maxAttempts: number, swapCount: number }> = {
+    1: { maxAttempts: 10, swapCount: 0 },
+    2: { maxAttempts: 8, swapCount: 1 },
+    3: { maxAttempts: 6, swapCount: 2 },
+    4: { maxAttempts: 5, swapCount: 3 },
 };
 
 const DEFAULT_LEVEL: GameLevel = 1;
@@ -33,7 +33,7 @@ export default function TestGameScreen() {
     const { game_id, mode, manual_code, level } = useLocalSearchParams();
     const gameIdNumber = Number(game_id);
     const currentLevel = (Number(level) as GameLevel) || DEFAULT_LEVEL;
-    const { maxAttempts } = LEVEL_CONFIG[currentLevel];
+    const { maxAttempts, swapCount } = LEVEL_CONFIG[currentLevel];
 
     const { getGameById, getCardsByGameId } = useGameDatabase();
     const { addHistoryItem, clearHistory } = useGameHistory();
@@ -175,12 +175,12 @@ export default function TestGameScreen() {
         setScore(0);
         setFeedback(null);
 
-        const { extraCards } = LEVEL_CONFIG[currentLevel];
-        const nextLength = activeCodeLength + extraCards;
+        const CurrentSecretIds = secretCode.map(card => card.id);
 
-        console.log("Tamanho atual do código secreto:", nextLength);
-
-        setupGame(nextLength);
+        setupGame({
+            swapCount: swapCount,
+            previousCodeIds: CurrentSecretIds
+        });
     };
 
     const handleCloseFeedbackModal = () => {
@@ -189,8 +189,12 @@ export default function TestGameScreen() {
         setPlayerGuess(Array(activeCodeLength).fill(null));
     };
 
-    const setupGame = useCallback(async (customLength?: number) => {
+    const setupGame = useCallback(async (swapOptions?: { swapCount: number, previousCodeIds: number[] }) => {
         if (!gameIdNumber) return;
+
+        if (!swapOptions) {
+            clearHistory(); //entender se isso vai realmente ficar
+        }
 
         clearHistory();
         try {
@@ -217,8 +221,6 @@ export default function TestGameScreen() {
 
             setGameDetails(gameData);
 
-
-
             const foundBack = cardBacks.find(back => back.id === gameData?.background_image_url)?.image;
             const foundFront = cardFronts.find(front => front.id === gameData?.card_front_url)?.image;
 
@@ -226,9 +228,8 @@ export default function TestGameScreen() {
             console.log(`[DEBUG 2] Imagem de Frente encontrada: ${foundFront ? 'SIM' : 'NÃO (undefined)'}`);
 
             const codeLength = gameData.secret_code_length || 4;
-            const targetCodeLength = customLength || codeLength;
 
-            setActiveCodeLength(targetCodeLength);
+            setActiveCodeLength(codeLength);
 
             const correctCards = cardsData.filter(card => Number(card.card_type) === 1);
 
@@ -246,7 +247,7 @@ export default function TestGameScreen() {
             const incorrectCards = cardsData.filter(card => Number(card.card_type) !== 1);
 
             // --- LÓGICA DE MODO MANUAL vs ALEATÓRIO ---
-            if (mode === 'manual' && typeof manual_code === 'string') {
+            if (mode === 'manual' && typeof manual_code === 'string' && !swapOptions) {
                 console.log("[DEBUG] Modo MANUAL Ativado. Código recebido:", manual_code);
 
                 const manualCodeIds = manual_code.split(',').map(Number);
@@ -260,10 +261,46 @@ export default function TestGameScreen() {
                 console.log(newSecretCode.map(card => card.card_text));
                 console.log("---------------------------------");
 
+            } else if (swapOptions) {
+                // --- LÓGICA DE TROCA (JOGAR NOVAMENTE) ---
+                const { swapCount, previousCodeIds } = swapOptions;
+
+                // 1. Identifica quais cartas do baralho total estavam no código anterior
+                const previousCards = correctCards.filter(c => previousCodeIds.includes(c.id));
+
+                // 2. Identifica cartas "novas" (que NÃO estavam no código anterior)
+                const availableForSwap = correctCards.filter(c => !previousCodeIds.includes(c.id));
+
+                // Verifica se é possível fazer a troca
+                if (availableForSwap.length >= swapCount) {
+                    // Mantém (Total - Swap) cartas antigas
+                    const cardsToKeepCount = codeLength - swapCount;
+                    const shuffledPrevious = [...previousCards].sort(() => Math.random() - 0.5);
+                    const keptCards = shuffledPrevious.slice(0, cardsToKeepCount);
+
+                    // Adiciona (Swap) cartas novas
+                    const shuffledAvailable = [...availableForSwap].sort(() => Math.random() - 0.5);
+                    const addedCards = shuffledAvailable.slice(0, swapCount);
+
+                    // Combina e embaralha tudo
+                    const newSecretCode = [...keptCards, ...addedCards].sort(() => Math.random() - 0.5);
+                    setSecretCode(newSecretCode);
+
+                    console.log(`[SWAP] Mantidas: ${cardsToKeepCount}, Trocadas: ${swapCount}`);
+
+                    console.log("resposta correta:")
+                    console.log(newSecretCode.map(card => card.card_text));
+
+                } else {
+                    // Fallback: Se não tiver cartas novas suficientes no banco, faz um shuffle normal
+                    console.log("[SWAP] Cartas insuficientes para troca limpa. Fazendo shuffle total.");
+                    const shuffled = [...correctCards].sort(() => Math.random() - 0.5);
+                    setSecretCode(shuffled.slice(0, codeLength));
+                }
             } else {
                 console.log("[DEBUG] Modo ALEATÓRIO Ativado.");
                 const shuffledCorrectCards = [...correctCards].sort(() => Math.random() - 0.5);
-                const newSecretCode = shuffledCorrectCards.slice(0, targetCodeLength);
+                const newSecretCode = shuffledCorrectCards.slice(0, codeLength);
                 setSecretCode(newSecretCode);
 
                 console.log("--- DEBUG: RESPOSTA CORRETA (ALEATÓRIA) ---");
