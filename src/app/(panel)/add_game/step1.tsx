@@ -1,11 +1,9 @@
 import { View, Button, Text, StyleSheet, Pressable, Alert, Image, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
-import { Input } from "@/src/components/input";
 import { useGameForm } from "@/src/contexts/GameFormContext";
 import Colors from "@/constants/Colors";
 import { OptionSelector } from "@/src/components/OptionSelector";
 import { StyledInput } from "@/src/components/StyledInput";
-import { BackButtonIcon } from "@/src/components/icons/BackButtonIcon";
 import { disciplines, grade } from "@/constants/formOptions";
 import { AppButton } from "@/src/components/AppButton";
 import { ScreenContainer } from "@/src/components/ScreenContainer";
@@ -245,7 +243,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 45
     },
     labelText: {
-        marginBottom: 8,
         fontSize: 16,
         color: '#333',
         fontFamily: GLOBAL_FONT
