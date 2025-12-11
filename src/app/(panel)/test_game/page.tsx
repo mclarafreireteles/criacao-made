@@ -38,7 +38,6 @@ export default function TestGameScreen() {
     const { getGameById, getCardsByGameId } = useGameDatabase();
     const { addHistoryItem, clearHistory } = useGameHistory();
 
-    // --- ESTADOS DO JOGO ---
     const [gameDetails, setGameDetails] = useState<GameDatabase | null>(null);
     const [secretCode, setSecretCode] = useState<CardDatabase[]>([]);
     const [answerPool, setAnswerPool] = useState<CardDatabase[]>([]);
@@ -81,20 +80,12 @@ export default function TestGameScreen() {
         const newGuess = [...playerGuess];
 
         if (selectedCard) {
-            // --- CENÁRIO 1: O jogador está "segurando" uma carta ---
-
-            // Se o slot clicado já tem uma carta, não faz nada
             if (currentCardInSlot) return;
-
-            // Coloca a carta que estava "na mão" no slot vazio
             newGuess[slotIndex] = selectedCard;
             setPlayerGuess(newGuess);
-            setSelectedCard(null); // Esvazia a "mão" do jogador
+            setSelectedCard(null); 
 
         } else if (currentCardInSlot) {
-            // --- CENÁRIO 2: O jogador NÃO está segurando nada e clica em um slot PREENCHIDO ---
-
-            // Remove a carta do slot (define como null)
             newGuess[slotIndex] = null;
             setPlayerGuess(newGuess);
         }
@@ -193,7 +184,7 @@ export default function TestGameScreen() {
         if (!gameIdNumber) return;
 
         if (!swapOptions) {
-            clearHistory(); //entender se isso vai realmente ficar
+            clearHistory();
         }
 
         clearHistory();
@@ -598,7 +589,6 @@ const styles = StyleSheet.create({
     secretCodeContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
-        // flexWrap: 'wrap',
         gap: 24,
     },
     secretCard: {
