@@ -192,20 +192,37 @@ export default function ManageCards() {
             </View>
             <View style={styles.containerBtn}>
                 <Pressable
-                    style={[styles.testarBtn, !isGameReady && styles.disabledButton]}
-                    // disabled={!isGameReady}
+                    style={styles.disabledButton}
                     onPress={() => {
-                        if (isGameReady) {
-                            Alert.alert("Jogo Incompleto", `Você precisa de pelo menos ${MIN_CORRECT} cartas corretas e ${MIN_INCORRECT} incorretas.`);
-                            return;
+                        if (!isGameReady) {
+                            const title = "Jogo Incompleto";
+                            const message = `Para jogar, é necessário ter no mínimo:\n` +
+                                `• ${MIN_CORRECT} cartas corretas (Atual: ${correctCount})\n` +
+                                `• ${MIN_INCORRECT} cartas incorretas (Atual: ${incorrectCount})\n\n` +
+                                `Por favor, edite o jogo e adicione mais cartas.`;
+
+                            if (Platform.OS === 'web') {
+                                setTimeout(() => {
+                                    window.alert(message);
+                                }, 100);
+                            } else {
+                                Alert.alert(
+                                    title,
+                                    message,
+                                    [
+                                        { text: "Entendi" }
+                                    ]
+                                );
+                            }
+                        } else {
+                            router.push({
+                                pathname: '/(panel)/game_mode/page',
+                                params: { game_id: gameIdNumber }
+                            })
                         }
-                        router.push({
-                            pathname: '/(panel)/game_mode/page',
-                            params: { game_id: gameIdNumber }
-                        })
                     }}
                 >
-                    <Text style={styles.testarBtnTxt}>Testar jogo</Text>
+                    <Text style={[styles.testarBtnTxt, !isGameReady && styles.testarBtnTxtDisabled ]}>Testar jogo</Text>
                 </Pressable>
             </View>
         </>
@@ -388,6 +405,9 @@ const styles = StyleSheet.create({
         color: Colors.light.blue,
         fontFamily: GLOBAL_FONT
     },
+    testarBtnTxtDisabled: {
+        color: Colors.light.darkGrey
+    },
     addCardButton: {
         backgroundColor: Colors.light.blue,
         paddingVertical: 10,
@@ -418,16 +438,12 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingTop: 40,
         width: '100%',
-        // backgroundColor: 'red'
-        // height: 10000,
     },
     card: {
-        // flex: 1,
         aspectRatio: 0.80,
         marginTop: 50,
         margin: 6,
         backgroundColor: '#F8FAFC',
-        // borderRadius: 12,
         borderWidth: 1,
         borderColor: '#E2E8F0',
         justifyContent: 'center',
@@ -467,7 +483,12 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     disabledButton: {
-        backgroundColor: 'rgba(197, 197, 197, 1)',
+        borderWidth: 1,
+        borderColor: Colors.light.darkGrey,
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        borderRadius: 20,
+        backgroundColor: '#FFF',
     },
     statusIndicator: {
         position: 'absolute',
