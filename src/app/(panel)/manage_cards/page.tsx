@@ -192,7 +192,7 @@ export default function ManageCards() {
             </View>
             <View style={styles.containerBtn}>
                 <Pressable
-                    style={styles.disabledButton}
+                    style={[styles.testarBtn, !isGameReady && styles.disabledTestButton]}
                     onPress={() => {
                         if (!isGameReady) {
                             const title = "Jogo Incompleto";
@@ -222,7 +222,7 @@ export default function ManageCards() {
                         }
                     }}
                 >
-                    <Text style={[styles.testarBtnTxt, !isGameReady && styles.testarBtnTxtDisabled ]}>Testar jogo</Text>
+                    <Text style={[styles.testarBtnTxt, !isGameReady && styles.testarBtnTxtDisabled]}>Testar jogo</Text>
                 </Pressable>
             </View>
         </>
@@ -483,6 +483,10 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     disabledButton: {
+        backgroundColor: '#9CA3AF',
+        opacity: 0.7,
+    },
+    disabledTestButton: {
         borderWidth: 1,
         borderColor: Colors.light.darkGrey,
         paddingVertical: 10,
