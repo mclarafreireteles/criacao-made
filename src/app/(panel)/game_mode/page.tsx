@@ -1,30 +1,81 @@
-import React from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Pressable, Alert, Platform } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ScreenContainer } from '@/src/components/ScreenContainer';
 import { ScreenHeader } from '@/src/components/ScreenHeader';
 import Colors from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import { GLOBAL_FONT } from '@/src/components/Fonts';
+import { useGameDatabase } from '@/src/database/useGameDatabase';
 
 export default function GameModeScreen() {
     const router = useRouter();
     const { game_id } = useLocalSearchParams();
     const gameIdNumber = Number(game_id);
 
+    const { getCardsByGameId } = useGameDatabase();
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        async function validateGameRequirements() {
+            if (!gameIdNumber) return;
+
+            try {
+                const cards = await getCardsByGameId(gameIdNumber);
+
+                const correctCount = cards.filter(c => Number(c.card_type) === 1).length;
+                const incorrectCount = cards.filter(c => Number(c.card_type) !== 1).length;
+
+                const MIN_CORRECT = 9;
+                const MIN_INCORRECT = 3;
+
+                if (correctCount < MIN_CORRECT || incorrectCount < MIN_INCORRECT) {
+                    console.log('jogo incompleto');
+
+                    const title = "Jogo Incompleto";
+                    const message = `Para jogar, é necessário ter no mínimo:\n` +
+                        `• ${MIN_CORRECT} cartas corretas (Atual: ${correctCount})\n` +
+                        `• ${MIN_INCORRECT} cartas incorretas (Atual: ${incorrectCount})\n\n` +
+                        `Por favor, edite o jogo e adicione mais cartas.`;
+
+                    if (Platform.OS === 'web') {
+                        setTimeout(() => {
+                            window.alert(message);
+                            router.back();
+                        }, 100);
+                    } else {
+                        Alert.alert(
+                            title,
+                            message,
+                            [
+                                { text: "Voltar", onPress: () => router.back() }
+                            ]
+                        );
+                    }
+                } else {
+                    setIsLoading(false);
+                }
+            } catch (error) {
+                console.log("Erro ao validar jogo:", error);
+                setIsLoading(false);
+            }
+        }
+        validateGameRequirements();
+    }, [gameIdNumber]);
+
     const handleRandomMode = () => {
         router.push({
             pathname: '/test_game/select_level',
-            params: { 
+            params: {
                 game_id: gameIdNumber,
-                mode: 'random' 
+                mode: 'random'
             }
         });
     };
 
     const handleManualMode = () => {
         router.push({
-            pathname: '/manual_setup/page', 
+            pathname: '/manual_setup/page',
             params: { game_id: gameIdNumber }
         });
     };
