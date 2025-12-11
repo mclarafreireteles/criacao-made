@@ -27,6 +27,9 @@ const LEVEL_CONFIG: Record<GameLevel, { maxAttempts: number, swapCount: number }
 
 const DEFAULT_LEVEL: GameLevel = 1;
 
+const MIN_CORRECT = 9;
+const MIN_INCORRECT = 3;
+
 
 export default function TestGameScreen() {
     const router = useRouter();
@@ -223,8 +226,11 @@ export default function TestGameScreen() {
             setActiveCodeLength(codeLength);
 
             const correctCards = cardsData.filter(card => Number(card.card_type) === 1);
+            const incorrectCards = cardsData.filter(card => Number(card.card_type) !== 1);
 
-            if (correctCards.length < codeLength) {
+            
+
+            if (correctCards.length < codeLength || correctCards.length < MIN_CORRECT || incorrectCards.length < MIN_INCORRECT) {
                 showAlert(
                     "Cartas Insuficientes",
                     `Este jogo está configurado para um código de ${codeLength} cartas, mas você só criou ${correctCards.length} carta(s) correta(s).\n\nAdicione mais cartas corretas para poder testar.`
@@ -235,7 +241,6 @@ export default function TestGameScreen() {
 
             // --- 3. SE PASSOU, PREPARA O JOGO ---
             setPlayerGuess(Array(codeLength).fill(null));
-            const incorrectCards = cardsData.filter(card => Number(card.card_type) !== 1);
 
             // --- LÓGICA DE MODO MANUAL vs ALEATÓRIO ---
             if (mode === 'manual' && typeof manual_code === 'string' && !swapOptions) {
