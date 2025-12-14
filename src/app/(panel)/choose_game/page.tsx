@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FlatList, Pressable, View, Text, StyleSheet } from "react-native";
+import { FlatList, Text, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 
 import { Game } from "@/src/components/Game";
@@ -70,23 +70,6 @@ export default function ChooseGame(){
 }
 
 const styles = StyleSheet.create({
-    container: {
-        paddingHorizontal: 45, 
-        paddingVertical: 60,
-        backgroundColor: Colors.light.white,
-        flex: 1
-    },
-    chooseGameTitle: {
-        fontSize: 24,
-        alignSelf: 'center',
-        marginBottom: 30,
-    },
-    backButton: {
-        position: 'absolute',
-        top: 60,
-        left: 40,
-        zIndex: 1, 
-    },
     emptyText: {
         fontSize: 16,
         color: Colors.light.darkGrey,

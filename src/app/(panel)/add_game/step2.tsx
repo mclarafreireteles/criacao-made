@@ -1,10 +1,8 @@
 import { View, Button, StyleSheet, Text, Pressable, Alert, Image, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
-import { Input } from "@/src/components/input";
 import { useGameForm } from "@/src/contexts/GameFormContext";
 import Colors from "@/constants/Colors";
 import { StyledInput } from "@/src/components/StyledInput";
-import { BackButtonIcon } from "@/src/components/icons/BackButtonIcon";
 import { cardBacks } from "@/constants/cardBacks";
 import { ScreenContainer } from "@/src/components/ScreenContainer";
 import { ScreenHeader } from "@/src/components/ScreenHeader";
@@ -80,62 +78,6 @@ export default function Step2() {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        display: 'flex',
-        flex: 1,
-        paddingVertical: 60,
-        alignItems: 'center',
-        backgroundColor: Colors.light.white,
-        maxWidth: '100%',
-        justifyContent: "space-between",
-    },
-    createGameTitle: {
-        fontSize: 24,
-    },
-    containerInput: {
-        minWidth: '80%',
-    },
-    continuarBtn: {
-        borderWidth: 1,
-        borderColor: Colors.light.blue,
-        paddingVertical: 10,
-        paddingHorizontal: 15,
-        borderRadius: 20,
-        backgroundColor: '#FFF',
-        width: '80%'
-    },
-    continuarBtnTxt: {
-        textAlign: 'center',
-        fontSize: 16,
-        fontWeight: 600,
-        color: Colors.light.blue
-    },
-    voltarBtn: {
-        borderWidth: 1,
-        borderColor: Colors.light.blue,
-        paddingVertical: 10,
-        paddingHorizontal: 15,
-        borderRadius: 20,
-        backgroundColor: '#FFF',
-        width: '80%'
-    },
-    voltarBtnTxt: {
-        textAlign: 'center',
-        fontSize: 16,
-        fontWeight: 600,
-        color: Colors.light.blue
-    },
-    containerBtn: {
-        width: '100%',
-        alignItems: 'center',
-        gap: 12
-    },
-    backButton: {
-        position: 'absolute',
-        top: 60,
-        left: 40,
-        zIndex: 1,
-    },
     cardBackSelector: {
         flexDirection: 'row',
         paddingVertical: 10,

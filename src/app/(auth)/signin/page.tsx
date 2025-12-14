@@ -145,20 +145,8 @@ const styles = StyleSheet.create({
         display: 'flex',
         gap: 15,
         marginTop: 80,
-        // backgroundColor: "red",
         maxWidth: 450,
         width: '100%'
-    },
-    inputLogin: {
-        borderColor: Colors.light.grey,
-        borderWidth: 1,
-        borderRadius: 20,
-        color: Colors.light.darkGrey,
-        paddingHorizontal: 20,
-        paddingVertical: 10,
-        fontSize: 14,
-        fontWeight: 500,
-        minHeight: 45
     },
     loginButton: {
         borderRadius: 20,
@@ -186,21 +174,6 @@ const styles = StyleSheet.create({
     },
     signUpText: {
         textAlign: 'center'
-    },
-    inputLoginPassword: {
-        borderColor: Colors.light.grey,
-        borderWidth: 1,
-        borderRadius: 20,
-        paddingHorizontal: 20,
-        flexDirection: 'row',
-        alignItems: 'center',
-        minHeight: 45
-    },
-    inputPassword: {
-        flex: 1,
-        color: Colors.light.darkGrey,
-        fontSize: 14,
-        fontWeight: '500',
     },
     icon: {
         paddingLeft: 10

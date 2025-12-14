@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { View, Text, StyleSheet, FlatList,Platform } from 'react-native'
+import { View, StyleSheet, FlatList,Platform } from 'react-native'
 import { ScreenHeader } from "@/src/components/ScreenHeader";
 import { AppButton } from "@/src/components/AppButton";
 import { useRouter } from "expo-router";
@@ -84,30 +84,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    stepTitle: {
-        fontSize: 26,
-        fontWeight: 'bold',
-        marginTop: 30,
-        marginBottom: 16,
-        textAlign: 'center',
-        color: '#2D3748',
-    },
-    stepDescription: {
-        fontSize: 16,
-        textAlign: 'center',
-        color: '#718096',
-        lineHeight: 24,
-    },
-    detailsContainer: {
-        marginTop: 20,
-        alignItems: 'flex-start',
-    },
-    detailItem: {
-        fontSize: 15,
-        color: '#4A5568',
-        lineHeight: 22,
-        marginBottom: 5,
-    },
     pagination: {
         flexDirection: 'row',
         height: 40,
@@ -120,12 +96,6 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         backgroundColor: '#CBD5E0',
         marginHorizontal: 4,
-    },
-    dotActive: {
-        backgroundColor: '#4A5568',
-        width: 12,
-        height: 12,
-        borderRadius: 6,
     },
     footer: {
         width: '100%',

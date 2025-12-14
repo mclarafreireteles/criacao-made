@@ -73,7 +73,6 @@ export default function SelectLevelScreen() {
     );
 }
 
-// ESTILOS (Copiados diretamente do GameModeScreen.tsx)
 const styles = StyleSheet.create({
     container: {
         flex: 1,

@@ -1,9 +1,7 @@
 import React from 'react';
-import { Image, View, Text, TextInput, Pressable, Alert, StyleSheet } from 'react-native';
+import { Image, View, Text, Pressable, StyleSheet } from 'react-native';
 import { Link } from 'expo-router'
-import { useState } from 'react';
 import Colors from '@/constants/Colors';
-import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import Head from "expo-router/head";
 import { GLOBAL_FONT } from "@/src/components/Fonts";
@@ -11,10 +9,6 @@ import { GLOBAL_FONT } from "@/src/components/Fonts";
 SplashScreen.preventAutoHideAsync();
 
 export default function Index() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [loading, setLoading] = useState(false);
-
     
     return (
         <>

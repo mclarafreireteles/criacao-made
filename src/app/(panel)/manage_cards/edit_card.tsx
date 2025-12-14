@@ -33,27 +33,20 @@ export default function EditCardScreen() {
                 mediaTypes: ['images'], 
                 allowsEditing: true,
                 aspect: [4, 5],
-                // IMPORTANTE: Qualidade 0.5 para não pesar o banco SQLite na Web
                 quality: 0.5, 
-                // IMPORTANTE: Pedimos para gerar o texto da imagem
                 base64: true, 
             });
 
             if (!result.canceled) {
                 if (Platform.OS === 'web') {
-                    // --- LÓGICA PARA WEB (SQLite) ---
-                    // Pegamos o código base64 e montamos o cabeçalho "data:image..."
-                    // Assim, salvamos a FOTO REAL no banco, e não apenas um link.
                     const imageBase64 = `data:image/jpeg;base64,${result.assets[0].base64}`;
                     setImageUri(imageBase64);
                 } else {
-                    // --- LÓGICA PARA CELULAR (Android/iOS) ---
-                    // No celular, o arquivo é persistente, então salvamos apenas o caminho
-                    // para não deixar o banco de dados gigante e lento.
                     setImageUri(result.assets[0].uri);
                 }
             }
         } catch (error) {
+            console.log(error);
             Alert.alert("Erro", "Não foi possível abrir a galeria.");
         }
     };

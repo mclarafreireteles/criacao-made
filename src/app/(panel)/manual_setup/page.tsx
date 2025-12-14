@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, Alert, Platform, ScrollView } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import Colors from '@/constants/Colors';
 import { ScreenContainer } from '@/src/components/ScreenContainer';
 import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { AppButton } from '@/src/components/AppButton';
@@ -230,65 +229,12 @@ const styles = StyleSheet.create({
         gap: 10,
         marginBottom: 24
     },
-    slotWrapper: {
-        width: 90,
-        aspectRatio: 0.8,
-        overflow: 'hidden',
-    },
-    slotEmpty: {
-        width: '100%',
-        height: '100%',
-        backgroundColor: '#FFFFFF',
-        borderRadius: 12,
-        borderWidth: 2,
-        borderStyle: 'dashed',
-        borderColor: '#9CA3AF',
-    },
-    cardWrapper: {
-        width: 90,
-        aspectRatio: 0.8,
-        margin: 3,
-        backgroundColor: '#FFFFFF',
-        overflow: 'hidden',
-        borderWidth: 2,
-        borderColor: 'transparent',
-    },
-    cardSelected: {
-        borderColor: Colors.light.blue,
-        transform: [{ scale: 1.05 }],
-    },
-    cardFrontImage: {
-        width: '100%',
-        height: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    cardText: {
-        color: 'black',
-        fontSize: 14,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        padding: 5,
-        fontFamily: GLOBAL_FONT
-    },
     footer: {
         padding: 20,
-    },
-    answerPoolContent: {
-        alignItems: 'center',
-        height: '100%'
-    },
-    answerPoolGrid: {
-        flex: 1,
-        marginTop: 10,
-        alignSelf: 'center',
-        width: '100%',
-        // paddingHorizontal: 20,
     },
     answerPoolScroll: {
         // backgroundColor: 'red',
     },
-
     answerPoolContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',

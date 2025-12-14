@@ -144,12 +144,6 @@ const styles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'space-around'
     },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        marginBottom: 30,
-    },
     label: {
         fontSize: 16,
         color: '#333',
@@ -167,17 +161,6 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
         fontWeight: 'bold',
-    },
-    switchContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingVertical: 10,
-        marginBottom: 20,
-    },
-    switchLabel: {
-        fontSize: 16,
-        color: '#333',
     },
     classifyLabel: {
         fontSize: 16,

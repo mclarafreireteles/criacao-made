@@ -1,6 +1,5 @@
-import { View, Button, Alert, Text, StyleSheet, Pressable } from "react-native";
+import { View, Alert, Text, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
-import { Input } from "@/src/components/input";
 import { useGameForm } from "@/src/contexts/GameFormContext";
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useGameDatabase } from "@/src/database/useGameDatabase";
@@ -59,7 +58,7 @@ export default function Step3() {
                 ? formData.grade_other
                 : grade.find(g => g.id === formData.grade)?.label || formData.grade;
 
-            const finalData = { ...formData, user_id: user.id, subject: finalSubject, grade: finalGrade, secret_code_length: null };
+            const finalData = { ...formData, user_id: user.id, subject: finalSubject, grade: finalGrade, secret_code_length: null, manual_code_ids: null };
 
             delete (finalData as Partial<typeof finalData>).subject_other;
             delete (finalData as Partial<typeof finalData>).grade_other;
@@ -74,7 +73,8 @@ export default function Step3() {
                  const { insertedRowId } = await gameDatabase.createGame({
                     ...finalData,
                     user_id: user.id,
-                    secret_code_length: null
+                    secret_code_length: null,
+                    manual_code_ids: null
                  });
 
                 if (insertedRowId) {
@@ -170,41 +170,6 @@ const styles = StyleSheet.create({
     containerInput: {
         minWidth: '80%',
         paddingHorizontal: 45
-    },
-    continuarBtn: {
-        borderWidth: 1,
-        borderColor: Colors.light.blue,
-        paddingVertical: 10,
-        paddingHorizontal: 15,
-        borderRadius: 20,
-        backgroundColor: Colors.light.blue,
-        width: '80%'
-    },
-    continuarBtnTxt: {
-        textAlign: 'center',
-        fontSize: 16,
-        fontWeight: 600,
-        color: Colors.light.white
-    },
-    voltarBtn: {
-        borderWidth: 1,
-        borderColor: Colors.light.blue,
-        paddingVertical: 10,
-        paddingHorizontal: 15,
-        borderRadius: 20,
-        backgroundColor: '#FFF',
-        width: '80%'
-    },
-    voltarBtnTxt: {
-        textAlign: 'center',
-        fontSize: 16,
-        fontWeight: 600,
-        color: Colors.light.blue
-    },
-    containerBtn: {
-        width: '100%',
-        alignItems: 'center',
-        gap: 12
     },
     backButton: {
         position: 'absolute',

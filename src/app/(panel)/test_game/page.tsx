@@ -553,27 +553,6 @@ const styles = StyleSheet.create({
         gap: 24,
         marginBottom: 30,
     },
-    guessSlot: {
-        minWidth: 90,
-        aspectRatio: 0.8,
-        backgroundColor: Colors.light.white,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderWidth: 2,
-        borderStyle: 'dashed',
-        borderColor: '#9CA3AF',
-    },
-    guessSlotText: {
-        color: Colors.light.text,
-        fontSize: 18,
-        fontWeight: 600,
-        textAlign: 'center',
-    },
-    answerCardText: {
-        fontSize: 18,
-        fontWeight: '600',
-        textAlign: 'center'
-    },
     feedbackContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
@@ -630,19 +609,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         gap: 24,
     },
-    secretCard: {
-        margin: 5,
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        aspectRatio: 0.8,
-        elevation: 2,
-        maxWidth: 110,
-    },
-    cardBackImage: {
-        width: '100%',
-        height: '100%',
-    },
     section: {
         marginBottom: 20,
     },
@@ -652,49 +618,6 @@ const styles = StyleSheet.create({
         color: '#4B5563',
         marginBottom: 10,
         fontFamily: GLOBAL_FONT
-    },
-    secretCardText: {
-        fontSize: 14,
-        fontWeight: 600
-    },
-    backgroundImage: {
-        flex: 1,
-    },
-    cardFrontImage: {
-        width: '100%',
-        height: '100%',
-        resizeMode: 'cover',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    guessSlotEmpty: {
-        width: '100%',
-        height: '100%',
-        backgroundColor: '#FFFFFF',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    answerCardWrapper: {
-        minWidth: 90,
-        maxWidth: 110,
-        aspectRatio: 0.8,
-        backgroundColor: '#FFFFFF',
-        justifyContent: 'center',
-        alignItems: 'center',
-        overflow: 'hidden',
-        elevation: 2,
-    },
-    answerCardUsed: {
-        opacity: 0.3,
-    },
-    answerCardSelected: {
-        borderWidth: 2,
-        borderColor: Colors.light.blue,
-        transform: [{ scale: 1.05 }],
-    },
-    answerPoolContent: {
-        alignItems: 'center',
-        height: '100%'
     },
     scrollContentContainer: {
         flexGrow: 1,
@@ -734,19 +657,6 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         fontFamily: GLOBAL_FONT
     },
-    modalCloseButton: {
-        marginTop: 25,
-        backgroundColor: Colors.light.blue,
-        borderRadius: 20,
-        paddingVertical: 12,
-        paddingHorizontal: 40,
-        elevation: 2,
-    },
-    modalCloseButtonText: {
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: 16,
-    },
     gameOverText: {
         fontSize: 18,
         fontWeight: 'bold',
@@ -754,34 +664,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         paddingVertical: 15,
         fontFamily: GLOBAL_FONT
-    },
-    gameInfoContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        gap: 15,
-        marginBottom: 20,
-    },
-    infoBox: {
-        flex: 1,
-        backgroundColor: '#F9FAFB',
-        borderColor: '#E5E7EB',
-        borderWidth: 1,
-        paddingVertical: 10,
-        paddingHorizontal: 10,
-        borderRadius: 12,
-        alignItems: 'center',
-    },
-    infoBoxLabel: {
-        fontSize: 12,
-        fontWeight: '600',
-        color: '#6B7280',
-        textTransform: 'uppercase',
-    },
-    infoBoxValue: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#111827',
-        marginTop: 4,
     },
     victoryTitle: {
         color: '#16A34A',

@@ -146,29 +146,6 @@ export default function Step1() {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        display: 'flex',
-        flex: 1,
-        paddingVertical: 60,
-        alignItems: 'center',
-        backgroundColor: Colors.light.white,
-        maxWidth: '100%',
-        justifyContent: "space-between",
-    },
-    createGameTitle: {
-        fontSize: 24,
-        marginBottom: 20
-    },
-    containerInput: {
-        minWidth: '80%',
-    },
-    inputText: {
-        borderWidth: 1,
-        paddingHorizontal: 15,
-        paddingVertical: 12,
-        borderRadius: 20,
-        borderColor: Colors.light.grey
-    },
     optionsContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
@@ -199,27 +176,6 @@ const styles = StyleSheet.create({
     optionTextSelected: {
         color: '#FFF',
         fontWeight: 'bold',
-    },
-    continuarBtn: {
-        borderWidth: 1,
-        borderColor: Colors.light.blue,
-        paddingVertical: 10,
-        paddingHorizontal: 15,
-        borderRadius: 20,
-        backgroundColor: '#FFF',
-        width: '80%'
-    },
-    continuarBtnTxt: {
-        textAlign: 'center',
-        fontSize: 16,
-        fontWeight: 600,
-        color: Colors.light.blue
-    },
-    backButton: {
-        position: 'absolute',
-        top: 60,
-        left: 40,
-        zIndex: 1,
     },
     modelIcon: {
         width: 100,

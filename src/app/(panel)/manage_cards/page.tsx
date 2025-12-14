@@ -332,22 +332,6 @@ export default function ManageCards() {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        // gap: 30,
-        // justifyContent: 'space-between',
-        // paddingHorizontal: 20,
-        width: '100%',
-    },
-    title: {
-        fontSize: 24,
-    },
-    safeArea: {
-        flex: 1,
-        backgroundColor: Colors.light.white,
-        width: '100%'
-    },
     settingSection: {
         marginBottom: 24,
         flex: 1
@@ -386,20 +370,6 @@ const styles = StyleSheet.create({
         width: '100%',
         gap: 10,
         paddingBottom: 60,
-    },
-    finalizarBtn: {
-        borderWidth: 1,
-        borderColor: Colors.light.blue,
-        paddingVertical: 10,
-        paddingHorizontal: 15,
-        borderRadius: 20,
-        backgroundColor: '#FFF',
-    },
-    finalizarBtnTxt: {
-        textAlign: 'center',
-        fontSize: 16,
-        fontWeight: 600,
-        color: Colors.light.blue
     },
     testarBtn: {
         borderWidth: 1,
@@ -463,29 +433,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: Colors.light.darkGrey,
     },
-    grid: {
-        flex: 1,
-        paddingTop: 40,
-        width: '100%',
-    },
-    card: {
-        aspectRatio: 0.80,
-        marginTop: 50,
-        margin: 6,
-        backgroundColor: '#F8FAFC',
-        borderWidth: 1,
-        borderColor: '#E2E8F0',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 5,
-        maxWidth: 100,
-    },
-    cardText: {
-        fontSize: 12,
-        fontWeight: '500',
-        textAlign: 'center',
-        fontFamily: GLOBAL_FONT
-    },
     infoLink: {
         flexDirection: 'row',
         justifyContent: 'center',
@@ -499,14 +446,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '500',
         fontFamily: GLOBAL_FONT
-    },
-    editBtn: {
-        position: 'absolute',
-        top: 4,
-        right: 4,
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
-        borderRadius: 10,
-        padding: 2,
     },
     headerWrapper: {
         width: '100%',
@@ -522,13 +461,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         borderRadius: 20,
         backgroundColor: '#FFF',
-    },
-    statusIndicator: {
-        position: 'absolute',
-        bottom: 5,
-        left: 5,
-        backgroundColor: 'white',
-        borderRadius: 12,
     },
     imageSelector: {
         flexDirection: 'row',
@@ -552,44 +484,13 @@ const styles = StyleSheet.create({
         height: '100%',
         resizeMode: 'cover'
     },
-    cardWrapper: {
-        aspectRatio: 0.80,
-        margin: 6,
-        width: 80,
-        maxWidth: 100,
-    },
-    cardBackground: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: Colors.light.white,
-        overflow: 'hidden',
-    },
-    cardBackgroundImageStyle: {
-        // borderRadius: 11,
-        resizeMode: 'cover',
-        width: '100%',
-        height: '100%'
-    },
-    cardContent: {
-        width: '100%',
-        height: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 5,
-    },
-    cardContentImage: {
-        width: '85%',
-        height: '85%',
-        resizeMode: 'contain',
-    },
     imageSelectorContent: {
         paddingVertical: 10,
     },
     scrollContainer: {
         paddingHorizontal: 45,
         paddingTop: 40,
-        paddingBottom: 20, // evita corte no rodapé
+        paddingBottom: 20, 
         alignItems: 'center',
         backgroundColor: Colors.light.white,
     },

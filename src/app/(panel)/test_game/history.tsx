@@ -4,7 +4,7 @@ import { useLocalSearchParams } from "expo-router";
 import { GameDatabase, useGameDatabase } from "@/src/database/useGameDatabase";
 import { useEffect, useState } from "react";
 import { FeedbackHistoryItem } from "@/src/contexts/GameHistoryContext";
-import { View, Text, ImageBackground, StyleSheet, FlatList, ImageSourcePropType } from "react-native";
+import { View, Text, StyleSheet, FlatList, ImageSourcePropType } from "react-native";
 import { ScreenContainer } from "@/src/components/ScreenContainer";
 import { ScreenHeader } from "@/src/components/ScreenHeader";
 import { PlayingCard } from "@/src/components/game/PlayingCard";
