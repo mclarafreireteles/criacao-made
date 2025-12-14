@@ -24,12 +24,14 @@ export type CardDatabase = {
     game_id: number;
     card_text: string;
     card_type?: number;
+    image_uri?: string;
 }
 
 export type NewCardDatabase = {
     game_id: number;
     card_text: string;
     card_type?: number;
+    image_uri?: string;
 }
 
 export function useGameDatabase() {
@@ -168,13 +170,14 @@ export function useGameDatabase() {
 
     async function createCard(data: Omit<CardDatabase, 'id'>) {
         const statement = await database.prepareAsync(
-            "INSERT INTO cards (game_id, card_text, card_type) VALUES ($game_id, $card_text, $card_type)"
+            "INSERT INTO cards (game_id, card_text, card_type, image_uri) VALUES ($game_id, $card_text, $card_type, $image_uri)"
         );
         try {
             const result = await statement.executeAsync({
                 $game_id: data.game_id,
                 $card_text: data.card_text,
                 $card_type: data.card_type ? 1 : 0,
+                $image_uri: data.image_uri ?? null
             });
             const insertedRowId = result.lastInsertRowId;
             return { insertedRowId }
@@ -187,11 +190,11 @@ export function useGameDatabase() {
         await database.runAsync("DELETE FROM cards WHERE id = ?", [cardId])
     }
 
-    async function updateCard(cardId: number, newText: string, isCorrect: boolean) {
+    async function updateCard(cardId: number, newText: string, isCorrect: boolean, imageUri?: string | null) {
         try {
             await database.runAsync(
-                'UPDATE cards SET card_text = ?, card_type = ? WHERE id = ?',
-                [newText, isCorrect ? 1 : 0, cardId]
+                'UPDATE cards SET card_text = ?, card_type = ?, image_uri = ? WHERE id = ?',
+                [newText, isCorrect ? 1 : 0, imageUri ?? null, cardId]
             );
         } catch (error) {
             console.error('Erro ao atualizar a carta:', error);

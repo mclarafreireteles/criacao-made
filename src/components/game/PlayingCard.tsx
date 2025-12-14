@@ -1,5 +1,4 @@
-import React from 'react';
-import { Pressable, View, Text, ImageBackground, StyleSheet, ImageSourcePropType, ViewStyle } from 'react-native';
+import { Pressable, View, Text, ImageBackground, StyleSheet, Image, ImageSourcePropType, ViewStyle } from 'react-native';
 import Colors from '@/constants/Colors';
 import { GLOBAL_FONT } from '../Fonts';
 
@@ -8,59 +7,58 @@ export const CARD_ASPECT_RATIO = 0.8;
 
 type Props = {
     text?: string;
-    imageSource?: ImageSourcePropType; 
-    variant: 'empty' | 'back' | 'front'; 
-    isSelected?: boolean; 
-    isUsed?: boolean; 
+    contentImageUri?: string;
+    imageSource?: ImageSourcePropType;
+    variant: 'empty' | 'back' | 'front';
+    isSelected?: boolean;
+    isUsed?: boolean;
     onPress?: () => void;
     disabled?: boolean;
     style?: ViewStyle;
 };
 
-export function PlayingCard({ 
-    text, 
-    imageSource, 
-    variant, 
-    isSelected, 
-    isUsed, 
-    onPress, 
+export function PlayingCard({
+    text,
+    contentImageUri,
+    imageSource,
+    variant,
+    isSelected,
+    isUsed,
+    onPress,
     disabled,
-    style 
+    style
 }: Props) {
 
-    // 1. Variante: Slot Vazio (Tracejado)
     if (variant === 'empty') {
         return (
-            <Pressable 
-                onPress={onPress} 
+            <Pressable
+                onPress={onPress}
                 disabled={disabled}
                 style={[styles.container, styles.emptyContainer, style]}
             >
-                <View /> 
+                <View />
             </Pressable>
         );
     }
 
-    // 2. Variante: Verso da Carta (Imagem de Fundo)
     if (variant === 'back' && imageSource) {
         return (
             <View style={[styles.container, styles.cardContainer, style]}>
-                <ImageBackground 
-                    source={imageSource} 
-                    style={styles.image} 
-                    resizeMode="cover" 
+                <ImageBackground
+                    source={imageSource}
+                    style={styles.image}
+                    resizeMode="cover"
                 />
             </View>
         );
     }
 
-    // 3. Variante: Frente da Carta (Com Texto)
     return (
-        <Pressable 
+        <Pressable
             onPress={onPress}
             disabled={disabled || isUsed}
             style={[
-                styles.container, 
+                styles.container,
                 styles.cardContainer,
                 isSelected && styles.selected,
                 isUsed && styles.used,
@@ -68,12 +66,38 @@ export function PlayingCard({
             ]}
         >
             {imageSource && (
-                <ImageBackground 
-                    source={imageSource} 
-                    style={styles.image} 
+                <ImageBackground
+                    source={imageSource}
+                    style={styles.image}
                     resizeMode="cover"
                 >
-                    {text && <Text style={styles.text}>{text}</Text>}
+                    <View style={styles.innerContent}>
+                        {/* 1. SE TIVER IMAGEM, MOSTRA A IMAGEM */}
+                        {contentImageUri ? (
+                            <Image
+                                source={{ uri: contentImageUri }}
+                                style={[
+                                    styles.contentImage,
+                                    // Se tiver texto também, diminui um pouco a imagem para caber tudo
+                                    text ? { height: '60%' } : { height: '85%' }
+                                ]}
+                                resizeMode="contain"
+                            />
+                        ) : null}
+
+                        {/* 2. SE TIVER TEXTO, MOSTRA O TEXTO */}
+                        {text ? (
+                            <Text
+                                style={[
+                                    styles.cardText,
+                                    contentImageUri && { fontSize: 14, marginTop: 2 }
+                                ]}
+                                numberOfLines={3}
+                            >
+                                {text}
+                            </Text>
+                        ) : null}
+                    </View>
                 </ImageBackground>
             )}
         </Pressable>
@@ -85,7 +109,7 @@ const styles = StyleSheet.create({
         width: CARD_WIDTH,
         aspectRatio: CARD_ASPECT_RATIO,
         overflow: 'hidden',
-        margin: 4, 
+        margin: 4,
     },
     emptyContainer: {
         backgroundColor: Colors.light.white,
@@ -95,11 +119,25 @@ const styles = StyleSheet.create({
     },
     cardContainer: {
         backgroundColor: '#FFFFFF',
-        elevation: 3, 
-        shadowColor: '#000', 
+        elevation: 3,
+        shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.2,
         shadowRadius: 3,
+    },
+    cardText: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        color: '#000',
+        fontFamily: GLOBAL_FONT,
+        textShadowColor: 'rgba(255, 255, 255, 0.8)',
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 1,
+    },
+    contentImage: {
+        width: '100%',
+        borderRadius: 4,
     },
     image: {
         width: '100%',
@@ -108,14 +146,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     text: {
-        fontSize: 18,
-        fontWeight: '700',
-        color: '#000', 
+        fontSize: 20,
+        fontWeight: '500',
+        color: '#000',
         textAlign: 'center',
         textShadowColor: 'rgba(255, 255, 255, 0.8)',
         textShadowOffset: { width: 0, height: 1 },
         textShadowRadius: 4,
         fontFamily: GLOBAL_FONT
+    },
+    innerContent: {
+        width: '85%',
+        height: '85%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 1,
     },
     // Estados
     selected: {

@@ -3,6 +3,7 @@ import { type SQLiteDatabase } from 'expo-sqlite'
 export async function initializeDatabase(database: SQLiteDatabase) {
     await database.execAsync("PRAGMA foreign_keys = ON;");
 
+
     await database.execAsync(`
         CREATE TABLE IF NOT EXISTS games (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -22,7 +23,6 @@ export async function initializeDatabase(database: SQLiteDatabase) {
             secret_code_length INTEGER,
             manual_code_ids TEXT
         );
-        
 
         CREATE TABLE IF NOT EXISTS cards (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -30,6 +30,7 @@ export async function initializeDatabase(database: SQLiteDatabase) {
             card_text TEXT NOT NULL,
             card_type INTEGER DEFAULT 0, 
             display_order INTEGER DEFAULT 0,
+            image_uri TEXT,
             FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE
         );
 

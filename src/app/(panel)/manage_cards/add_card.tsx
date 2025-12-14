@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable, Alert, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Alert, Image, Platform } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useGameDatabase } from '@/src/database/useGameDatabase';
 import { StyledInput } from '@/src/components/StyledInput';
 import Colors from '@/constants/Colors';
 import { ScreenHeader } from '@/src/components/ScreenHeader';
+import * as ImagePicker from 'expo-image-picker';
+import { Ionicons } from '@expo/vector-icons';
+import { ScreenContainer } from '@/src/components/ScreenContainer';
 
 export default function AddCardScreen() {
     const router = useRouter();
@@ -15,6 +18,42 @@ export default function AddCardScreen() {
     const [cardText, setCardText] = useState('');
     const [isCorrect, setIsCorrect] = useState<number | null>(null);
     const [loading, setLoading] = useState(false);
+    const [imageUri, setImageUri] = useState<string | null>(null);
+
+    const pickImage = async () => {
+        try {
+            const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ['images'], 
+                allowsEditing: true,
+                aspect: [4, 5],
+                // IMPORTANTE: Qualidade 0.5 para não pesar o banco SQLite na Web
+                quality: 0.5, 
+                // IMPORTANTE: Pedimos para gerar o texto da imagem
+                base64: true, 
+            });
+
+            if (!result.canceled) {
+                if (Platform.OS === 'web') {
+                    // --- LÓGICA PARA WEB (SQLite) ---
+                    // Pegamos o código base64 e montamos o cabeçalho "data:image..."
+                    // Assim, salvamos a FOTO REAL no banco, e não apenas um link.
+                    const imageBase64 = `data:image/jpeg;base64,${result.assets[0].base64}`;
+                    setImageUri(imageBase64);
+                } else {
+                    // --- LÓGICA PARA CELULAR (Android/iOS) ---
+                    // No celular, o arquivo é persistente, então salvamos apenas o caminho
+                    // para não deixar o banco de dados gigante e lento.
+                    setImageUri(result.assets[0].uri);
+                }
+            }
+        } catch (error) {
+            Alert.alert("Erro", "Não foi possível abrir a galeria.");
+        }
+    };
+
+    const removeImage = () => {
+        setImageUri(null);
+    }
 
     const handleSetCorrect = () => {
         setIsCorrect(1);
@@ -25,11 +64,11 @@ export default function AddCardScreen() {
     }
 
     const handleSaveCard = async () => {
-        if (cardText.trim() === '') return Alert.alert("Erro", "O texto da carta não pode ser vazio.");
+        if (cardText.trim() === '' && !imageUri) return Alert.alert("Erro", "O texto da carta não pode ser vazio.");
         if (isCorrect === null) return Alert.alert("Atenção", "Por favor, classifique a resposta como correta ou incorreta.");
         setLoading(true);
         try {
-            await createCard({ game_id: gameIdNumber, card_text: cardText, card_type: isCorrect });
+            await createCard({ game_id: gameIdNumber, card_text: cardText, card_type: isCorrect, image_uri: imageUri ?? undefined });
             router.back();
         } catch (error) {
             console.error("Erro ao salvar carta:", error);
@@ -40,18 +79,37 @@ export default function AddCardScreen() {
     };
 
     return (
-        <SafeAreaView style={styles.safeArea}>
+        <ScreenContainer>
+            <ScreenHeader title="Adicionar carta" />
             <View style={styles.container}>
-                <ScreenHeader title="Adicionar carta" />
-                
-                <StyledInput
-                    label="Resposta da Carta"
-                    placeholder="Digite o código secreto ou pergunta..."
-                    value={cardText}
-                    onChangeText={setCardText}
-                    multiline={true}
-                    numberOfLines={4}
-                />
+                <View>                
+                    <StyledInput
+                        label="Resposta da Carta"
+                        placeholder="Digite o código secreto ou pergunta..."
+                        value={cardText}
+                        onChangeText={setCardText}
+                        multiline={true}
+                        numberOfLines={4}
+                    />
+
+                    <Text style={styles.label}>Imagem da Carta (Opcional)</Text>
+
+                    {/* --- ÁREA DE SELEÇÃO DE IMAGEM --- */}
+
+                    {imageUri ? (
+                        <View style={styles.imagePreviewContainer}>
+                            <Image source={{ uri: imageUri }} style={styles.imagePreview} />
+                            <Pressable style={styles.removeImageButton} onPress={removeImage}>
+                                <Ionicons name="trash-outline" size={20} color="#fff" />
+                            </Pressable>
+                        </View>
+                    ) : (
+                        <Pressable style={styles.imageSelectButton} onPress={pickImage}>
+                            <Ionicons name="image-outline" size={32} color={Colors.light.blue} />
+                            <Text style={styles.imageSelectText}>Escolher Imagem da Galeria</Text>
+                        </Pressable>
+                    )}
+                </View>
 
                 <Text style={styles.classifyLabel}>Classificar resposta</Text>
                 <View style={styles.classifyContainer}>
@@ -68,28 +126,35 @@ export default function AddCardScreen() {
                         <Text style={[styles.classifyButtonText, isCorrect == 1 && styles.correctTextActive]}>Correta</Text>
                     </Pressable>
                 </View>
-        
+
 
                 <Pressable style={styles.button} onPress={handleSaveCard} disabled={loading}>
                     <Text style={styles.buttonText}>{loading ? 'Salvando...' : 'Salvar Carta'}</Text>
                 </Pressable>
             </View>
-        </SafeAreaView>
+        </ScreenContainer>
     );
 }
 
 const styles = StyleSheet.create({
-    safeArea: { flex: 1, backgroundColor: '#fff' },
     container: {
         flex: 1,
-        padding: 20,
-        marginVertical: 60
+        backgroundColor: Colors.light.white,
+        paddingHorizontal: 45,
+        display: 'flex',
+        justifyContent: 'space-around'
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 30,
+    },
+    label: {
+        fontSize: 16,
+        color: '#333',
+        marginBottom: 8,
+        fontWeight: '500',
     },
     button: {
         backgroundColor: Colors.light.blue,
@@ -152,5 +217,45 @@ const styles = StyleSheet.create({
     },
     correctTextActive: {
         color: '#43a047',
+    },
+    imagePreviewContainer: {
+        width: '100%',
+        height: 200,
+        borderRadius: 12,
+        overflow: 'hidden',
+        position: 'relative',
+        borderWidth: 1,
+        borderColor: '#E2E8F0',
+    },
+    imagePreview: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'contain',
+        backgroundColor: '#f0f0f0'
+    },
+    removeImageButton: {
+        position: 'absolute',
+        top: 10,
+        right: 10,
+        backgroundColor: 'rgba(239, 68, 68, 0.9)',
+        padding: 8,
+        borderRadius: 20,
+    },
+    imageSelectButton: {
+        width: '100%',
+        height: 150,
+        backgroundColor: '#F8FAFC',
+        borderWidth: 2,
+        borderColor: '#E2E8F0',
+        borderStyle: 'dashed',
+        borderRadius: 12,
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 10,
+    },
+    imageSelectText: {
+        color: Colors.light.blue,
+        fontSize: 14,
+        fontWeight: '600',
     },
 });

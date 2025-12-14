@@ -9,6 +9,7 @@ import Colors from '@/constants/Colors';
 import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { cardFronts } from '@/constants/cardFronts';
 import { GLOBAL_FONT } from '@/src/components/Fonts';
+import { PlayingCard } from '@/src/components/game/PlayingCard';
 
 
 const CODE_LENGTH_OPTIONS = [3, 4, 5, 6];
@@ -110,7 +111,8 @@ export default function ManageCards() {
         const params = {
             card_id: card.id,
             card_text: card.card_text,
-            card_type: String(card.card_type)
+            card_type: String(card.card_type),
+            image_uri: card.image_uri ?? ''
         }
         console.log("Parâmetros de navegação sendo enviados:", params);
         router.push({ pathname: '/manage_cards/edit_card', params })
@@ -291,32 +293,30 @@ export default function ManageCards() {
             <View style={styles.cardsGrid}>
                 {cards.length > 0 ? (
                     cards.map((item) => (
-                        <Pressable
-                            key={item.id}
-                            onPress={() => handleNavigateToEditCard(item)}
-                            style={styles.cardWrapper}
-                        >
-                            <ImageBackground
-                                source={selectedCardFront}
-                                style={styles.cardBackground}
-                                imageStyle={styles.cardBackgroundImageStyle}
-                            >
-                                <View style={styles.cardContent}>
-                                    <Text style={styles.cardText}>{item.card_text}</Text>
-                                </View>
+                        <View key={item.id} style={styles.cardWrapperRelative}>
 
-                                <View style={styles.editBtn}>
-                                    <MaterialIcons name="edit" size={18} color={Colors.light.blue} />
-                                </View>
-                                <View style={styles.statusIndicator}>
-                                    <Ionicons
-                                        name={item.card_type === 1 ? "checkmark-circle" : "close-circle"}
-                                        size={24}
-                                        color={item.card_type === 1 ? "#10B981" : "#EF4444"}
-                                    />
-                                </View>
-                            </ImageBackground>
-                        </Pressable>
+                            <PlayingCard
+                                variant="front"
+                                text={item.card_text}
+                                contentImageUri={item.image_uri} 
+                                imageSource={selectedCardFront}
+                                onPress={() => handleNavigateToEditCard(item)}
+                            />
+
+                            {/* Ícone de Edição (Sobreposto) */}
+                            <View style={styles.editBadge} pointerEvents="none">
+                                <MaterialIcons name="edit" size={14} color={Colors.light.blue} />
+                            </View>
+
+                            {/* Ícone de Status (Sobreposto) */}
+                            <View style={styles.statusBadge} pointerEvents="none">
+                                <Ionicons
+                                    name={item.card_type === 1 ? "checkmark-circle" : "close-circle"}
+                                    size={20}
+                                    color={item.card_type === 1 ? "#10B981" : "#EF4444"}
+                                />
+                            </View>
+                        </View>
                     ))
                 ) : (
                     <View style={styles.emptyGrid}>
@@ -641,5 +641,33 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         fontWeight: '500',
         fontFamily: GLOBAL_FONT
+    },
+    cardWrapperRelative: {
+        position: 'relative', 
+        margin: 6,
+    },
+    editBadge: {
+        position: 'absolute',
+        top: -4,
+        right: -4,
+        backgroundColor: 'white',
+        borderRadius: 12,
+        padding: 4,
+        elevation: 4,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.2,
+        shadowRadius: 1,
+        borderWidth: 1,
+        borderColor: '#E2E8F0'
+    },
+    statusBadge: {
+        position: 'absolute',
+        bottom: -4,
+        left: -4,
+        backgroundColor: 'white',
+        borderRadius: 12,
+        padding: 1,
+        elevation: 4,
     },
 })

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable, Alert, Platform} from 'react-native';
+import { View, Text, StyleSheet, Pressable, Alert, Platform, Image} from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useGameDatabase } from '@/src/database/useGameDatabase';
 import { StyledInput } from '@/src/components/StyledInput';
 import Colors from '@/constants/Colors';
 import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { ScreenContainer } from '@/src/components/ScreenContainer';
+import * as ImagePicker from 'expo-image-picker';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function EditCardScreen() {
     const router = useRouter();
@@ -18,10 +20,47 @@ export default function EditCardScreen() {
     const initialIsCorrect = params.card_type === '1';
 
     const { updateCard, deleteCard } = useGameDatabase();
+    const initialImage = params.image_uri && params.image_uri !== 'null' ? String(params.image_uri) : null;
     
     const [cardText, setCardText] = useState(initialText);
+    const [imageUri, setImageUri] = useState<string | null>(initialImage);
     const [isCorrect, setIsCorrect] = useState<boolean | null>(initialIsCorrect);
     const [loading, setLoading] = useState(false);
+
+    const pickImage = async () => {
+        try {
+            const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ['images'], 
+                allowsEditing: true,
+                aspect: [4, 5],
+                // IMPORTANTE: Qualidade 0.5 para não pesar o banco SQLite na Web
+                quality: 0.5, 
+                // IMPORTANTE: Pedimos para gerar o texto da imagem
+                base64: true, 
+            });
+
+            if (!result.canceled) {
+                if (Platform.OS === 'web') {
+                    // --- LÓGICA PARA WEB (SQLite) ---
+                    // Pegamos o código base64 e montamos o cabeçalho "data:image..."
+                    // Assim, salvamos a FOTO REAL no banco, e não apenas um link.
+                    const imageBase64 = `data:image/jpeg;base64,${result.assets[0].base64}`;
+                    setImageUri(imageBase64);
+                } else {
+                    // --- LÓGICA PARA CELULAR (Android/iOS) ---
+                    // No celular, o arquivo é persistente, então salvamos apenas o caminho
+                    // para não deixar o banco de dados gigante e lento.
+                    setImageUri(result.assets[0].uri);
+                }
+            }
+        } catch (error) {
+            Alert.alert("Erro", "Não foi possível abrir a galeria.");
+        }
+    };
+
+    const removeImage = () => {
+        setImageUri(null);
+    }
 
     const handleSetCorrect = () => {
         setIsCorrect(true);
@@ -32,7 +71,7 @@ export default function EditCardScreen() {
     }
 
     const handleUpdateCard = async () => {
-        if (cardText.trim() === '') return Alert.alert("Erro", "O texto não pode ser vazio.");
+        if (cardText.trim() === '' && !imageUri) return Alert.alert("Erro", "O texto não pode ser vazio.");
         if (isCorrect === null) return Alert.alert("Atenção", "Por favor, classifique a resposta como correta ou incorreta.");
 
         if (isNaN(cardId) || cardId < 0){
@@ -43,11 +82,12 @@ export default function EditCardScreen() {
 
         setLoading(true);
         try {
-            await updateCard(cardId, cardText, isCorrect);
+            await updateCard(cardId, cardText, isCorrect, imageUri);
             console.log("Carta atualizada com sucesso!");
             router.back(); 
         } catch (error) {
             console.error("Erro ao atualizar carta:", error);
+            Alert.alert("Erro", "Falha ao salvar alterações.");
         } finally {
             setLoading(false);
         }
@@ -103,6 +143,21 @@ export default function EditCardScreen() {
                         numberOfLines={4}
                         style={{ minHeight: 120, textAlignVertical: 'top' }}
                     />
+
+                    <Text style={styles.label}>Imagem da Carta</Text>
+                    {imageUri ? (
+                        <View style={styles.imagePreviewContainer}>
+                            <Image source={{ uri: imageUri }} style={styles.imagePreview} />
+                            <Pressable style={styles.removeImageButton} onPress={removeImage}>
+                                <Ionicons name="trash-outline" size={20} color="#fff" />
+                            </Pressable>
+                        </View>
+                    ) : (
+                        <Pressable style={styles.imageSelectButton} onPress={pickImage}>
+                            <Ionicons name="image-outline" size={32} color={Colors.light.blue} />
+                            <Text style={styles.imageSelectText}>Adicionar Imagem</Text>
+                        </Pressable>
+                    )}
                 
                     <Text style={styles.classifyLabel}>Classificar resposta</Text>
                     <View style={styles.classifyContainer}>
@@ -205,5 +260,51 @@ const styles = StyleSheet.create({
     },
     correctTextActive: {
         color: '#43a047',
+    },
+    imageSelectButton: {
+        width: '100%',
+        height: 120,
+        backgroundColor: '#F8FAFC',
+        borderWidth: 2,
+        borderColor: '#E2E8F0',
+        borderStyle: 'dashed',
+        borderRadius: 12,
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 10,
+    },
+    imageSelectText: {
+        color: Colors.light.blue,
+        fontSize: 14,
+        fontWeight: '600',
+    },
+    imagePreviewContainer: {
+        width: '100%',
+        height: 200,
+        borderRadius: 12,
+        overflow: 'hidden',
+        position: 'relative',
+        borderWidth: 1,
+        borderColor: '#E2E8F0',
+    },
+    imagePreview: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'contain',
+        backgroundColor: '#f0f0f0'
+    },
+    removeImageButton: {
+        position: 'absolute',
+        top: 10,
+        right: 10,
+        backgroundColor: 'rgba(239, 68, 68, 0.9)',
+        padding: 8,
+        borderRadius: 20,
+    },
+    label: {
+        fontSize: 16,
+        color: '#333',
+        marginBottom: 8,
+        fontWeight: '500',
     },
 });

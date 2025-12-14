@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Pressable, FlatList, ActivityIndicator, ImageBackground, Alert, Platform, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, Alert, Platform, ScrollView } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import Colors from '@/constants/Colors';
 import { ScreenContainer } from '@/src/components/ScreenContainer';
@@ -8,6 +8,7 @@ import { AppButton } from '@/src/components/AppButton';
 import { GameDatabase, useGameDatabase, CardDatabase } from '@/src/database/useGameDatabase';
 import { cardFronts } from '@/constants/cardFronts';
 import { GLOBAL_FONT } from '@/src/components/Fonts';
+import { PlayingCard } from '@/src/components/game/PlayingCard';
 
 
 export default function ManualSetupScreen() {
@@ -95,11 +96,8 @@ export default function ManualSetupScreen() {
         const manualCodeIds = secretCodeSequence.map(card => card!.id);
         const manualCodeString = manualCodeIds.join(',');
 
-        // Verifica o intent (parâmetro passado pela tela manage_cards)
 
         if (intent === 'save') {
-            // Modo SALVAR: salva no banco e retorna
-
             try {
                 console.log("[DEBUG Setup] 🖱️ Botão Salvar clicado. IDs:", manualCodeIds);
                 await saveGameManualCode(gameIdNumber, manualCodeIds);
@@ -110,13 +108,12 @@ export default function ManualSetupScreen() {
                 Alert.alert("Erro", "Falha ao salvar o código manual.");
             }
         } else {
-            // Modo TESTAR (padrão): navega para o jogo
             router.push({
                 pathname: '/test_game/select_level',
                 params: {
                     game_id: gameIdNumber,
                     mode: 'manual',
-                    manual_code: manualCodeString // Passa o código como uma string
+                    manual_code: manualCodeString 
                 }
             });
         }
@@ -148,15 +145,14 @@ export default function ManualSetupScreen() {
                         <Text style={styles.sectionTitle}>Sequência do Código Secreto</Text>
                         <View style={styles.slotsContainer}>
                             {secretCodeSequence.map((cardInSlot, index) => (
-                                <Pressable key={index} style={styles.slotWrapper} onPress={() => handleSlotPress(index)}>
-                                    {cardInSlot ? (
-                                        <ImageBackground source={selectedCardFront} style={styles.cardFrontImage} resizeMode='cover'>
-                                            <Text style={styles.cardText}>{cardInSlot.card_text}</Text>
-                                        </ImageBackground>
-                                    ) : (
-                                        <View style={styles.slotEmpty} />
-                                    )}
-                                </Pressable>
+                                <PlayingCard
+                                    key={index}
+                                    variant={cardInSlot ? 'front' : 'empty'}
+                                    text={cardInSlot?.card_text}
+                                    contentImageUri={cardInSlot?.image_uri}
+                                    imageSource={selectedCardFront}
+                                    onPress={() => handleSlotPress(index)}
+                                />
                             ))}
                         </View>
                     </View>
@@ -173,19 +169,15 @@ export default function ManualSetupScreen() {
                                 {availableCards.map((item) => {
                                     const isSelected = selectedCard?.id === item.id;
                                     return (
-                                        <Pressable
+                                        <PlayingCard
                                             key={item.id}
-                                            style={[styles.cardWrapper, isSelected && styles.cardSelected]}
+                                            variant="front"
+                                            text={item.card_text}
+                                            contentImageUri={item.image_uri}
+                                            imageSource={selectedCardFront}
+                                            isSelected={isSelected}
                                             onPress={() => handleSelectCardFromPool(item)}
-                                        >
-                                            <ImageBackground
-                                                source={selectedCardFront}
-                                                style={styles.cardFrontImage}
-                                                resizeMode="cover"
-                                            >
-                                                <Text style={styles.cardText}>{item.card_text}</Text>
-                                            </ImageBackground>
-                                        </Pressable>
+                                        />
                                     );
                                 })}
                             </ScrollView>

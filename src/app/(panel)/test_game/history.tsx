@@ -54,6 +54,7 @@ export default function HistoryScreen() {
                         text={card?.card_text}
                         imageSource={selectedCardFront as ImageSourcePropType}
                         disabled={true} 
+                        contentImageUri={card?.image_uri}
                     />
                 ))}
             </View>

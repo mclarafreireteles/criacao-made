@@ -416,6 +416,7 @@ export default function TestGameScreen() {
                                     text={cardInSlot?.card_text}
                                     imageSource={selectedCardFront as ImageSourcePropType}
                                     onPress={() => handleSlotPress(index)}
+                                    contentImageUri={cardInSlot?.image_uri}
                                 />
                             ))}
                         </View>
@@ -437,6 +438,7 @@ export default function TestGameScreen() {
                                         isUsed={isUsed}
                                         isSelected={isSelected}
                                         disabled={isUsed}
+                                        contentImageUri={item?.image_uri}
                                     />
                                 );
                             })}
