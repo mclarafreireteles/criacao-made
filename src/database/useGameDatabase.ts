@@ -2,20 +2,21 @@ import { useSQLiteContext } from "expo-sqlite"
 
 export type GameDatabase = {
     id: number,
-    user_id: string, 
-    title: string, 
-    subject: string, 
+    user_id: string,
+    title: string,
+    subject: string,
     content: string,
     grade: string,
     authors: string,
     rules: string,
-    goal: string, 
+    goal: string,
     background_image_url: string,
     card_front_url: string | null,
-    prompt: string, 
+    prompt: string,
     explanation: string,
     model: string,
     secret_code_length: number | null;
+    manual_code_ids: string | null;
 }
 
 export type CardDatabase = {
@@ -31,11 +32,11 @@ export type NewCardDatabase = {
     card_type?: number;
 }
 
-export function useGameDatabase(){
+export function useGameDatabase() {
 
     const database = useSQLiteContext()
 
-    async function createGame(data: Omit<GameDatabase, "id">){
+    async function createGame(data: Omit<GameDatabase, "id">) {
         const statement = await database.prepareAsync(
             "INSERT INTO games (title, subject, user_id, goal, prompt, content, grade, authors, rules, background_image_url, explanation, model, secret_code_length, card_front_url) VALUES ($title, $subject, $user_id, $goal, $prompt, $content, $grade, $authors, $rules, $background_image_url, $explanation, $model, $secret_code_length, $card_front_url)"
         )
@@ -105,7 +106,7 @@ export function useGameDatabase(){
         );
     }
 
-    async function updateGameSettings(gameId: number, data:Omit<GameDatabase, "id" | "user_id">) {
+    async function updateGameSettings(gameId: number, data: Omit<GameDatabase, "id" | "user_id">) {
         const statement = await database.prepareAsync(
             `UPDATE games 
              SET title = $title, subject = $subject, content = $content, grade = $grade, 
@@ -135,8 +136,25 @@ export function useGameDatabase(){
         }
     }
 
+    async function saveGameManualCode(gameId: number, manualCodeIds: number[]) {
+        try {
+            const idsString = manualCodeIds.join(',');
+            console.log(`[DEBUG DB] 💾 Tentando SALVAR código manual. GameID: ${gameId}, IDs: ${idsString}`);
+
+            // Verifique se o nome da tabela e colunas estão corretos no seu código
+            await database.runAsync(
+                "UPDATE games SET manual_code_ids = ? WHERE id = ?;",
+                [idsString, gameId]
+            );
+
+            console.log("[DEBUG DB] ✅ Update executado com sucesso!");
+        } catch (error) {
+            console.error("[DEBUG DB] ❌ ERRO AO SALVAR no Banco:", error);
+        }
+    }
+
     // cartas
-    async function getCardsByGameId(gameId: number){
+    async function getCardsByGameId(gameId: number) {
         const statement = await database.prepareAsync(
             "SELECT * FROM cards WHERE game_id = ?  ORDER BY id DESC"
         );
@@ -147,7 +165,7 @@ export function useGameDatabase(){
             await statement.finalizeAsync();
         }
     }
-    
+
     async function createCard(data: Omit<CardDatabase, 'id'>) {
         const statement = await database.prepareAsync(
             "INSERT INTO cards (game_id, card_text, card_type) VALUES ($game_id, $card_text, $card_type)"
@@ -165,7 +183,7 @@ export function useGameDatabase(){
         }
     }
 
-    async function deleteCard(cardId: number){
+    async function deleteCard(cardId: number) {
         await database.runAsync("DELETE FROM cards WHERE id = ?", [cardId])
     }
 
@@ -181,7 +199,7 @@ export function useGameDatabase(){
         }
     }
 
-    async function getGameById(gameId: number){
+    async function getGameById(gameId: number) {
         const statement = await database.prepareAsync('SELECT * FROM games WHERE id = ?');
         try {
             const result = await statement.executeAsync<GameDatabase>([gameId]);
@@ -192,5 +210,5 @@ export function useGameDatabase(){
     }
 
 
-    return { createGame, searchGameByTitle, searchGameByUser , updateGameLengthSetting, createCard, deleteCard, updateCard, getCardsByGameId, getGameById, updateGameSettings, updateGameCardFront }
+    return { createGame, searchGameByTitle, searchGameByUser, updateGameLengthSetting, createCard, deleteCard, updateCard, getCardsByGameId, getGameById, updateGameSettings, updateGameCardFront, saveGameManualCode }
 }

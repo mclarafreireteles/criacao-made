@@ -155,6 +155,17 @@ export default function ManageCards() {
                 <Ionicons name="add" size={20} color="white" />
                 <Text style={styles.addCardButtonText}>Adicionar carta</Text>
             </Pressable>
+
+            <Pressable
+                style={styles.manualCodeButton}
+                onPress={() => router.push({
+                    pathname: '/manual_setup/page',
+                    params: { game_id: gameIdNumber, intent: 'save' }
+                })}
+            >
+                <Ionicons name="construct-outline" size={20} color={Colors.light.blue} />
+                <Text style={styles.manualCodeButtonText}>Definir Código Manual</Text>
+            </Pressable>
         </View>
     );
 
@@ -420,6 +431,24 @@ const styles = StyleSheet.create({
     },
     addCardButtonText: {
         color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+        fontFamily: GLOBAL_FONT
+    },
+    manualCodeButton: {
+        borderColor: Colors.light.blue,
+        borderWidth: 1,
+        paddingVertical: 10,
+        borderRadius: 12,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 8,
+        marginBottom: 32,
+        backgroundColor: 'transparent',
+    },
+    manualCodeButtonText: {
+        color: Colors.light.blue,
         fontSize: 16,
         fontWeight: 'bold',
         fontFamily: GLOBAL_FONT

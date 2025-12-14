@@ -7,21 +7,35 @@ import Colors from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import { GLOBAL_FONT } from '@/src/components/Fonts';
 import { useGameDatabase } from '@/src/database/useGameDatabase';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function GameModeScreen() {
     const router = useRouter();
     const { game_id } = useLocalSearchParams();
     const gameIdNumber = Number(game_id);
+    const isFocused = useIsFocused();
 
-    const { getCardsByGameId } = useGameDatabase();
+    const { getCardsByGameId, getGameById } = useGameDatabase();
     const [isLoading, setIsLoading] = useState(true);
+
+    const [hasSavedManualCode, setHasSavedManualCode] = useState(false);
 
     useEffect(() => {
         async function validateGameRequirements() {
-            if (!gameIdNumber) return;
+            if (!gameIdNumber || !isFocused) return;
 
             try {
-                const cards = await getCardsByGameId(gameIdNumber);
+                // const cards = await getCardsByGameId(gameIdNumber);
+                const [cards, gameData] = await Promise.all([
+                    getCardsByGameId(gameIdNumber),
+                    getGameById(gameIdNumber)
+                ]);
+
+                console.log("---------------------------------------------------");
+                console.log("[DEBUG GameMode] 🔍 Buscando dados do jogo:", gameIdNumber);
+                console.log("[DEBUG GameMode] Objeto gameData completo:", JSON.stringify(gameData, null, 2));
+                console.log("[DEBUG GameMode] Valor de manual_code_ids:", gameData?.manual_code_ids);
+                console.log("---------------------------------------------------");
 
                 const correctCount = cards.filter(c => Number(c.card_type) === 1).length;
                 const incorrectCount = cards.filter(c => Number(c.card_type) !== 1).length;
@@ -53,6 +67,11 @@ export default function GameModeScreen() {
                         );
                     }
                 } else {
+                    if (gameData && gameData.manual_code_ids) {
+                        setHasSavedManualCode(true);
+                    } else {
+                        setHasSavedManualCode(false);
+                    }
                     setIsLoading(false);
                 }
             } catch (error) {
@@ -61,7 +80,8 @@ export default function GameModeScreen() {
             }
         }
         validateGameRequirements();
-    }, [gameIdNumber]);
+    }, [gameIdNumber, isFocused])
+
 
     const handleRandomMode = () => {
         router.push({
@@ -74,10 +94,23 @@ export default function GameModeScreen() {
     };
 
     const handleManualMode = () => {
-        router.push({
-            pathname: '/manual_setup/page',
-            params: { game_id: gameIdNumber }
-        });
+        if (hasSavedManualCode) {
+            router.push({
+                pathname: '/test_game/select_level',
+                params: { 
+                    game_id: gameIdNumber, 
+                    mode: 'manual' 
+                }
+            });
+        } else {
+            router.push({
+                pathname: '/manual_setup/page', 
+                params: { 
+                    game_id: gameIdNumber,
+                    intent: 'save' 
+                }
+            });
+        }
     };
 
     return (
@@ -96,11 +129,23 @@ export default function GameModeScreen() {
                 </Pressable>
 
                 {/* Opção Manual */}
-                <Pressable style={styles.optionCard} onPress={handleManualMode}>
+                {/* <Pressable style={styles.optionCard} onPress={handleManualMode}>
                     <Ionicons name="construct-outline" size={48} color={Colors.light.blue} />
                     <Text style={styles.optionTitle}>Modo Manual</Text>
                     <Text style={styles.optionDescription}>
                         Você irá escolher manualmente a ordem exata das cartas para montar o código secreto deste teste.
+                    </Text>
+                </Pressable> */}
+                <Pressable style={styles.optionCard} onPress={handleManualMode}>
+                    <Ionicons name="construct-outline" size={48} color={Colors.light.blue} />
+                    <Text style={styles.optionTitle}>
+                        {hasSavedManualCode ? "Modo Manual (Salvo)" : "Configurar Modo Manual"}
+                    </Text>
+                    <Text style={styles.optionDescription}>
+                        {hasSavedManualCode
+                            ? "Jogar com a sequência fixa que você definiu anteriormente."
+                            : "Defina a ordem exata das cartas para salvar como padrão."
+                        }
                     </Text>
                 </Pressable>
             </View>

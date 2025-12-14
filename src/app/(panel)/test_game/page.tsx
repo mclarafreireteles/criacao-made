@@ -86,7 +86,7 @@ export default function TestGameScreen() {
             if (currentCardInSlot) return;
             newGuess[slotIndex] = selectedCard;
             setPlayerGuess(newGuess);
-            setSelectedCard(null); 
+            setSelectedCard(null);
 
         } else if (currentCardInSlot) {
             newGuess[slotIndex] = null;
@@ -190,6 +190,8 @@ export default function TestGameScreen() {
             clearHistory();
         }
 
+        console.log(`[SETUP] Iniciando. Mode: ${mode}, Swap: ${!!swapOptions}`);
+
         clearHistory();
         try {
             setIsLoading(true);
@@ -228,7 +230,7 @@ export default function TestGameScreen() {
             const correctCards = cardsData.filter(card => Number(card.card_type) === 1);
             const incorrectCards = cardsData.filter(card => Number(card.card_type) !== 1);
 
-            
+
 
             if (correctCards.length < codeLength || correctCards.length < MIN_CORRECT || incorrectCards.length < MIN_INCORRECT) {
                 showAlert(
@@ -243,19 +245,49 @@ export default function TestGameScreen() {
             setPlayerGuess(Array(codeLength).fill(null));
 
             // --- LÓGICA DE MODO MANUAL vs ALEATÓRIO ---
-            if (mode === 'manual' && typeof manual_code === 'string' && !swapOptions) {
-                console.log("[DEBUG] Modo MANUAL Ativado. Código recebido:", manual_code);
+            const shouldLoadManualCode = mode === 'manual' && !swapOptions;
 
-                const manualCodeIds = manual_code.split(',').map(Number);
-                const newSecretCode = manualCodeIds.map(id => {
-                    return cardsData.find(card => card.id === id);
-                }).filter((card): card is CardDatabase => !!card);
+            if (shouldLoadManualCode) {
+                let manualCodeIds: number[] = [];
 
-                setSecretCode(newSecretCode);
-                setActiveCodeLength(newSecretCode.length);
-                console.log("--- DEBUG: RESPOSTA MANUAL ---");
-                console.log(newSecretCode.map(card => card.card_text));
-                console.log("---------------------------------");
+                if (typeof manual_code === 'string') {
+                    manualCodeIds = manual_code.split(',').map(Number);
+                    console.log("[DEBUG] Modo MANUAL - Código recebido via params:", manualCodeIds);
+                } else if (gameData.manual_code_ids) {
+                    manualCodeIds = gameData.manual_code_ids.split(',').map(Number);
+                    console.log("[DEBUG] Modo MANUAL - Código carregado do BANCO:", manualCodeIds);
+                } else {
+                    console.warn("[WARN] Modo MANUAL mas sem código definido. Falhando para aleatório ou erro?");
+                    // Se não tiver código, talvez devêssemos alertar. 
+                    // Por enquanto, mantenho o comportamento de cair no bloco "else" se manualCodeIds estiver vazio
+                }
+
+                if (manualCodeIds.length > 0) {
+                    const newSecretCode = manualCodeIds.map(id => {
+                        return cardsData.find(card => card.id === id);
+                    }).filter((card): card is CardDatabase => !!card);
+
+                    // Validação extra: se algum ID não foi encontrado (carta deletada), isso pode ser um problema.
+                    if (newSecretCode.length !== manualCodeIds.length) {
+                        showAlert('Aviso', 'Algumas cartas do código manual salvo não foram encontradas (talvez tenham sido excluídas).');
+                    }
+
+                    setSecretCode(newSecretCode);
+                    setActiveCodeLength(newSecretCode.length);
+                    console.log("--- DEBUG: RESPOSTA MANUAL ---");
+                    console.log(newSecretCode.map(card => card.card_text));
+                    console.log("---------------------------------");
+
+                    // IMPORTANTE: precisamos garantir que não entramos no bloco 'else if (swapOptions)' nem 'else'
+                    // O controle de fluxo original era if (...) else if (...) else.
+                    // Vou reestruturar levemente para garantir que se entramos aqui, não fazemos o aleatório.
+                } else {
+                    // Fallback se não achou código manual: aleatório
+                    console.log("[DEBUG] Modo MANUAL falhou (sem código). Gerando aleatório.");
+                    const shuffledCorrectCards = [...correctCards].sort(() => Math.random() - 0.5);
+                    const newSecretCode = shuffledCorrectCards.slice(0, codeLength);
+                    setSecretCode(newSecretCode);
+                }
 
             } else if (swapOptions) {
                 const { swapCount, previousCodeIds } = swapOptions;

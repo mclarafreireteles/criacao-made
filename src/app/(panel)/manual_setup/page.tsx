@@ -7,14 +7,15 @@ import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { AppButton } from '@/src/components/AppButton';
 import { GameDatabase, useGameDatabase, CardDatabase } from '@/src/database/useGameDatabase';
 import { cardFronts } from '@/constants/cardFronts';
+import { GLOBAL_FONT } from '@/src/components/Fonts';
 
 
 export default function ManualSetupScreen() {
     const router = useRouter();
-    const { game_id } = useLocalSearchParams();
+    const { game_id, intent } = useLocalSearchParams();
     const gameIdNumber = Number(game_id);
 
-    const { getGameById, getCardsByGameId } = useGameDatabase();
+    const { getGameById, getCardsByGameId, saveGameManualCode } = useGameDatabase();
 
     const [gameDetails, setGameDetails] = useState<GameDatabase | null>(null);
     const [allCorrectCards, setAllCorrectCards] = useState<CardDatabase[]>([]);
@@ -22,7 +23,6 @@ export default function ManualSetupScreen() {
     const [selectedCard, setSelectedCard] = useState<CardDatabase | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    // const selectedCardFront = cardFronts.find(front => front.id === gameDetails?.card_front_url)?.image;
     const selectedCardFront = cardFronts.find(
         front => front.id === String(gameDetails?.card_front_url)
     )?.image;
@@ -39,12 +39,12 @@ export default function ManualSetupScreen() {
                 console.log("💾 Dados do jogo:", gameData); // <-- log completo do game
                 console.log("💾 card_front_url:", gameData?.card_front_url); // <-- log específico do front
                 console.log("💾 Cartas retornadas:", cardsData);
-                
+
                 if (gameData && cardsData.length > 0) {
                     setGameDetails(gameData);
                     const codeLength = gameData.secret_code_length || 4;
                     const correctCards = cardsData.filter(card => Number(card.card_type) === 1);
-                    
+
                     if (correctCards.length < codeLength) {
                         // Se não houver cartas corretas suficientes, não pode montar manual
                         Alert.alert("Erro", "Não há cartas corretas suficientes para montar o código secreto.");
@@ -76,32 +76,50 @@ export default function ManualSetupScreen() {
         const newSequence = [...secretCodeSequence];
 
         if (selectedCard) {
-            if (currentCardInSlot) return; 
+            if (currentCardInSlot) return;
             newSequence[slotIndex] = selectedCard;
             setSecretCodeSequence(newSequence);
-            setSelectedCard(null); 
+            setSelectedCard(null);
         } else if (currentCardInSlot) {
             newSequence[slotIndex] = null;
             setSecretCodeSequence(newSequence);
         }
     };
 
-    const handleStartTest = () => {
+    const handleStartTest = async () => {
         if (secretCodeSequence.some(slot => slot === null)) {
             Alert.alert("Atenção", "Você precisa preencher todos os slots do código secreto.");
             return;
         }
 
-        const manualCodeString = secretCodeSequence.map(card => card!.id).join(',');
+        const manualCodeIds = secretCodeSequence.map(card => card!.id);
+        const manualCodeString = manualCodeIds.join(',');
 
-        router.push({
-            pathname: '/test_game/select_level',
-            params: { 
-                game_id: gameIdNumber,
-                mode: 'manual',
-                manual_code: manualCodeString // Passa o código como uma string
+        // Verifica o intent (parâmetro passado pela tela manage_cards)
+
+        if (intent === 'save') {
+            // Modo SALVAR: salva no banco e retorna
+
+            try {
+                console.log("[DEBUG Setup] 🖱️ Botão Salvar clicado. IDs:", manualCodeIds);
+                await saveGameManualCode(gameIdNumber, manualCodeIds);
+                Alert.alert("Sucesso", "Código manual salvo com sucesso!");
+                router.back();
+            } catch (error) {
+                console.log(error);
+                Alert.alert("Erro", "Falha ao salvar o código manual.");
             }
-        });
+        } else {
+            // Modo TESTAR (padrão): navega para o jogo
+            router.push({
+                pathname: '/test_game/select_level',
+                params: {
+                    game_id: gameIdNumber,
+                    mode: 'manual',
+                    manual_code: manualCodeString // Passa o código como uma string
+                }
+            });
+        }
     };
 
 
@@ -119,66 +137,66 @@ export default function ManualSetupScreen() {
         <>
             <ScreenContainer>
                 <ScreenHeader title="Montar Código" />
-                
-                
-                    <View style={styles.containerSection}>
-                        <Text style={styles.instructions}>
-                            Clique em uma carta "Disponível" e depois clique em um "Slot" para montar a sequência.
-                        </Text>
-                        {/* --- 1. SLOTS DO CÓDIGO SECRETO --- */}
-                        <View style={styles.section}>
-                            <Text style={styles.sectionTitle}>Sequência do Código Secreto</Text>
-                            <View style={styles.slotsContainer}>
-                                {secretCodeSequence.map((cardInSlot, index) => (
-                                    <Pressable key={index} style={styles.slotWrapper} onPress={() => handleSlotPress(index)}>
-                                        {cardInSlot ? (
-                                            <ImageBackground source={selectedCardFront} style={styles.cardFrontImage} resizeMode='cover'>
-                                                <Text style={styles.cardText}>{cardInSlot.card_text}</Text>
-                                            </ImageBackground>
-                                        ) : (
-                                            <View style={styles.slotEmpty} />
-                                        )}
-                                    </Pressable>
-                                ))}
-                            </View>
-                        </View>
-                        <View style={styles.sectionCards}>
-                            <Text style={styles.sectionTitle}>Cartas Corretas Disponíveis</Text>
 
-                            {selectedCardFront && (
-                                <ScrollView
-                                    style={styles.answerPoolScroll}
-                                    contentContainerStyle={styles.answerPoolContainer}
-                                    nestedScrollEnabled
-                                    showsVerticalScrollIndicator={false}
-                                >
-                                    {availableCards.map((item) => {
+
+                <View style={styles.containerSection}>
+                    <Text style={styles.instructions}>
+                        Clique em uma carta "Disponível" e depois clique em um "Slot" para montar a sequência.
+                    </Text>
+                    {/* --- 1. SLOTS DO CÓDIGO SECRETO --- */}
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Sequência do Código Secreto</Text>
+                        <View style={styles.slotsContainer}>
+                            {secretCodeSequence.map((cardInSlot, index) => (
+                                <Pressable key={index} style={styles.slotWrapper} onPress={() => handleSlotPress(index)}>
+                                    {cardInSlot ? (
+                                        <ImageBackground source={selectedCardFront} style={styles.cardFrontImage} resizeMode='cover'>
+                                            <Text style={styles.cardText}>{cardInSlot.card_text}</Text>
+                                        </ImageBackground>
+                                    ) : (
+                                        <View style={styles.slotEmpty} />
+                                    )}
+                                </Pressable>
+                            ))}
+                        </View>
+                    </View>
+                    <View style={styles.sectionCards}>
+                        <Text style={styles.sectionTitle}>Cartas Corretas Disponíveis</Text>
+
+                        {selectedCardFront && (
+                            <ScrollView
+                                style={styles.answerPoolScroll}
+                                contentContainerStyle={styles.answerPoolContainer}
+                                nestedScrollEnabled
+                                showsVerticalScrollIndicator={false}
+                            >
+                                {availableCards.map((item) => {
                                     const isSelected = selectedCard?.id === item.id;
                                     return (
                                         <Pressable
-                                        key={item.id}
-                                        style={[styles.cardWrapper, isSelected && styles.cardSelected]}
-                                        onPress={() => handleSelectCardFromPool(item)}
+                                            key={item.id}
+                                            style={[styles.cardWrapper, isSelected && styles.cardSelected]}
+                                            onPress={() => handleSelectCardFromPool(item)}
                                         >
-                                        <ImageBackground
-                                            source={selectedCardFront}
-                                            style={styles.cardFrontImage}
-                                            resizeMode="cover"
-                                        >
-                                            <Text style={styles.cardText}>{item.card_text}</Text>
-                                        </ImageBackground>
+                                            <ImageBackground
+                                                source={selectedCardFront}
+                                                style={styles.cardFrontImage}
+                                                resizeMode="cover"
+                                            >
+                                                <Text style={styles.cardText}>{item.card_text}</Text>
+                                            </ImageBackground>
                                         </Pressable>
                                     );
-                                    })}
-                                </ScrollView>
-                                )}
-                            </View>
-                        
+                                })}
+                            </ScrollView>
+                        )}
                     </View>
-                <View style={styles.footer}>
-                    <AppButton title="Iniciar Teste com esta Ordem" onPress={handleStartTest} />
+
                 </View>
-                
+                <View style={styles.footer}>
+                    <AppButton title={intent === 'save' ? "Salvar Configuração" : "Iniciar Teste com esta Ordem"} onPress={handleStartTest} />
+                </View>
+
             </ScreenContainer>
         </>
     );
@@ -197,18 +215,20 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         padding: 10,
         width: '100%',
-        marginBottom: 12
+        marginBottom: 12,
+        fontFamily: GLOBAL_FONT
     },
     section: {
         marginBottom: 20,
     },
-    sectionCards:{
+    sectionCards: {
     },
     sectionTitle: {
         fontSize: 18,
         fontWeight: '600',
         color: '#111827',
         marginBottom: 10,
+        fontFamily: GLOBAL_FONT
     },
     slotsContainer: {
         display: 'flex',
@@ -257,6 +277,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         padding: 5,
+        fontFamily: GLOBAL_FONT
     },
     footer: {
         padding: 20,
