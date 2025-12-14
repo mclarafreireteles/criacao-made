@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, Pressable } from "react-native"
 import { useRouter, useLocalSearchParams } from "expo-router"
 import Colors from "@/constants/Colors"
 import { Ionicons } from "@expo/vector-icons"
+import { GLOBAL_FONT } from "@/src/components/Fonts"
 
 export default function CreatedGame(){
     const router = useRouter();
@@ -58,6 +59,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: 'white',
         marginBottom: 16, 
+        fontFamily: GLOBAL_FONT
     },
     icon: {
         marginBottom: 80, 
@@ -73,11 +75,13 @@ const styles = StyleSheet.create({
         color: 'black',
         fontSize: 16,
         fontWeight: 'bold',
+        fontFamily: GLOBAL_FONT,
     },
     secondaryLink: {
     },
     secondaryLinkText: {
         color: 'white',
         fontSize: 16,
+        fontFamily: GLOBAL_FONT
     }
 })
