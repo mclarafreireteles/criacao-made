@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, Pressable, ActivityIndicator, ImageBackground, ScrollView, Alert, Platform, Modal, ImageSourcePropType, } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ActivityIndicator, ScrollView, Alert, Platform, Modal, ImageSourcePropType, } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import Colors from '@/constants/Colors';
 import { ScreenContainer } from '@/src/components/ScreenContainer';
@@ -60,7 +60,10 @@ export default function TestGameScreen() {
 
     const AppLogo = require('../../../../assets/images/logo-made-simples.png');
 
-
+    const handleExitGame = () => {
+        router.dismissAll();
+        router.replace('/(panel)/choose_game/page');
+    }
 
     const showAlert = (title: string, message: string) => {
         if (Platform.OS === 'web') {
@@ -338,7 +341,7 @@ export default function TestGameScreen() {
         } finally {
             setIsLoading(false);
         }
-    }, [gameIdNumber, mode, manual_code, level])
+    }, [gameIdNumber, mode, manual_code, clearHistory, getCardsByGameId, getGameById, router ])
 
     useEffect(() => {
         setupGame();
@@ -510,14 +513,18 @@ export default function TestGameScreen() {
                                 </View>
                             </>
                         ) : (
-
                             <>
                                 <Text style={[styles.modalTitle, styles.defeatTitle]}>Fim de Jogo!</Text>
                                 <Text style={styles.gameOverMessage}>Você usou todas as suas tentativas.</Text>
                             </>
                         )}
-
-                        <AppButton title="Jogar Novamente" onPress={handlePlayAgain} />
+                        <View style={styles.modalActions}>
+                            <AppButton title="Jogar Novamente" onPress={handlePlayAgain} />
+                            
+                            <Pressable style={styles.secondaryButton} onPress={handleExitGame}>
+                                <Text style={styles.secondaryButtonText}>Voltar para Jogos</Text>
+                            </Pressable>
+                        </View>
                     </View>
                 </View>
             </Modal>
@@ -698,4 +705,21 @@ const styles = StyleSheet.create({
         color: Colors.light.blue,
         fontFamily: GLOBAL_FONT
     },
+    modalActions: {
+        width: '100%',
+        gap: 12,
+        marginTop: 10
+    },
+    secondaryButton: {
+        paddingVertical: 12,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 12,
+    },
+    secondaryButtonText: {
+        color: Colors.light.blue,
+        fontSize: 16,
+        fontWeight: '600',
+        fontFamily: GLOBAL_FONT
+    }
 });
