@@ -4,6 +4,7 @@ import { SetStateAction, useState } from 'react';
 import { supabase } from '@/src/lib/supabase';
 import { router } from 'expo-router';
 import Colors from '@/constants/Colors';
+import { GLOBAL_FONT } from '@/src/components/Fonts';
 
 export default function Signup() {
 
@@ -16,15 +17,13 @@ export default function Signup() {
 
 
     const handleRoleSelection = (role: SetStateAction<string>) => {
-            setRole(role); // Atualiza o estado com a role clicada
+            setRole(role);
             console.log(role)
         };
 
 
     async function handleSignup() {
-
         setLoading(true);
-
         if (password !== confirmPassword) {
             Alert.alert('As senhas devem ser iguais');
             console.log('senhas diferentes')
@@ -43,7 +42,6 @@ export default function Signup() {
             }
         })
         
-
         if (error) {
             Alert.alert('Erro ao cadastrar', error.message)
             console.log(error.message   )
@@ -92,7 +90,7 @@ export default function Signup() {
                 
 
                 <View style={styles.roles}>
-                    <Text>Com qual perfil você se encaixa?</Text>
+                    <Text style={styles.textProfile}>Com qual perfil você se encaixa?</Text>
                     <View style={styles.containerRoles}>
                         <View>
                         <Pressable style={[
@@ -131,7 +129,7 @@ export default function Signup() {
                 </Pressable>
 
                 <Link href='/(auth)/signin/page'>
-                    <Text>Já tem conta? Entrar</Text>
+                    <Text style={styles.textProfile}>Já tem conta? Entrar</Text>
                 </Link>
             </View>
         </View>
@@ -154,16 +152,17 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     logoMade: {
-            width: 200,  // Defina a largura
-            resizeMode: 'contain', // Garante que a imagem se ajuste dentro das dimensões,
+            width: 200,  
+            resizeMode: 'contain', 
     },
     logoTecno: {
-        width: 100,  // Defina a largura
-        resizeMode: 'contain', // Garante que a imagem se ajuste dentro das dimensões
+        width: 100,  
+        resizeMode: 'contain'
     },
     title: {
         fontSize: 24,
         fontWeight: 700,
+        fontFamily: GLOBAL_FONT
     },
     containerInput:{
         display: 'flex',
@@ -180,7 +179,8 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         fontSize: 14,
         fontWeight: 500,
-        width: '100%'
+        width: '100%',
+        fontFamily: GLOBAL_FONT
     },
     registerButton: {
         borderRadius: 20,
@@ -195,7 +195,8 @@ const styles = StyleSheet.create({
     registerButtonText:{
         color: Colors.light.white,
         textAlign: 'center',
-        fontSize: 20
+        fontSize: 20,
+        fontFamily: GLOBAL_FONT
     },
     roles: {
         display: 'flex',
@@ -221,14 +222,20 @@ const styles = StyleSheet.create({
     selectedRoleOption:{
         borderColor: Colors.light.blue,
         borderWidth: 2,
+        
     },
     roleOptionText: {
         color: Colors.light.darkGrey,
-        fontWeight: 500
+        fontWeight: 500,
+        fontFamily: GLOBAL_FONT
     },
     selectedRoleOptionText: {
         color: Colors.light.blue,
-        fontWeight: 500
+        fontWeight: 500,
+        fontFamily: GLOBAL_FONT
+    },
+    textProfile: {
+        fontFamily: GLOBAL_FONT
     }
 })
 
