@@ -45,7 +45,6 @@ export default function ManageCards() {
     const fetchCardsAndSettings = useCallback(async () => {
         if (!gameIdNumber) return;
         try {
-            // Busca as cartas e as configurações do jogo ao mesmo tempo
             const [cardsResponse, gameResponse] = await Promise.all([
                 getCardsByGameId(gameIdNumber),
                 getGameById(gameIdNumber)

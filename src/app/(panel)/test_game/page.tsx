@@ -341,7 +341,8 @@ export default function TestGameScreen() {
         } finally {
             setIsLoading(false);
         }
-    }, [gameIdNumber, mode, manual_code, clearHistory, getCardsByGameId, getGameById, router ])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [gameIdNumber, mode, manual_code, level])
 
     useEffect(() => {
         setupGame();
