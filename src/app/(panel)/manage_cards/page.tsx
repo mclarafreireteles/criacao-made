@@ -30,7 +30,7 @@ export default function ManageCards() {
 
     const isCardLimitReached = cards.length >= MAX_CARDS;
 
-    const selectedCardFront = cardFronts.find(front => front.id === cardFrontUrl)?.image;
+    const selectedCardFront = cardFronts.find(front => front.id === cardFrontUrl)?.image || cardFronts[0].image;
 
     const correctCount = cards.filter(card => card.card_type === 1).length;
     const incorrectCount = cards.filter(card => card.card_type === 0).length;
