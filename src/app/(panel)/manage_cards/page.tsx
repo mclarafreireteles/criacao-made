@@ -107,14 +107,10 @@ export default function ManageCards() {
     }
 
     const handleNavigateToEditCard = (card: CardDatabase) => {
-        const params = {
-            card_id: card.id,
-            card_text: card.card_text,
-            card_type: String(card.card_type),
-            image_uri: card.image_uri ?? ''
-        }
-        console.log("Parâmetros de navegação sendo enviados:", params);
-        router.push({ pathname: '/manage_cards/edit_card', params })
+        router.push({ 
+            pathname: '/manage_cards/edit_card', 
+            params: { card_id: card.id } 
+        })
     }
 
     const renderHeader = () => (
@@ -151,7 +147,6 @@ export default function ManageCards() {
             <Pressable
                 style={[styles.addCardButton, isCardLimitReached && styles.disabledButton]}
                 onPress={handleNavigateToAddCard}
-            // disabled={isCardLimitReached} // Desabilita o botão
             >
                 <Ionicons name="add" size={20} color="white" />
                 <Text style={styles.addCardButtonText}>Adicionar carta</Text>
@@ -301,13 +296,9 @@ export default function ManageCards() {
                                 imageSource={selectedCardFront}
                                 onPress={() => handleNavigateToEditCard(item)}
                             />
-
-                            {/* Ícone de Edição (Sobreposto) */}
                             <View style={styles.editBadge} pointerEvents="none">
                                 <MaterialIcons name="edit" size={14} color={Colors.light.blue} />
                             </View>
-
-                            {/* Ícone de Status (Sobreposto) */}
                             <View style={styles.statusBadge} pointerEvents="none">
                                 <Ionicons
                                     name={item.card_type === 1 ? "checkmark-circle" : "close-circle"}
@@ -515,11 +506,11 @@ const styles = StyleSheet.create({
         borderWidth: 1,
     },
     statusSuccess: {
-        backgroundColor: '#DCFCE7', // Verde claro
+        backgroundColor: '#DCFCE7',
         borderColor: '#86EFAC',
     },
     statusPending: {
-        backgroundColor: '#FEE2E2', // Vermelho claro
+        backgroundColor: '#FEE2E2',
         borderColor: '#FCA5A5',
     },
     statusLabel: {

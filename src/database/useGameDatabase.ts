@@ -212,6 +212,16 @@ export function useGameDatabase() {
         }
     }
 
+    const getCardById = async (id: number): Promise<CardDatabase | null> => {
+        try {
+            const query = "SELECT * FROM cards WHERE id = ?";
+            const result = await database.getFirstAsync<CardDatabase>(query, [id]);
+            return result;
+        } catch (error) {
+            console.error("Erro ao buscar carta pelo ID:", error);
+            return null;
+        }
+    };
 
-    return { createGame, searchGameByTitle, searchGameByUser, updateGameLengthSetting, createCard, deleteCard, updateCard, getCardsByGameId, getGameById, updateGameSettings, updateGameCardFront, saveGameManualCode }
+    return { createGame, searchGameByTitle, searchGameByUser, updateGameLengthSetting, createCard, deleteCard, updateCard, getCardsByGameId, getGameById, updateGameSettings, updateGameCardFront, saveGameManualCode, getCardById }
 }

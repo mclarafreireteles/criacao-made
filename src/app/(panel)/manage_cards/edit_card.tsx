@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable, Alert, Platform, Image} from 'react-native';
+import { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Pressable, Alert, Platform, Image, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useGameDatabase } from '@/src/database/useGameDatabase';
 import { StyledInput } from '@/src/components/StyledInput';
@@ -19,13 +19,38 @@ export default function EditCardScreen() {
     const initialText = String(params.card_text || '');
     const initialIsCorrect = params.card_type === '1';
 
-    const { updateCard, deleteCard } = useGameDatabase();
+    const { updateCard, deleteCard, getCardById } = useGameDatabase();
     const initialImage = params.image_uri && params.image_uri !== 'null' ? String(params.image_uri) : null;
     
     const [cardText, setCardText] = useState(initialText);
     const [imageUri, setImageUri] = useState<string | null>(initialImage);
     const [isCorrect, setIsCorrect] = useState<boolean | null>(initialIsCorrect);
     const [loading, setLoading] = useState(false);
+    const [fetchingData, setFetchingData] = useState(true);
+
+    useEffect(() => {
+        const loadCardData = async () => {
+            if (!cardId) return;
+            try {
+                const card = await getCardById(cardId);
+                if (card) {
+                    setCardText(card.card_text || '');
+                    setIsCorrect(Number(card.card_type) === 1);
+                    setImageUri(card.image_uri || null);
+                } else {
+                    Alert.alert("Erro", "Carta não encontrada.");
+                    router.back();
+                }
+            } catch (error) {
+                console.error(error);
+                Alert.alert("Erro", "Falha ao carregar dados da carta.");
+            } finally {
+                setFetchingData(false);
+            }
+        };
+
+        loadCardData();
+    }, [cardId]);
 
     const pickImage = async () => {
         try {
@@ -101,12 +126,10 @@ export default function EditCardScreen() {
 
         // 3. VERIFICAMOS A PLATAFORMA
         if (Platform.OS === 'web') {
-            // Lógica para a Web: usa o confirm() do navegador
             if (window.confirm("Você tem certeza que deseja excluir esta carta? Esta ação não pode ser desfeita.")) {
                 performDelete();
             }
         } else {
-            // Lógica para Nativo (iOS/Android): usa o Alert.alert rico
             Alert.alert(
                 "Excluir Carta",
                 "Você tem certeza que deseja excluir esta carta? Esta ação não pode ser desfeita.",
@@ -115,12 +138,21 @@ export default function EditCardScreen() {
                     { 
                         text: "Sim, Excluir", 
                         style: "destructive",
-                        onPress: performDelete // Chama a função que criamos
+                        onPress: performDelete
                     }
                 ]
             );
         }
     };
+
+    if (fetchingData) {
+        return (
+            <ScreenContainer style={{justifyContent: 'center', alignItems: 'center'}}>
+                <ActivityIndicator size="large" color={Colors.light.blue} />
+                <Text style={{marginTop: 10, color: '#666'}}>Carregando carta...</Text>
+            </ScreenContainer>
+        );
+    }
 
 
     return (
